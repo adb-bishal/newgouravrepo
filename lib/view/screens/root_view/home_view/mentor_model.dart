@@ -69,7 +69,7 @@ class Mentors {
       ratings: (json['ratings'] is num? ? (json['ratings'] as num?)?.toDouble() :
       double.tryParse(json['ratings']?.toString() ?? '0')) ?? 0.0,
       liveClasses: (json['total_live_classes'] as num?)?.toInt() ?? 0,
-      certification: json['certification_text']?.toString() ?? 'Not Certified',
+      certification: json['certification_text']?.toString() ?? '',
       imageUrl: json['profile_image']?.toString() ?? '',
       price: json['counselling_price']?.toString() ?? 'Price not available',
       availability: json['availability']?.toString() ?? '',

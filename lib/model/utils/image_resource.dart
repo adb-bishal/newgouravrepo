@@ -156,6 +156,8 @@ class ImageResource {
 
   /// dashboard screen
   String get achievementIcon => toIcons('playIcon.png');
+  String get paymentSuccessImg => toViewImage('counselling_success.png');
+  String get paymentFailureImg => toViewImage('counselling_failed.png');
   String get coinsIcon => toIcons('coin.png');
   String get silverAchievement => toViewImage('silver.png');
   String get triangleImage => toViewImage('triangle.png');

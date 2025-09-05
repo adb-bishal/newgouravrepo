@@ -177,6 +177,81 @@ class RootViewController extends GetxController {
       _initializePromptData();
     }
   }
+  void trailOnTap1(hasName, isFirst, [bool? isTrialSheet]) async {
+    isLoading.value = true;
+    try {
+      await authProvider.updateUserDataForAppTap(
+          signInBody: hasName ? {"name": emailController.text} : null,
+          onError: (message, errorMap) {
+            logPrint("error");
+            if (errorMap?.isEmpty ?? false) {
+              emailError.value = message ?? "";
+            }
+            if (errorMap?.isNotEmpty ?? false) {
+              errorMap?.forEach((key, value) {
+                if (key == "otp") {
+                  if (value.isNotEmpty) {
+                    emailError.value = value.first;
+                  }
+                }
+              });
+            }
+            isLoading.value = false;
+          },
+          onSuccess: (message, data) async {
+            if (data != null) {
+              isLoading.value = true;
+              // Get.toNamed(Routes.otpScreen, arguments: emailController.text);
+              // Get.find<AuthService>().isPro.value = true;
+              // Get.find<AuthService>().user.value.name = emailController.text;
+
+              Get.find<AuthService>().getCurrentUserData();
+              Get.find<ProfileController>().getCurrentUserData();
+
+              // Get.find<RootViewController>().getProfile();
+
+              if (isTrialSheet == true) {
+                Get.find<RootViewController>().joinOnTap(
+                    Get.find<RootViewController>().emailController.text);
+              }
+
+              Get.find<RootViewController>().getProfile();
+
+              // Get.back();
+
+              // if (isFirst) {
+              //   logPrint("clicked123");
+
+              //   // Access promptData from RootViewController
+              //   // var trialPromptData = promptData;
+              //   // logPrint("Trial Prompt Data in LoginController: $trialPromptData");
+              //   print("lkjfsdkjkljkljlkj ${LoginController.promptData}");
+
+              //   if (LoginController.promptData != null) {
+              //     await showSucessDialog(
+              //       // Get.find<RootViewController>().popUpModel.value?.trialPromptData ?? {},
+              //       LoginController.promptData,
+
+              //       // days,
+              //       // days == 1
+              //       //     ? "Trial Activated for $days Day!"
+              //       //     : "Trial Activated for $days Days!",
+              //       Get.find<AuthService>().user.value.name == null,
+              //       LoginController.bgData,
+              //     );
+              //   }
+              // } else {
+              //   emailController.text = "Enter your name";
+              //   Get.back();
+              // }
+            }
+            // isLoading.value = false;
+          });
+    } catch (e) {
+      logPrint("Login error: $e");
+      isLoading.value = false;
+    }
+  }
 
   Future<void> _initializePromptData() async {
     try {
@@ -1513,6 +1588,81 @@ class RootViewController extends GetxController {
         dismissible: false,
         isFlip: true);
   }
+  // void trailOnTap1(hasName, isFirst, [bool? isTrialSheet]) async {
+  //   isLoading.value = true;
+  //   try {
+  //     await authProvider.updateUserDataForAppTap(
+  //         signInBody: hasName ? {"name": emailController.text} : null,
+  //         onError: (message, errorMap) {
+  //           logPrint("error");
+  //           if (errorMap?.isEmpty ?? false) {
+  //             emailError.value = message ?? "";
+  //           }
+  //           if (errorMap?.isNotEmpty ?? false) {
+  //             errorMap?.forEach((key, value) {
+  //               if (key == "otp") {
+  //                 if (value.isNotEmpty) {
+  //                   emailError.value = value.first;
+  //                 }
+  //               }
+  //             });
+  //           }
+  //           isLoading.value = false;
+  //         },
+  //         onSuccess: (message, data) async {
+  //           if (data != null) {
+  //             isLoading.value = true;
+  //             // Get.toNamed(Routes.otpScreen, arguments: emailController.text);
+  //             // Get.find<AuthService>().isPro.value = true;
+  //             // Get.find<AuthService>().user.value.name = emailController.text;
+  //
+  //             Get.find<AuthService>().getCurrentUserData();
+  //             Get.find<ProfileController>().getCurrentUserData();
+  //
+  //             // Get.find<RootViewController>().getProfile();
+  //
+  //             if (isTrialSheet == true) {
+  //               Get.find<RootViewController>().joinOnTap(
+  //                   Get.find<RootViewController>().emailController.text);
+  //             }
+  //
+  //            getProfile();
+  //
+  //             // Get.back();
+  //
+  //             // if (isFirst) {
+  //             //   logPrint("clicked123");
+  //
+  //             //   // Access promptData from RootViewController
+  //             //   // var trialPromptData = promptData;
+  //             //   // logPrint("Trial Prompt Data in LoginController: $trialPromptData");
+  //             //   print("lkjfsdkjkljkljlkj ${LoginController.promptData}");
+  //
+  //             //   if (LoginController.promptData != null) {
+  //             //     await showSucessDialog(
+  //             //       // Get.find<RootViewController>().popUpModel.value?.trialPromptData ?? {},
+  //             //       LoginController.promptData,
+  //
+  //             //       // days,
+  //             //       // days == 1
+  //             //       //     ? "Trial Activated for $days Day!"
+  //             //       //     : "Trial Activated for $days Days!",
+  //             //       Get.find<AuthService>().user.value.name == null,
+  //             //       LoginController.bgData,
+  //             //     );
+  //             //   }
+  //             // } else {
+  //             //   emailController.text = "Enter your name";
+  //             //   Get.back();
+  //             // }
+  //           }
+  //           // isLoading.value = false;
+  //         });
+  //   } catch (e) {
+  //     logPrint("Login error: $e");
+  //     isLoading.value = false;
+  //   }
+  // }
 
   void trailOnTap(hasName, [shoDialog = true]) async {
     isLoading.value = true;

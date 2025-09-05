@@ -24,6 +24,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../mentor/mentor_controller.dart';
+import 'package:confetti/confetti.dart';
 
 class MentorScreen extends GetView<MentorController> {
   const MentorScreen({super.key});
@@ -53,6 +54,24 @@ class MentorScreen extends GetView<MentorController> {
           backgroundColor: Colors.white,
           body: Stack(
             children: [
+              Align(
+                alignment: Alignment.center,
+                child: ConfettiWidget(
+                  confettiController: controller.confettiController,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  shouldLoop: false,
+                  numberOfParticles: 40,
+                  maxBlastForce: 30,
+                  colors: const [
+                    Colors.green,
+                    Colors.blue,
+                    Colors.pink,
+                    Colors.orange,
+                    Colors.purple
+                  ], // manually specify the colors to be used
+                  // createParticlePath: drawStar, // define a custom shape/path.
+                ),
+              ),
               RefreshIndicator(
                   onRefresh: controller.onRefresh,
                   child: SingleChildScrollView(
@@ -96,16 +115,24 @@ class MentorScreen extends GetView<MentorController> {
                                       response,
                                       orderId,
                                       (data) {
-                                        print(
-                                            "Payment verification success: $data");
-                                        showPaymentConfirmationDialog(
-                                            Get.context!, data.message);
+                                        print("Payment verification success: $data");
+                                        showBookingConfirmationDialog(
+                                          successMessage: data?.message,
+                                          Get.context!,
+                                          isSuccess: true,
+                                          onConfirm: () => Navigator.pop(context),
+                                        );
+                                        controller.confettiController.play();
                                       },
                                       (error) {
                                         print(
                                             "Payment verification failed: $error");
-                                        showPaymentConfirmationDialog(
-                                            Get.context!, '');
+                                        showBookingConfirmationDialog(
+                                          Get.context!,
+                                          isSuccess: false,
+                                          onConfirm: () =>
+                                              Navigator.pop(context),
+                                        );
                                       },
                                     );
                                   } catch (e, stack) {
@@ -240,66 +267,100 @@ class MentorScreen extends GetView<MentorController> {
   }
 }
 
-void showPaymentConfirmationDialog(BuildContext context, String? message) {
-  final bool isSuccess = message != null && message.isNotEmpty;
-
+void showBookingConfirmationDialog(
+  BuildContext context, {
+  String? successMessage,
+  String? failureMessage,
+  bool isSuccess = true,
+  VoidCallback? onConfirm,
+  String? message,
+}) {
   showDialog(
     context: context,
-    barrierDismissible: false,
+    barrierDismissible: true,
     builder: (_) => WillPopScope(
       onWillPop: () async => false,
       child: AlertDialog(
-        backgroundColor: ColorResource.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         titlePadding: EdgeInsets.zero,
-        contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 10.0),
-        actionsPadding: const EdgeInsets.only(bottom: 10, right: 10),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+        actionsPadding: const EdgeInsets.only(bottom: 20, left: 24, right: 24),
         title: Container(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(top: 30, bottom: 10),
           alignment: Alignment.center,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
+              isSuccess
+                  ? Image.asset(
+                      ImageResource.instance.paymentSuccessImg,
+                    )
+                  : Image.asset(
+                      ImageResource.instance.paymentFailureImg,
+                      width: 150,
+                      height: 150,
+                    ),
+              const SizedBox(height: 20),
+              Text(
                 isSuccess
-                    ? "assets/svg/success.gif"
-                    : "assets/svg/payment_failed.gif",
-                width: 60,
-                height: 60,
+                    ? (successMessage ?? "Booking Confirmed!")
+                    : (failureMessage ?? "Booking Failed!"),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: isSuccess ? Colors.black : Colors.red,
+                ),
               ),
               const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  isSuccess ? message! : "Payment Failed",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+              // Subtitle message
+              Text(
+                isSuccess
+                    ? "Your mentorship counselling session has been\nsuccessfully scheduled."
+                    : "There was an issue processing your request.\nPlease try again.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600],
+                  height: 1.4,
                 ),
               ),
             ],
           ),
         ),
         actions: [
-          Center(
+          // Action button
+          SizedBox(
+            width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorResource.white,
-                foregroundColor: Colors.black,
+                backgroundColor:
+                    const Color(0xFF4A6CF7), // Blue color like in screenshot
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                elevation: 2,
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Always dismiss the dialog first
                 if (isSuccess) {
                   Get.offAllNamed(Routes.homeScreen);
                 }
               },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Text("OK"),
+
+              child: Text(
+                isSuccess ? "View Details" : "Try Again",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -308,6 +369,99 @@ void showPaymentConfirmationDialog(BuildContext context, String? message) {
     ),
   );
 }
+
+// Usage examples:
+void showSuccessDialog(BuildContext context) {
+  showBookingConfirmationDialog(
+    context,
+    isSuccess: true,
+    successMessage: "Booking Confirmed!",
+    onConfirm: () {
+      // Navigate to details page or home
+      print("Navigate to booking details");
+    },
+  );
+}
+
+void showFailureDialog(BuildContext context) {
+  showBookingConfirmationDialog(
+    context,
+    isSuccess: false,
+    failureMessage: "Payment Failed!",
+    onConfirm: () {
+      // Retry payment or go back
+      print("Retry payment");
+    },
+  );
+}
+// void showPaymentConfirmationDialog(BuildContext context, String? message) {
+//   final bool isSuccess = message != null && message.isNotEmpty;
+//
+//   showDialog(
+//     context: context,
+//     barrierDismissible: false,
+//     builder: (_) => WillPopScope(
+//       onWillPop: () async => false,
+//       child: AlertDialog(
+//         backgroundColor: ColorResource.white,
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//         titlePadding: EdgeInsets.zero,
+//         contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 10.0),
+//         actionsPadding: const EdgeInsets.only(bottom: 10, right: 10),
+//         title: Container(
+//           padding: const EdgeInsets.only(top: 20),
+//           alignment: Alignment.center,
+//           child: Column(
+//             children: [
+//               Image.asset(
+//                 isSuccess
+//                     ? "assets/svg/success.gif"
+//                     : "assets/svg/payment_failed.gif",
+//                 width: 60,
+//                 height: 60,
+//               ),
+//               const SizedBox(height: 12),
+//               Padding(
+//                 padding: const EdgeInsets.all(8.0),
+//                 child: Text(
+//                   isSuccess ? message! : "Payment Failed",
+//                   textAlign: TextAlign.center,
+//                   style: const TextStyle(
+//                     fontSize: 18,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         actions: [
+//           Center(
+//             child: ElevatedButton(
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: ColorResource.white,
+//                 foregroundColor: Colors.black,
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(8),
+//                 ),
+//               ),
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//                 if (isSuccess) {
+//                   Get.offAllNamed(Routes.homeScreen);
+//                 }
+//               },
+//               child: const Padding(
+//                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//                 child: Text("OK"),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     ),
+//   );
+// }
 
 Future<void> initiateCounsellingPayment(
   MentorController controller, {
@@ -567,12 +721,21 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                           orderId,
                           (data) {
                             print("Payment verification success: $data");
-                            showPaymentConfirmationDialog(
-                                Get.context!, data.message);
+                            showBookingConfirmationDialog(
+                              successMessage: data?.message,
+                              Get.context!,
+                              isSuccess: true,
+                              onConfirm: () => Navigator.pop(context),
+                            );
+                            widget.controller.confettiController.play();
                           },
                           (error) {
                             print("Payment verification failed: $error");
-                            showPaymentConfirmationDialog(Get.context!, '');
+                            showBookingConfirmationDialog(
+                              Get.context!,
+                              isSuccess: false,
+                              onConfirm: () => Navigator.pop(context),
+                            );
                           },
                         );
                       } catch (e, stack) {
@@ -791,12 +954,12 @@ Widget categoryList(controller, List<Mentors> mentors) {
                                 direction: Axis.horizontal,
                               ),
                               const SizedBox(height: 4),
-                              if (mentorData.certification.isNotEmpty)
+                              if (mentorData.certification != '')
                                 Row(
                                   children: [
                                     Padding(
                                       padding:
-                                      const EdgeInsets.only(right: 4.0),
+                                          const EdgeInsets.only(right: 4.0),
                                       child: Image.asset(
                                         ImageResource.instance.mentorCheckIcon,
                                         width: 14,
@@ -816,29 +979,28 @@ Widget categoryList(controller, List<Mentors> mentors) {
                                   ],
                                 ),
                               const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 4.0),
-                                      child: Image.asset(
-                                        ImageResource.instance.mentorCheckIcon,
-                                        width: 14,
-                                        height: 14,
-                                        color: ColorResource.grey,
-                                      ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 4.0),
+                                    child: Image.asset(
+                                      ImageResource.instance.mentorCheckIcon,
+                                      width: 14,
+                                      height: 14,
+                                      color: ColorResource.grey,
                                     ),
-                                    Text(
-                                      'PnL Verified',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    'PnL Verified',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                  ],
-                                ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                               const SizedBox(height: 4),
                               Row(
                                 children: [
@@ -920,6 +1082,14 @@ Widget categoryList(controller, List<Mentors> mentors) {
                   ),
                   GestureDetector(
                     onTap: () async {
+                      // showBookingConfirmationDialog(
+                      //   context,
+                      //   isSuccess: true,
+                      //   onConfirm: () => Navigator.pop(context),
+                      // );
+                      // controller.confettiController?.play();
+
+
                       if (Get.find<AuthService>().isGuestUser.value) {
                         ProgressDialog().showFlipDialog(isForPro: false);
                         return;

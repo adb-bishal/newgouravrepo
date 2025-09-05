@@ -135,8 +135,8 @@ class ClassesFilterController extends GetxController {
     ),
     DropDownData(
       id: "5",
-      optionName: "This Year",
-      displayName: '${DateTime.now().year}',
+      optionName: "Next Year",
+      displayName: '${DateTime.now().year+1}',
     ),
   ].obs;
   RxList<RatingDataVal> selectedRating = <RatingDataVal>[

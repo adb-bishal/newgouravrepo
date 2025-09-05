@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
@@ -32,8 +33,8 @@ import './mentor_slot_model.dart';
 
 class MentorController extends GetxController {
   final AccountProvider accountProvider = getIt();
-  final Rx<GlobalKey<AnimatedListState>> listKey =
-      GlobalKey<AnimatedListState>().obs;
+  // final Rx<GlobalKey<AnimatedListState>> listKey =
+  //     GlobalKey<AnimatedListState>().obs;
   final RxBool isDataLoading = false.obs;
   final RxBool isBuyLoading = false.obs;
   final RxBool showFlicker = false.obs;
@@ -43,6 +44,7 @@ class MentorController extends GetxController {
   final Rx<HomeDataModelDatum> bannerData = HomeDataModelDatum().obs;
   final Rx<cont.GetContinueData> continueData = cont.GetContinueData().obs;
   final RxList<cont.Datum> continueDataList = <cont.Datum>[].obs;
+  late ConfettiController confettiController;
 
   final GetStorage box = GetStorage();
   final Rx<HomeDataModelDatum> trendingData = HomeDataModelDatum().obs;
@@ -104,12 +106,17 @@ class MentorController extends GetxController {
     }
     mentorLoadingMap[mentorId]!.value = value;
   }
-
+  @override
+  void dispose() {
+    confettiController.dispose();
+    super.dispose();
+  }
   @override
   void onInit() {
     super.onInit();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+    confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    // confettiController.play();
     final arguments = Get.arguments;
     if (arguments is CounsellingCategory) {
       mentorId = arguments.id;

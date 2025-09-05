@@ -690,6 +690,7 @@ class CustomDialogState extends State<TrialDialogSheet>
     with SingleTickerProviderStateMixin {
   /// Initialize the controller here
   final LoginController controller = Get.put(LoginController());
+  final RootViewController rootController = Get.put(RootViewController());
   double progress = 0.25;
   late AnimationController _controller;
 
@@ -944,6 +945,8 @@ class CustomDialogState extends State<TrialDialogSheet>
                                     widget.emailController.text;
 
                                 controller.trailOnTap(true, false, true);
+                                rootController.trailOnTap1(true, false, true);
+
 
                                 print(
                                     "Email text is: ${Get.find<RootViewController>().emailController.text}");

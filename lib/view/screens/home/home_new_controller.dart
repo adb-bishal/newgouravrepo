@@ -1006,6 +1006,7 @@ class HomeNewController extends GetxController {
     await Future.delayed(const Duration(seconds: 1));
     await getCategories();
     await getHomeData();
+     Get.find<RootViewController>().getProfile();
   }
 
   Future<void> onJoinLiveClass(

@@ -198,14 +198,14 @@ class LoginController extends GetxController {
               Get.find<AuthService>().getCurrentUserData();
               Get.find<ProfileController>().getCurrentUserData();
 
-              Get.find<RootViewController>().getProfile();
+              // Get.find<RootViewController>().getProfile();
 
               if (isTrialSheet == true) {
                 Get.find<RootViewController>().joinOnTap(
                     Get.find<RootViewController>().emailController.text);
               }
 
-              Get.find<RootViewController>().getProfile();
+             await  Get.find<RootViewController>().getProfile();
 
               // Get.back();
 
