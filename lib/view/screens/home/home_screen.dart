@@ -1063,7 +1063,7 @@ Widget bookedCounsellingView(
                             color: ColorResource.primaryColor,
                             child: data.mentor.imageUrl != null
                                 ? Image.network(
-                                    data.mentor.imageUrl!,
+                                    data.mentor.imageUrl,
                                     fit: BoxFit.cover,
                                     errorBuilder:
                                         (context, error, stackTrace) =>
@@ -1526,7 +1526,7 @@ Widget bookedCounsellingView(
                             MaterialPageRoute(
                               builder: (context) => LiveClassLaunch(
                                 title: data.mentor.expertise.title ?? '',
-                                url: data.participantLink!,
+                                url: data.participantLink,
                               ),
                             ),
                           );
@@ -1643,7 +1643,125 @@ Widget categoryChip(
     ),
   );
 }
+/*
+Widget categoryList(
+    HomeNewController controller, CounsellingData counsellingData) {
+  return Obx(() => controller.isDataLoading.value
+      ? MediaQuery.of(Get.context!).size.width < 600
+      ? ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForMobile()
+      : ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForTab()
+      : counsellingData.categories.isEmpty
+      ? const Center(
+    child: Padding(
+      padding: EdgeInsets.all(24.0),
+      child: Text("No category found"),
+    ),
+  )
+      :
+  GridView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    padding: const EdgeInsets.symmetric(horizontal: 12),
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      crossAxisSpacing: 12.0,
+      mainAxisSpacing: 12.0,
+      childAspectRatio: 0.85,
+    ),
+    itemCount: counsellingData.categories.length,
+    itemBuilder: (context, index) {
+      var data = counsellingData.categories[index];
+      return GestureDetector(
+        onTap: () {
+          Get.toNamed(Routes.mentorScreen,
+              arguments: counsellingData.categories[index]);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade200),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Image at the top
+                Expanded(
+                  flex: 2,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.network(
+                      data.imageUrl,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Container(
+                            width: double.infinity,
+                            color: Colors.grey.shade200,
+                            child: const Icon(
+                              Icons.category,
+                              color: Colors.grey,
+                              size: 30,
+                            ),
+                          ),
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(
+                              strokeWidth: 2),
+                        );
+                      },
+                    ),
+                  ),
+                ),
 
+                const SizedBox(height: 8),
+
+                // Title
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Text(
+                        data.title,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: ColorResource.lightSecondaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const Spacer(),
+                      // Arrow icon like in the image
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 12,
+                        color: Color(0xFF4854FE),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  ));
+}*/
 Widget categoryList(
     HomeNewController controller, CounsellingData counsellingData) {
   return Obx(() => controller.isDataLoading.value
