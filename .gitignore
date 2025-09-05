@@ -1,0 +1,71 @@
+# Flutter / Dart / IDE
+.dart_tool/
+.packages
+.pub-cache/
+build/
+.idea/
+.vscode/
+*.iml
+
+# Android
+android/.gradle/
+android/captures/
+android/.cxx/
+android/key.properties
+**/*.keystore
+**/*.jks
+android/local.properties
+android/gradlew
+android/gradlew.bat
+android/gradle-wrapper.jar
+
+# iOS
+ios/Flutter/.last_build_id
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/xcuserdata/
+ios/.symlinks/
+ios/.flutter-plugins
+ios/.flutter-plugins-dependencies
+
+# Xcode
+*.xcuserstate
+*.xcworkspace
+DerivedData/
+*.pbxuser
+
+# macOS
+macos/Flutter/ephemeral/
+macos/Pods/
+
+# Linux
+linux/Flutter/ephemeral/
+
+# Windows
+windows/Flutter/ephemeral/
+
+# Web
+web/manifest.json
+
+# Others
+*.log
+*.lock
+*.tmp
+*.bak
+*.swp
+
+# Output files
+*.apk
+*.aab
+*.ipa
+
+# VS Code settings
+.vscode/
+
+# Firebase / Google
+google-services.json
+GoogleService-Info.plist
+
+# Mac OS duplicate files
+._*
+

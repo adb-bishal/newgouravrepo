@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">312183979919223</string>
+    <string name="facebook_client_token">7073c03b82c2b40b56059aaeb226147f</string>
+    <string name="fb_login_protocol_scheme">fb312183979919223</string>
+    <string name="default_notification_channel_id">Stockpathshala</string>
+    <string name="default_notification_channel_name">Stockpathshala</string>
+</resources>

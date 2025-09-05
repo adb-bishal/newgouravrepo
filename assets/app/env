@@ -1,0 +1,7 @@
+APP_ID =
+BUILD_TYPE =
+DEBUG = true
+VERSION_CODE = 1
+VERSION_NAME = 0.0.1
+BASE_API_URL = http://172.105.41.247/sportzye/public/api/v1/
+

@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+
+class DiagonalStrikeText extends StatelessWidget {
+  final String text;
+  final double fontSize;
+  final Color strikeColor;
+  final double strikeWidth; // Strike width property
+  final double strikeHeight; // Strike height property
+
+  const DiagonalStrikeText({
+    Key? key,
+    required this.text,
+    this.fontSize = 14.0,
+    this.strikeColor = Colors.red,
+    this.strikeWidth = 4.0, // Default strike width
+    this.strikeHeight = 6.0, // Default strike height
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: DiagonalStrikePainter(text, fontSize, strikeColor, strikeWidth, strikeHeight),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: fontSize),
+      ),
+    );
+  }
+}
+
+class DiagonalStrikePainter extends CustomPainter {
+  final String text;
+  final double fontSize;
+  final Color strikeColor;
+  final double strikeWidth; // Strike width property
+  final double strikeHeight; // Strike height property
+
+  DiagonalStrikePainter(
+    this.text,
+    this.fontSize,
+    this.strikeColor,
+    this.strikeWidth,
+    this.strikeHeight,
+  );
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(fontSize: fontSize, color: Colors.black),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+
+    // Diagonal line paint with adjustable width and height
+    final paint = Paint()
+      ..color = strikeColor
+      ..strokeWidth = strikeWidth
+      ..strokeCap = StrokeCap.round;
+
+    // Adjust the height by increasing the vertical displacement
+    canvas.drawLine(
+      Offset(-1, textPainter.height ), // Starting point (bottom-left with height)
+      Offset(textPainter.width +strikeHeight  , 10), // Ending point (top-right with height)
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
