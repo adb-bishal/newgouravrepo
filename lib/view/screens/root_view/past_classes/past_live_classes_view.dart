@@ -771,7 +771,7 @@ Widget _pastLiveClassesView(BuildContext context, int index,
               ],
             ),
           ),
-          Expanded(
+          Positioned.fill(
             child: Container(
               margin: const EdgeInsets.only(bottom: 50),
               decoration: BoxDecoration(

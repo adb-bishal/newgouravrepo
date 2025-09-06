@@ -36,7 +36,6 @@ import '../../view/widgets/alert_dialog_popup.dart';
 import '../../view_model/controllers/root_view_controller/root_view_controller.dart';
 
 class MentorshipDetailScreen extends StatefulWidget {
-
   @override
   State<MentorshipDetailScreen> createState() => _MentorshipDetailScreenState();
 }
@@ -48,7 +47,6 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -71,7 +69,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
             return Center(child: Text(service.errorMessage.value));
           }
 
-          var mentorship = service.mentorshipDetailData.value?.mentorshipDetailUI;
+          var mentorship =
+              service.mentorshipDetailData.value?.mentorshipDetailUI;
           var mentorshipData = service.mentorshipDetailData.value;
 
           if (mentorship == null) {
@@ -138,10 +137,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                         right: -20,
                                         child: Align(
                                           alignment: Alignment.bottomRight,
-                                          child: mentorshipData?.cardImage != null
-                                              ? Image.network(
-                                              mentorshipData!.cardImage)
-                                              : Container(),
+                                          child:
+                                              mentorshipData?.cardImage != null
+                                                  ? Image.network(
+                                                      mentorshipData!.cardImage)
+                                                  : Container(),
                                         ),
                                       ),
                                       Padding(
@@ -157,28 +157,33 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                 child: Icon(
                                                   Icons.arrow_back_rounded,
                                                   color: Colors.white,
-                                                  size:
-                                                      screenWidth < 500 ? 22 : 28,
+                                                  size: screenWidth < 500
+                                                      ? 22
+                                                      : 28,
                                                 )),
                                             const SizedBox(height: 10),
                                             Container(
-                                               constraints: BoxConstraints(
-                                                 maxWidth: MediaQuery.of(context).size.width*0.6
-                                               ),
+                                              constraints: BoxConstraints(
+                                                  maxWidth:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.6),
                                               child: Text(
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
-                                                mentorshipData?.mentorshipTitle ??
+                                                mentorshipData
+                                                        ?.mentorshipTitle ??
                                                     '',
                                                 style: TextStyle(
-
                                                   decoration:
                                                       TextDecoration.underline,
                                                   decorationColor: Colors.white,
                                                   // Optional: Change the color of the underline
                                                   decorationThickness: 1,
-                                                  fontSize:
-                                                      screenWidth < 500 ? 16 : 34,
+                                                  fontSize: screenWidth < 500
+                                                      ? 16
+                                                      : 34,
                                                   fontWeight: FontWeight.bold,
                                                   color: hexToColor(mentorship
                                                       .mentorshipTitleColor),
@@ -197,7 +202,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                       0,
                                               itemBuilder: (context, index) {
                                                 return Padding(
-                                                    padding: EdgeInsets.symmetric(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
                                                       vertical: 2,
                                                     ),
                                                     // Add some spacing if needed
@@ -209,24 +215,27 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                               },
                                             ),
                                             SizedBox(
-                                                height:
-                                                    screenWidth < 500 ? 25 : 55),
+                                                height: screenWidth < 500
+                                                    ? 25
+                                                    : 55),
                                             Row(
                                               children: [
                                                 Icon(
                                                   Icons.calendar_today,
                                                   color: Colors.yellow,
-                                                  size:
-                                                      screenWidth < 500 ? 16 : 26,
+                                                  size: screenWidth < 500
+                                                      ? 16
+                                                      : 26,
                                                 ),
                                                 SizedBox(width: 5),
                                                 Text(
                                                   mentorshipDuration,
                                                   style: TextStyle(
                                                       color: Colors.yellow,
-                                                      fontSize: screenWidth < 500
-                                                          ? 10
-                                                          : 18,
+                                                      fontSize:
+                                                          screenWidth < 500
+                                                              ? 10
+                                                              : 18,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
@@ -240,13 +249,14 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                         child: Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 8, vertical: 6),
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 14),
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 14),
                                           decoration: BoxDecoration(
                                             color: Color(0xFFFCF6CA),
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(12),
-                                                bottomLeft: Radius.circular(12)),
+                                                bottomLeft:
+                                                    Radius.circular(12)),
                                           ),
                                           child: Wrap(
                                             crossAxisAlignment:
@@ -257,7 +267,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                       ?.mentorshipStatus ==
                                                   "past")
                                                 Image.asset(
-                                                  ImageResource.instance.starIcon,
+                                                  ImageResource
+                                                      .instance.starIcon,
                                                   height: screenHeight * 0.02,
                                                   color:
                                                       ColorResource.orangeColor,
@@ -330,7 +341,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                     fontStyle: FontStyle.italic,
                                     fontSize: screenWidth < 500 ? 18 : 42,
                                     fontWeight: FontWeight.bold,
-                                    color: hexToColor(mentorship.quoteTextColor),
+                                    color:
+                                        hexToColor(mentorship.quoteTextColor),
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -352,7 +364,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: 8.0, top: screenWidth < 500 ? 15 : 35),
+                                    left: 8.0,
+                                    top: screenWidth < 500 ? 15 : 35),
                                 child: Text(
                                   'FAQs',
                                   style: TextStyle(
@@ -741,7 +754,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
             ?.lastIndexWhere((item) => item.temporaryClass == 1) ??
         -1;
 
-   return Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -754,7 +767,6 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           ),
         ),
         SizedBox(height: screenWidth < 500 ? 15 : 30),
-
         ...(() {
           int firstRecordedIndex = -1;
           for (int i = 0; i < curriculumItems!.length; i++) {
@@ -770,8 +782,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
             final screenWidth = MediaQuery.of(context).size.width;
             final serverDateTime = DateTime.parse(service.serverTime.value);
 
-            final startDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.startDatetime);
-            final endDate = DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.endDatetime);
+            final startDate =
+                DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.startDatetime);
+            final endDate =
+                DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.endDatetime);
 
             final formattedDate = DateFormat('d MMM').format(startDate);
             final formattedStartTime = DateFormat('h:mm a').format(startDate);
@@ -783,8 +797,14 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 controller.currentDate.isBefore(endDate);
             controller.showJoinButton.value = !join;
 
-            bool showHours = DateTime.parse(item.startDatetime).difference(serverDateTime).inHours >= 24 ||
-                DateTime.parse(item.startDatetime).difference(serverDateTime).inSeconds < 0;
+            bool showHours = DateTime.parse(item.startDatetime)
+                        .difference(serverDateTime)
+                        .inHours >=
+                    24 ||
+                DateTime.parse(item.startDatetime)
+                        .difference(serverDateTime)
+                        .inSeconds <
+                    0;
 
             return Column(
               children: [
@@ -798,60 +818,118 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                   ),
                   SizedBox(height: 16),
                 ],
-
                 _buildCurriculumItem(
                   onTapCallback: () {
                     if (mentorshipData?.isPurchased == 0) {
                       if (mentorshipData?.allowPurchase != 0) {
                         showBuyMentorshipPopup(
                           context: Get.context!,
-                          title: controller.mentorshipDetailData.value?.mentorshipPopup.popUptitle ?? "",
-                          subtitle: controller.mentorshipDetailData.value?.mentorshipPopup.popUpsubtitle ?? "",
-                          buttonTitle: controller.mentorshipDetailData.value?.mentorshipPopup.popUpbuttonTitle ?? "",
-                          imageUrl: controller.mentorshipDetailData.value?.mentorshipPopup.popUpImageUrl ?? "",
+                          title: controller.mentorshipDetailData.value
+                                  ?.mentorshipPopup.popUptitle ??
+                              "",
+                          subtitle: controller.mentorshipDetailData.value
+                                  ?.mentorshipPopup.popUpsubtitle ??
+                              "",
+                          buttonTitle: controller.mentorshipDetailData.value
+                                  ?.mentorshipPopup.popUpbuttonTitle ??
+                              "",
+                          imageUrl: controller.mentorshipDetailData.value
+                                  ?.mentorshipPopup.popUpImageUrl ??
+                              "",
                         );
-                      } else if (mentorshipData?.recommendedMentorship != null) {
+                      } else if (mentorshipData?.recommendedMentorship !=
+                          null) {
                         showRecommendedMentorshipPopup(
                           context: Get.context!,
-                          title: service.mentorshipDetailData.value?.recommendedMentorshipPopup.subtitle ?? "",
-                          subtitle: service.mentorshipDetailData.value?.recommendedMentorship.title ?? "",
-                          buttonTitle: service.mentorshipDetailData.value?.recommendedMentorshipPopup.buttonTitle ?? "",
-                          imageUrl: service.mentorshipDetailData.value?.recommendedMentorshipPopup.imageUrl ?? "",
+                          title: service.mentorshipDetailData.value
+                                  ?.recommendedMentorshipPopup.subtitle ??
+                              "",
+                          subtitle: service.mentorshipDetailData.value
+                                  ?.recommendedMentorship.title ??
+                              "",
+                          buttonTitle: service.mentorshipDetailData.value
+                                  ?.recommendedMentorshipPopup.buttonTitle ??
+                              "",
+                          imageUrl: service.mentorshipDetailData.value
+                                  ?.recommendedMentorshipPopup.imageUrl ??
+                              "",
                         );
                       }
                     } else if (join || item.classStatus == "running") {
                       if (Get.find<AuthService>().user.value.name == null &&
-                          controller.mentorshipDetailData.value?.userNamePrompt != null) {
+                          controller
+                                  .mentorshipDetailData.value?.userNamePrompt !=
+                              null) {
                         showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
                             builder: (BuildContext context) {
                               return SafeArea(
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom,
                                   ),
                                   child: UserNamePopUpWidget(
-                                    title: controller.mentorshipDetailData.value?.userNamePrompt.prompttitle ?? "",
-                                    description: controller.mentorshipDetailData.value?.userNamePrompt.promptdescription ?? "",
-                                    buttonTitle: controller.mentorshipDetailData.value?.userNamePrompt.promptconfirmButton ?? "",
-                                    imageUrl: controller.mentorshipDetailData.value?.userNamePrompt.promptimageUrl ?? "",
-                                    titleColor: controller.mentorshipDetailData.value?.userNamePrompt.prompttitleColor ?? "",
-                                    descriptionColor: controller.mentorshipDetailData.value?.userNamePrompt.promptdescriptionColor ?? "",
-                                    buttonColor: controller.mentorshipDetailData.value?.userNamePrompt.promptconfirmButtonColor ?? "",
-                                    buttonTextColor: controller.mentorshipDetailData.value?.userNamePrompt.promptconfirmBtnTextColor ?? "",
+                                    title: controller.mentorshipDetailData.value
+                                            ?.userNamePrompt.prompttitle ??
+                                        "",
+                                    description: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .promptdescription ??
+                                        "",
+                                    buttonTitle: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .promptconfirmButton ??
+                                        "",
+                                    imageUrl: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .promptimageUrl ??
+                                        "",
+                                    titleColor: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .prompttitleColor ??
+                                        "",
+                                    descriptionColor: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .promptdescriptionColor ??
+                                        "",
+                                    buttonColor: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .promptconfirmButtonColor ??
+                                        "",
+                                    buttonTextColor: controller
+                                            .mentorshipDetailData
+                                            .value
+                                            ?.userNamePrompt
+                                            .promptconfirmBtnTextColor ??
+                                        "",
                                   ),
                                 ),
                               );
-                            }
-
-                        );
+                            });
                       } else {
                         toastShow(message: 'Joining...');
                         controller.joinForLiveClass(item.id, "join");
                         Future.delayed(Duration(seconds: 2), () async {
-                          String link = Get.find<MentorshipDetailController>().participant.value.toString();
+                          String link = Get.find<MentorshipDetailController>()
+                              .participant
+                              .value
+                              .toString();
                           Navigator.push(
                             Get.context!,
                             MaterialPageRoute(
@@ -873,33 +951,37 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                         eventCallBack: (progress, totalDuration) {},
                       ));
                     } else {
-                      toastShow(message: 'Starting on $formattedDate. Be ready!');
+                      toastShow(
+                          message: 'Starting on $formattedDate. Be ready!');
                     }
                   },
                   date: formattedDate,
                   title: item.title.toString(),
-                  duration: mentorshipData?.isPurchased != 0 && item.recordingUrl.isNotEmpty
+                  duration: mentorshipData?.isPurchased != 0 &&
+                          item.recordingUrl.isNotEmpty
                       ? "${item.duration.toString()} minutes"
                       : item.recordingUrl.isNotEmpty
-                      ? mentorshipData?.mentorshipClasses[index].temporaryClass == 1
-                      ? "upcoming"
-                      : "${item.duration.toString()} minutes"
-                      : '$formattedStartTime to $formattedEndTime',
+                          ? mentorshipData?.mentorshipClasses[index]
+                                      .temporaryClass ==
+                                  1
+                              ? "upcoming"
+                              : "${item.duration.toString()} minutes"
+                          : '$formattedStartTime to $formattedEndTime',
                   status: mentorshipData?.isPurchased == 0
                       ? mentorship!.unlockButtonText.toString()
                       : join || item.classStatus == "running"
-                      ? mentorship!.joinButtonText.toString()
-                      : item.recordingUrl.isNotEmpty
-                      ? mentorship!.recordingText.toString()
-                      : "abc",
+                          ? mentorship!.joinButtonText.toString()
+                          : item.recordingUrl.isNotEmpty
+                              ? mentorship!.recordingText.toString()
+                              : "abc",
                   icon: Icons.check_box,
                   iconColor: mentorshipData?.isPurchased == 0
                       ? hexToColor(mentorship?.unlockButtonColor)
                       : join || item.classStatus == "running"
-                      ? hexToColor(mentorship?.joinButtonColor)
-                      : item.recordingUrl.isNotEmpty
-                      ? Colors.transparent
-                      : ColorResource.primaryColor,
+                          ? hexToColor(mentorship?.joinButtonColor)
+                          : item.recordingUrl.isNotEmpty
+                              ? Colors.transparent
+                              : ColorResource.primaryColor,
                   isLargeScreen: isLargeScreen,
                   startDate: item.startDatetime,
                   endDate: item.endDatetime,
@@ -914,8 +996,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                   isRegister: item.isRegister,
                   controller: controller,
                 ),
-
-                if (index != curriculumItems!.length - 1 && index + 1 != firstRecordedIndex)
+                if (index != curriculumItems!.length - 1 &&
+                    index + 1 != firstRecordedIndex)
                   Divider(
                     color: Colors.grey.shade300,
                     indent: 80,
@@ -935,8 +1017,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
       required String endDate,
       required Function()? onTapCallback, // Specify the function signature
       required String title,
-
-        required int id,
+      required int id,
       required int daysLeft,
       required int index,
       required BuildContext context,
@@ -974,53 +1055,48 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
-
-          Container(
-          width: isLargeScreen ? 70 : 50,
-          height: isLargeScreen ? 70 : 50,
-          decoration: isDurationInMinutes
-              ? null
-              : BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: isDurationInMinutes
-                ? Container(
-              width: 20,
-              height: 20,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.green[500], // bg-green-500
-                shape: BoxShape.circle,   // rounded-full
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.check,
-                  size: 12,
-                  color: Colors.grey.shade50, // text-slate-50
+              Container(
+                width: isLargeScreen ? 70 : 50,
+                height: isLargeScreen ? 70 : 50,
+                decoration: isDurationInMinutes
+                    ? null
+                    : BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                child: Center(
+                  child: isDurationInMinutes
+                      ? Container(
+                          width: 20,
+                          height: 20,
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.green[500], // bg-green-500
+                            shape: BoxShape.circle, // rounded-full
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.check,
+                              size: 12,
+                              color: Colors.grey.shade50, // text-slate-50
+                            ),
+                          ),
+                        )
+                      : Text(
+                          mentorshipData?.mentorshipStatus == "past"
+                              ? (index + 1).toString()
+                              : '${dateWord[0]}\n${dateWord[1]}',
+                          maxLines: 2,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: isLargeScreen ? 19 : 15,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                 ),
               ),
-            )
-                : Text(
-              mentorshipData?.mentorshipStatus == "past"
-                  ? (index + 1).toString()
-                  : '${dateWord[0]}\n${dateWord[1]}',
-              maxLines: 2,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: isLargeScreen ? 19 : 15,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
 
-
-
-
-        // if (classStatus == "running")
+              // if (classStatus == "running")
               // Check if classStatus is running
 
               SizedBox(
@@ -1059,9 +1135,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                           color: hexToColor(
                                                               mentorship
                                                                   ?.classTitleColor),
-                                                          fontSize: isLargeScreen
-                                                              ? 23.4
-                                                              : 14.4,
+                                                          fontSize:
+                                                              isLargeScreen
+                                                                  ? 23.4
+                                                                  : 14.4,
                                                           height: 1.3,
                                                           wordSpacing: 1,
                                                           letterSpacing: 0.3
@@ -1206,8 +1283,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                   flex: 2,
                                   child: GestureDetector(
                                     onTap: () {
-                                      String? name =
-                                          Get.find<AuthService>().user.value.name;
+                                      String? name = Get.find<AuthService>()
+                                          .user
+                                          .value
+                                          .name;
 
                                       print('sdfvswcdwes ${name}');
                                       if (Get.find<AuthService>()
@@ -1330,11 +1409,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                         mentorship!.joinButtonText.toString(),
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color:
-                                              mentorshipData?.isPurchased != 0 &&
-                                                      recording.isNotEmpty
-                                                  ? Colors.black
-                                                  : Colors.white,
+                                          color: mentorshipData?.isPurchased !=
+                                                      0 &&
+                                                  recording.isNotEmpty
+                                              ? Colors.black
+                                              : Colors.white,
                                           fontSize: isLargeScreen ? 14 : 12,
                                         ),
                                       ),
@@ -1432,7 +1511,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                         await SharedPreferences.getInstance();
                                     String mentorIdValue =
                                         mentorId.getString('mId') ?? '';
-                                    controller.fetchMentorshipData(mentorIdValue);
+                                    controller
+                                        .fetchMentorshipData(mentorIdValue);
                                   }
                                 },
                                 child: Container(
@@ -1576,7 +1656,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                               } else {
                                 // controller.isRegisterList.clear();
                                 toastShow(message: 'registered down... ');
-                                controller.onRegisterForLiveClass(id, "register");
+                                controller.onRegisterForLiveClass(
+                                    id, "register");
 
                                 Timer(Duration(seconds: 1), () async {
                                   SharedPreferences mentorId =
@@ -1627,16 +1708,18 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                       timeInSeconds: int.parse(
                                           controller.time[index].trim()),
                                       isHrs: true,
-                                      fontStyle: StyleResource.instance.styleBold(
-                                          fontSize: isLargeScreen ? 14 : 12,
-                                          fontWeight: FontWeight.normal,
-                                          color: ColorResource.white),
+                                      fontStyle: StyleResource.instance
+                                          .styleBold(
+                                              fontSize: isLargeScreen ? 14 : 12,
+                                              fontWeight: FontWeight.normal,
+                                              color: ColorResource.white),
                                       remainingSeconds: (second) {
                                         if (second <= 120) {
                                           EasyDebounce.debounce(
                                               controller.countValue.value
                                                   .toString(),
-                                              const Duration(milliseconds: 1000),
+                                              const Duration(
+                                                  milliseconds: 1000),
                                               () async {
                                             controller.isStarted.value = true;
                                           });
@@ -1649,8 +1732,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                   flex: 2,
                                   child: GestureDetector(
                                     onTap: () {
-                                      String? name =
-                                          Get.find<AuthService>().user.value.name;
+                                      String? name = Get.find<AuthService>()
+                                          .user
+                                          .value
+                                          .name;
 
                                       print('sdfvswcdwes ${name}');
                                       if (Get.find<AuthService>()
@@ -1773,11 +1858,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                         mentorship!.joinButtonText.toString(),
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
-                                          color:
-                                              mentorshipData?.isPurchased != 0 &&
-                                                      recording.isNotEmpty
-                                                  ? Colors.black
-                                                  : Colors.white,
+                                          color: mentorshipData?.isPurchased !=
+                                                      0 &&
+                                                  recording.isNotEmpty
+                                              ? Colors.black
+                                              : Colors.white,
                                           fontSize: isLargeScreen ? 12 : 10,
                                         ),
                                       ),
@@ -2360,101 +2445,111 @@ void showRecommendedMentorshipPopup({
       // Get the screen size
       var screenWidth = MediaQuery.of(context).size.width;
       var screenHeight = MediaQuery.of(context).size.height;
+      final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
       return SizedBox(
         width: screenWidth,
         // Set the height to two-thirds of the screen height
-        child: Container(
-          decoration: BoxDecoration(
-            color: hexToColor(
-                mentorshipData!.recommendedMentorshipPopup.popupBgColor ??
-                    "#ffffff"),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // Adjust dialog size to content
-              children: [
-                // Circle Avatar Section (Image)
-                CircleAvatar(
-                  radius:
-                      screenHeight * 0.09, // Adjust size based on screen height
-                  backgroundImage: NetworkImage(imageUrl),
-                ),
-                SizedBox(height: 16),
-                // Title
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: screenWidth > 600
-                        ? 24
-                        : 18, // Adjust title size for larger screens
-                    fontWeight: FontWeight.bold,
-                    color: hexToColor(
-                        mentorshipData!.recommendedMentorshipPopup.titleColor ??
-                            "#ffffff"),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 8),
-                // Subtitle
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: screenWidth > 600
-                        ? 18
-                        : 14, // Adjust subtitle size for larger screens
-                    color: hexToColor(mentorshipData!
-                            .recommendedMentorshipPopup.subtitleColor ??
+        child: Padding(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: SafeArea(
+            top: false,
+            child: Container(
+              decoration: BoxDecoration(
+                color: hexToColor(
+                    mentorshipData!.recommendedMentorshipPopup.popupBgColor ??
                         "#ffffff"),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 16),
-                // Action Button
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                    Get.offNamed(
-                      Routes.mentorshipDetail(
-                        id: service.mentorshipDetailData.value!
-                            .recommendedMentorship.id
-                            .toString(),
-                      ),
-                      arguments: {
-                        'id': service.mentorshipDetailData.value!
-                            .recommendedMentorship.id
-                            .toString(),
-                      },
-                    );
-                  },
-                  child: Container(
-                    width: screenWidth *
-                        0.8, // Keep the button width 80% of the screen width
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
-                    decoration: BoxDecoration(
-                      color: hexToColor(mentorshipData!
-                              .recommendedMentorshipPopup.buttonBgColor ??
-                          "#ffffff"), // Custom color for the button
-                      borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize:
+                      MainAxisSize.min, // Adjust dialog size to content
+                  children: [
+                    // Circle Avatar Section (Image)
+                    CircleAvatar(
+                      radius: screenHeight *
+                          0.09, // Adjust size based on screen height
+                      backgroundImage: NetworkImage(imageUrl),
                     ),
-                    child: Text(
-                      buttonTitle,
+                    SizedBox(height: 16),
+                    // Title
+                    Text(
+                      title,
                       style: TextStyle(
-                        color: hexToColor(mentorshipData!
-                                .recommendedMentorshipPopup.buttonTextColor ??
-                            "#000000"),
                         fontSize: screenWidth > 600
-                            ? 18
-                            : 16, // Adjust font size based on screen width
+                            ? 24
+                            : 18, // Adjust title size for larger screens
                         fontWeight: FontWeight.bold,
+                        color: hexToColor(mentorshipData!
+                                .recommendedMentorshipPopup.titleColor ??
+                            "#ffffff"),
                       ),
                       textAlign: TextAlign.center,
                     ),
-                  ),
+                    SizedBox(height: 8),
+                    // Subtitle
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: screenWidth > 600
+                            ? 18
+                            : 14, // Adjust subtitle size for larger screens
+                        color: hexToColor(mentorshipData!
+                                .recommendedMentorshipPopup.subtitleColor ??
+                            "#ffffff"),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 16),
+                    // Action Button
+                    GestureDetector(
+                      onTap: () {
+                        Get.back();
+                        Get.offNamed(
+                          Routes.mentorshipDetail(
+                            id: service.mentorshipDetailData.value!
+                                .recommendedMentorship.id
+                                .toString(),
+                          ),
+                          arguments: {
+                            'id': service.mentorshipDetailData.value!
+                                .recommendedMentorship.id
+                                .toString(),
+                          },
+                        );
+                      },
+                      child: Container(
+                        width: screenWidth *
+                            0.8, // Keep the button width 80% of the screen width
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                        decoration: BoxDecoration(
+                          color: hexToColor(mentorshipData!
+                                  .recommendedMentorshipPopup.buttonBgColor ??
+                              "#ffffff"), // Custom color for the button
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          buttonTitle,
+                          style: TextStyle(
+                            color: hexToColor(mentorshipData!
+                                    .recommendedMentorshipPopup
+                                    .buttonTextColor ??
+                                "#000000"),
+                            fontSize: screenWidth > 600
+                                ? 18
+                                : 16, // Adjust font size based on screen width
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

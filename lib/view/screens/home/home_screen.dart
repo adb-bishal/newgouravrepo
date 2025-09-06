@@ -60,9 +60,16 @@ class HomeScreen extends GetView<HomeNewController> {
 
   @override
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (controller.scrollController.hasClients) {
+    //     controller.scrollController.jumpTo(0);
+    //   }
+    //   controller.expansion.value = 1.0;
+    //   controller.isTitleVisible.value = false;
+    // });
+
     final screenWidth = MediaQuery.of(context).size.width;
     Get.put(HomeNewController());
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
@@ -838,81 +845,6 @@ class HomeScreen extends GetView<HomeNewController> {
                                                           .capitalize!,
                                                       controller: controller)
 
-                                                  // Column(
-                                                  //         children: [
-                                                  //           Card(
-                                                  //             color:
-                                                  //                 ColorResource.white,
-                                                  //             margin: const EdgeInsets
-                                                  //                 .symmetric(
-                                                  //                 vertical: 6),
-                                                  //             child: Padding(
-                                                  //               padding:
-                                                  //                   const EdgeInsets
-                                                  //                       .symmetric(
-                                                  //                       vertical: 8.0),
-                                                  //               child: SizedBox(
-                                                  //                 width:
-                                                  //                     double.infinity,
-                                                  //                 child: Column(
-                                                  //                   crossAxisAlignment:
-                                                  //                       CrossAxisAlignment
-                                                  //                           .center,
-                                                  //                   children: [
-                                                  //                     Padding(
-                                                  //                       padding:
-                                                  //                           const EdgeInsets
-                                                  //                               .all(
-                                                  //                               16.0),
-                                                  //                       child: Column(
-                                                  //                         children: [
-                                                  //                           Text(
-                                                  //                             'Thank you ${Get.find<AuthService>().user.value.name.toString().capitalize!}',
-                                                  //                             textAlign:
-                                                  //                                 TextAlign
-                                                  //                                     .center,
-                                                  //                             style:
-                                                  //                                 const TextStyle(
-                                                  //                               fontSize:
-                                                  //                                   16,
-                                                  //                               fontWeight:
-                                                  //                                   FontWeight.w600,
-                                                  //                             ),
-                                                  //                           ),
-                                                  //                           const Text(
-                                                  //                             'for booking a counselling session.\n We will assign a mentor soon.',
-                                                  //                             textAlign:
-                                                  //                                 TextAlign
-                                                  //                                     .center,
-                                                  //                             style:
-                                                  //                                 TextStyle(
-                                                  //                               fontSize:
-                                                  //                                   11,
-                                                  //                             ),
-                                                  //                           ),
-                                                  //                           const SizedBox(
-                                                  //                               height:
-                                                  //                                   16),
-                                                  //                           Wrap(
-                                                  //                             children:
-                                                  //                                 buildInfoChip(
-                                                  //                                     tags: [
-                                                  //                                   counselling.bookingStatus ??
-                                                  //                                       'Scheduling Awaited'
-                                                  //                                 ]),
-                                                  //                           )
-                                                  //                         ],
-                                                  //                       ),
-                                                  //                     ),
-                                                  //                     const SizedBox(
-                                                  //                         height: 8),
-                                                  //                   ],
-                                                  //                 ),
-                                                  //               ),
-                                                  //             ),
-                                                  //           ),
-                                                  //         ],
-                                                  //       )
                                                   : const SizedBox.shrink();
                                             },
                                           )
@@ -966,16 +898,19 @@ class HomeScreen extends GetView<HomeNewController> {
                                             },
                                           )
                                         : const SizedBox.shrink(),
-                                    SizedBox(
-                                        height: controller.categoriesData.value
-                                                .bookedCounselling.isEmpty
-                                            ? 10
-                                            : 20),
-                                    const Text(
-                                      'Personalised Counselling Sessions',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600),
+                                    // SizedBox(
+                                    //     height: controller.categoriesData.value
+                                    //             .bookedCounselling.isEmpty
+                                    //         ? 10
+                                    //         : 20),
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        'Personalised Counselling Sessions',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600),
+                                      ),
                                     ),
                                     const Text(
                                       'Learn, trade, and grow with expert-guided sessions',
@@ -1779,18 +1714,24 @@ Widget categoryList(
               // controller: controller.scrollController,
               itemCount: counsellingData.categories.length,
               shrinkWrap: true,
+              padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 var data = counsellingData.categories[index];
                 return GestureDetector(
                   onTap: () {
                     Get.toNamed(Routes.mentorScreen,
-                        arguments: counsellingData.categories[index]);
+                        arguments: counsellingData.categories[index])?.then((value){
+                         if(value == 'payment'){
+                           controller.onRefresh();
+                         }
+                    });
                   },
                   child: Padding(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        const EdgeInsets.only(left: 12, top: 0,right: 12,bottom: 12),
                     child: Container(
+                      margin: EdgeInsets.only(bottom: 12),
                       constraints: BoxConstraints(
                           minHeight: MediaQuery.of(context).size.height * 0.15),
                       decoration: BoxDecoration(

@@ -24,12 +24,14 @@ class Data {
   final Mentor mentor;
   final Map<String, List<Slot>> slots;
   final Ui ui;
+  final String serverTime;
 
   Data({
     required this.counsellingPrice,
     required this.mentor,
     required this.slots,
     required this.ui,
+    required this.serverTime
   });
 
   factory Data.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class Data {
       mentor: Mentor.fromJson(json['mentor'] ?? {}),
       slots: parsedSlots,
       ui: Ui.fromJson(json['ui'] ?? {}),
+      serverTime: json['server_time'].toString() ??'',
     );
   }
 

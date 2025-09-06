@@ -23,6 +23,7 @@ import 'package:stockpathshala_beta/view/widgets/circular_indicator/circular_ind
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../../../view_model/controllers/root_view_controller/root_view_controller.dart';
 import '../mentor/mentor_controller.dart';
 import 'package:confetti/confetti.dart';
 
@@ -115,12 +116,14 @@ class MentorScreen extends GetView<MentorController> {
                                       response,
                                       orderId,
                                       (data) {
-                                        print("Payment verification success: $data");
+                                        print(
+                                            "Payment verification success: $data");
                                         showBookingConfirmationDialog(
                                           successMessage: data?.message,
                                           Get.context!,
                                           isSuccess: true,
-                                          onConfirm: () => Navigator.pop(context),
+                                          onConfirm: () =>
+                                              Navigator.pop(context),
                                         );
                                         controller.confettiController.play();
                                       },
@@ -349,12 +352,11 @@ void showBookingConfirmationDialog(
                 elevation: 2,
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // Always dismiss the dialog first
+                Navigator.of(context).pop();
                 if (isSuccess) {
-                  Get.offAllNamed(Routes.homeScreen);
+                  Get.back(result: 'payment');
                 }
               },
-
               child: Text(
                 isSuccess ? "View Details" : "Try Again",
                 style: const TextStyle(
@@ -448,7 +450,7 @@ void showFailureDialog(BuildContext context) {
 //               onPressed: () {
 //                 Navigator.of(context).pop();
 //                 if (isSuccess) {
-//                   Get.offAllNamed(Routes.homeScreen);
+//                   Get.offAllNamed(Routes.rootView);
 //                 }
 //               },
 //               child: const Padding(
@@ -567,11 +569,17 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
 
   void getTimeSlot(DateTime selectedDate) {
     final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
     timeSlots = widget.data.slots[formattedDate] ?? [];
-    // _selectedSlot = timeSlots[0].slotStart;
     _selectedSlot = null;
+
     if (kDebugMode) {
-      print("Time slots on $formattedDate: $timeSlots");
+      print("Original UTC: $selectedDate");
+      print("Formatted Date Key: $formattedDate");
+      print("Fetched Time Slots (${timeSlots.length}):");
+      for (var slot in timeSlots) {
+        print("Slot Start: ${slot.slotStart}, Slot End: ${slot.slotEnd}");
+      }
     }
   }
 
@@ -584,9 +592,11 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
         .expand((e) => e)
         .toList();
     // _selectedSlot = timeSlots[0].slotStart;
-    print("timeSlots $timeSlots");
+    print("timeSlots ${timeSlots[0].slotStart}");
     weekDates = getWeekDates();
-    // _selectedDate = DateTime.parse(widget.data.slots.keys.first);
+    print("server time ${widget.controller.categoriesData.value.serverTime}");
+    _selectedDate =
+        DateTime.parse(widget.controller.categoriesData.value.serverTime);
     getTimeSlot(_selectedDate);
   }
 
@@ -677,27 +687,31 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
               mainAxisSpacing: 15,
               crossAxisSpacing: 15,
               children: timeSlots.map((slot) {
-                final isSelected = slot.slotStart == _selectedSlot;
+                // Convert slotStart from UTC to local
+                final slotStartLocal = DateTime.parse(slot.slotStart).toLocal();
+
+                // Format slotSart to string for comparison
+                final formattedSlotStart = DateFormat('yyyy-MM-dd HH:mm:ss').format(slotStartLocal);
+
+                final isSelected = formattedSlotStart == _selectedSlot;
+
                 return GestureDetector(
                   onTap: () => setState(() {
                     slotId = slot.id;
-                    _selectedSlot = slot.slotStart;
+
+                    _selectedSlot = formattedSlotStart;
                   }),
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? ColorResource.primaryColor
-                          : Colors.white,
+                      color: isSelected ? ColorResource.primaryColor : Colors.white,
                       border: Border.all(
-                          color: isSelected
-                              ? ColorResource.primaryColor
-                              : Colors.grey.shade300),
+                        color: isSelected ? ColorResource.primaryColor : Colors.grey.shade300,
+                      ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      DateFormat('hh:mm a')
-                          .format(DateTime.parse(slot.slotStart)),
+                      DateFormat('hh:mm a').format(slotStartLocal), // Use local time for display
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: isSelected ? ColorResource.white : Colors.black,
@@ -707,6 +721,7 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                 );
               }).toList(),
             ),
+
             const SizedBox(height: 24),
             GestureDetector(
               onTap: () {
@@ -1089,7 +1104,11 @@ Widget categoryList(controller, List<Mentors> mentors) {
                       // );
                       // controller.confettiController?.play();
 
+                      // Get.offAllNamed(Routes.rootView);
+                      // Get.find<RootViewController>().onRedirectHome(0);
+                      // Get.back(result: 'payment');
 
+                      //
                       if (Get.find<AuthService>().isGuestUser.value) {
                         ProgressDialog().showFlipDialog(isForPro: false);
                         return;

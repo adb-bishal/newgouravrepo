@@ -106,7 +106,7 @@ class AppPages {
     /// root view
     GetPage(
         name: Routes.rootView,
-        page: () => const RootView(),
+        page: () => const RootView(2),
         binding: RootBinding()),
     GetPage(
         name: Routes.mentorScreen,

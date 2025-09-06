@@ -171,13 +171,15 @@ class HomeNewController extends GetxController {
 
   late Map<String, List<String>> sessionRequestBody;
 
+  RxDouble expansion = 1.0.obs;
+
   @override
   void onInit() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     logPrint("profile controller");
     getCategories();
     getBanner();
-    scrollController.addListener(_handleScroll);
+    scrollController.addListener(handleScroll);
 
     super.onInit();
   }
@@ -185,21 +187,39 @@ class HomeNewController extends GetxController {
   Future<void> getBanner() async {
     await getHomeData();
   }
+  void handleScroll() {
+    if (!scrollController.hasClients) return;
 
-  void _handleScroll() {
     final screenWidth = MediaQuery.of(Get.context!).size.width;
-
     final currentOffset = scrollController.offset;
-    final expandedHeight =
-        screenWidth < 500 ? 250 : 280;
-    const collapsedHeight = 45;
-    final expansion =
-        1 - (currentOffset / (expandedHeight - collapsedHeight)).clamp(0, 1);
-    print(expansion);
-    isTitleVisible.value = expansion == 0;
+    final expandedHeight = (screenWidth < 600 ? 250.0 : 280.0);
+    const collapsedHeight = 45.0;
+
+    final scrollProgress = (currentOffset / (expandedHeight - collapsedHeight)).clamp(0.0, 1.0);
+    expansion.value = 1.0 - scrollProgress;
+
+    isTitleVisible.value = expansion.value < 0.2; // Show title when nearly collapsed
+    print("Expansion: ${expansion.value}, Title visible: ${isTitleVisible.value}");
     lastScrollOffset = currentOffset;
   }
+  @override
+  void onReady() {
+    super.onReady();
+    resetScrollState();
+    resetScrollStateImmediate();
+    print("recallll");
+    // loadInitialData();
+  }
 
+  void resetScrollState() {
+    // Reset immediately without animation
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
+    expansion.value = 1.0;
+    isTitleVisible.value = false;
+    lastScrollOffset = 0.0;
+  }
   Future<void> getHomeData() async {
     logPrint("user token ${box.read(StringResource.instance.token)}");
 
@@ -221,7 +241,6 @@ class HomeNewController extends GetxController {
         onSuccess: (message, json) async {
           homeData.value = HomeDataModel.fromJson(json ?? {});
           print("homeData ${homeDataModelToJson(homeData.value)}");
-
 
           for (HomeDataModelDatum homeDataModelDatum
               in homeData.value.data ?? []) {
@@ -1006,7 +1025,7 @@ class HomeNewController extends GetxController {
     await Future.delayed(const Duration(seconds: 1));
     await getCategories();
     await getHomeData();
-     Get.find<RootViewController>().getProfile();
+    Get.find<RootViewController>().getProfile();
   }
 
   Future<void> onJoinLiveClass(
@@ -1159,5 +1178,20 @@ class HomeNewController extends GetxController {
       'placeholders': placeholders,
       'text': textParts,
     };
+  }
+
+
+  void resetScrollStateImmediate() {
+    // Set state immediately without any delays
+    expansion.value = 1.0;
+    isTitleVisible.value = false;
+    lastScrollOffset = 0.0;
+
+    // Reset scroll position immediately
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(0);
+      }
+    });
   }
 }

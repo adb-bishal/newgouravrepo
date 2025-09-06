@@ -32,11 +32,12 @@ import 'audio_course_detail_view/audio_course_detail_view.dart';
 import '../mentor/mentor_screen.dart' hide cachedNetworkImage;
 
 class RootView extends GetView<RootViewController> {
-  const RootView({super.key});
+  const RootView(this. i, {super.key});
+  final int? i;
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.put(RootViewController());
+    var controller = Get.put(RootViewController(i));
 
     if (!Get.find<AuthService>().isGuestUser.value) {
       Get.put(ProfileController());
@@ -284,6 +285,7 @@ class MainRootView extends GetView<RootViewController> {
                                                 if (index == 4) {
                                                   Get.toNamed(Routes.subscriptionView);
                                                 } else {
+                                                  controller.changeTab(index);
                                                   controller.selectedTab.value = index;
                                                 }
                                               },

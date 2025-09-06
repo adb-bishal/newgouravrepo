@@ -59,6 +59,7 @@ import '../../../model/utils/dimensions_resource.dart';
 import '../../../model/utils/helper_util.dart';
 import '../../../model/utils/style_resource.dart';
 import '../../../service/page_manager.dart';
+import '../../../view/screens/home/home_new_controller.dart';
 import '../../../view/screens/root_view/cooming_soon/coming_soon_screen.dart';
 import '../../../view/screens/root_view/live_classes_view/live_classes_view.dart';
 import '../../../view/screens/root_view/root_view.dart';
@@ -102,7 +103,8 @@ class RootViewController extends GetxController {
   RxList<DropDownData> languageData = <DropDownData>[].obs;
   RxBool isAskRatingShow = false.obs;
 
-  RxInt selectedTab = 2.obs;
+   RxInt selectedTab  = RxInt(2);
+
   RxBool isShow = true.obs;
   RxBool isAvailable = false.obs;
 
@@ -150,6 +152,84 @@ class RootViewController extends GetxController {
   RxBool isTrial = false.obs;
   RxInt days = 0.obs;
   TooltipController toolTipcontroller = TooltipController();
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    checkTime();
+    logPrint("hi ${Get.find<AuthService>().isPro.value}");
+    if (Get.find<AuthService>().user.value.name == null &&
+        Get.find<AuthService>().isPro.value) {
+      emailController.text = "Your Name Please";
+      getTrialData(isRoot: true);
+    } else {
+      getPopUpData6();
+    }
+    isAvailable.value = await inAppReview.isAvailable();
+    // Get.find<ProfileController>().getLanguage(isRoot: true);
+    // Get.find<ProfileController>().getTags(isRoot: true);
+    // Get.find<ProfileController>().getLevel();
+    // Get.find<ProfileController>().getCurrentUserData();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // if (Platform.isAndroid) {
+    //   bottomIcon.add(
+    //     BottomIcon(
+    //         icon: ImageResource.instance.proIcon,
+    //         title: StringResource.batchSub),
+    //   );
+    // }
+    // NetworkInfo.checkConnectivity(Get.context!);
+    getUpdateVersionCode();
+
+    if (!Get.find<AuthService>().isGuestUser.value) {
+      // getLiveClassesData();
+      getProfile(true);
+
+      postUserActivity();
+      getServiceData();
+    }
+    try {
+      FirebaseMessaging.instance.getInitialMessage().then((value) {
+        if (value?.data.isNotEmpty ?? false) {
+          Map<String, dynamic> payloadData = value?.data ?? {};
+          onRedirection(payloadData);
+        } else {}
+      }, onError: (v) {});
+    } catch (v) {
+      logPrint("error $v");
+    }
+    initDynamicLinks();
+    onDynamicLinkRedirect();
+    getLanguage();
+    fetchDrawerItems();
+    getIt<PageManager>().init();
+    pageManager.progressNotifier.listen((p1) {
+      if (!isManualSlide.value) {
+        progressAudioNotifier.value = p1;
+      }
+    });
+    // showTooltipForPro();
+
+    final args = Get.arguments as Map<String, dynamic>?;
+    if (args != null && args['selectedTab'] != null) {
+      selectedTab.value = args['selectedTab'];
+    }else{
+      selectedTab.value = 2;
+    }
+    if (args?['resetHome'] == true && args?['selectedTab'] == 0) {
+      // Initialize home controller after navigation
+      Future.microtask(() {
+        if (Get.isRegistered<HomeNewController>()) {
+          Get.delete<HomeNewController>();
+        }
+        Get.put(HomeNewController());
+
+        final homeController = Get.find<HomeNewController>();
+        homeController.expansion.value = 1.0;
+        homeController.isTitleVisible.value = false;
+      });
+    }
+  }
 
   List<Widget> widgetOptions = <Widget>[
     const ComingSoonScreen(),
@@ -170,8 +250,36 @@ class RootViewController extends GetxController {
     BottomIcon(
         icon: ImageResource.instance.proIcon, title: StringResource.buyPro),
   ];
+  void changeTab(int index) {
+    if (selectedTab.value == index) return; // Don't do anything if same tab
+    selectedTab.value = index;
+    // Reset home controller state immediately when switching to home tab
+    if (index == 0) { // Assuming 0 is home tab
+      if (Get.isRegistered<HomeNewController>()) {
+        final homeController = Get.find<HomeNewController>();
+        homeController.resetScrollStateImmediate();
+      }
+    }
 
-  RootViewController() {
+  }
+  void onRedirectHome(int index) {
+    if (index == 0) {
+      Get.offAllNamed(Routes.rootView, arguments: {'selectedTab': 0, 'resetHome': true});
+    }
+  }
+// In your bottom navigation widget
+  void onTabTapped(int index) {
+    // Reset home state immediately before changing tab
+    if (index == 0 && Get.isRegistered<HomeNewController>()) {
+      final homeController = Get.find<HomeNewController>();
+      homeController.expansion.value = 1.0;
+      homeController.isTitleVisible.value = false;
+    }
+
+    // Then change the tab
+    Get.find<RootViewController>().changeTab(index);
+  }
+  RootViewController([int? i]) {
     if (RootViewController.promptData.isEmpty &&
         RootViewController.bgData.isEmpty) {
       _initializePromptData();
@@ -464,11 +572,11 @@ class RootViewController extends GetxController {
     }
   }
 
-  onItemTapped(int index) {
-    selectedTab.value = index;
-    logPrint(selectedTab.value);
-    print("selectedTab: ${selectedTab.value}");
-  }
+  // onItemTapped(int index) {
+  //   selectedTab.value = index;
+  //   logPrint(selectedTab.value);
+  //   print("selectedTab: ${selectedTab.value}");
+  // }
 
   Future<bool> onWillPop() async {
     myInAppReview();
@@ -2023,63 +2131,6 @@ class RootViewController extends GetxController {
     );
   }
 
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-    checkTime();
-    logPrint("hi ${Get.find<AuthService>().isPro.value}");
-    if (Get.find<AuthService>().user.value.name == null &&
-        Get.find<AuthService>().isPro.value) {
-      emailController.text = "Your Name Please";
-      getTrialData(isRoot: true);
-    } else {
-      getPopUpData6();
-    }
-    isAvailable.value = await inAppReview.isAvailable();
-    // Get.find<ProfileController>().getLanguage(isRoot: true);
-    // Get.find<ProfileController>().getTags(isRoot: true);
-    // Get.find<ProfileController>().getLevel();
-    // Get.find<ProfileController>().getCurrentUserData();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    // if (Platform.isAndroid) {
-    //   bottomIcon.add(
-    //     BottomIcon(
-    //         icon: ImageResource.instance.proIcon,
-    //         title: StringResource.batchSub),
-    //   );
-    // }
-    // NetworkInfo.checkConnectivity(Get.context!);
-    getUpdateVersionCode();
-
-    if (!Get.find<AuthService>().isGuestUser.value) {
-      // getLiveClassesData();
-      getProfile(true);
-
-      postUserActivity();
-      getServiceData();
-    }
-    try {
-      FirebaseMessaging.instance.getInitialMessage().then((value) {
-        if (value?.data.isNotEmpty ?? false) {
-          Map<String, dynamic> payloadData = value?.data ?? {};
-          onRedirection(payloadData);
-        } else {}
-      }, onError: (v) {});
-    } catch (v) {
-      logPrint("error $v");
-    }
-    initDynamicLinks();
-    onDynamicLinkRedirect();
-    getLanguage();
-    fetchDrawerItems();
-    getIt<PageManager>().init();
-    pageManager.progressNotifier.listen((p1) {
-      if (!isManualSlide.value) {
-        progressAudioNotifier.value = p1;
-      }
-    });
-    // showTooltipForPro();
-  }
 
   showReferByDialog() {
     return showAnimatedDialog(
