@@ -844,7 +844,6 @@ class HomeScreen extends GetView<HomeNewController> {
                                                           .toString()
                                                           .capitalize!,
                                                       controller: controller)
-
                                                   : const SizedBox.shrink();
                                             },
                                           )
@@ -1057,7 +1056,9 @@ Widget bookedCounsellingView(
                                 ),
                                 softWrap: true,
                               ),
-                              SizedBox(height: 6,),
+                              SizedBox(
+                                height: 6,
+                              ),
                               IntrinsicHeight(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1095,7 +1096,8 @@ Widget bookedCounsellingView(
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      DateFormat('hh:mm a').format(data.startDateTime),
+                                      DateFormat('hh:mm a')
+                                          .format(data.startDateTime),
                                       style: const TextStyle(
                                         fontSize: 14,
                                         // fontWeight: FontWeight.w600,
@@ -1450,9 +1452,10 @@ Widget bookedCounsellingView(
                 // ),
                 // SizedBox(height: time > 0 ? 8 : 0),
                 if (time <= 0)
-                // if (time > 0)
+                  // if (time > 0)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 8),
                     child: GestureDetector(
                       onTap: () {
                         if (data.participantLink != null) {
@@ -1472,7 +1475,8 @@ Widget bookedCounsellingView(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: hexToColor(ui.bookedCounsellingSessionJoinButtonBgColor),
+                          color: hexToColor(
+                              ui.bookedCounsellingSessionJoinButtonBgColor),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -1488,7 +1492,8 @@ Widget bookedCounsellingView(
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
-                                color: hexToColor(ui.bookedCounsellingSessionJoinButtonTextColor),
+                                color: hexToColor(ui
+                                    .bookedCounsellingSessionJoinButtonTextColor),
                               ),
                             ),
                           ],
@@ -1496,7 +1501,6 @@ Widget bookedCounsellingView(
                       ),
                     ),
                   )
-
                 else
                   const SizedBox() // 👈 Renders nothing when condition is false
               ],
@@ -1578,6 +1582,7 @@ Widget categoryChip(
     ),
   );
 }
+
 /*
 Widget categoryList(
     HomeNewController controller, CounsellingData counsellingData) {
@@ -1697,7 +1702,7 @@ Widget categoryList(
     },
   ));
 }*/
-Widget categoryList(
+Widget categoryList1(
     HomeNewController controller, CounsellingData counsellingData) {
   return Obx(() => controller.isDataLoading.value
       ? MediaQuery.of(Get.context!).size.width < 600
@@ -1721,15 +1726,16 @@ Widget categoryList(
                 return GestureDetector(
                   onTap: () {
                     Get.toNamed(Routes.mentorScreen,
-                        arguments: counsellingData.categories[index])?.then((value){
-                         if(value == 'payment'){
-                           controller.onRefresh();
-                         }
+                            arguments: counsellingData.categories[index])
+                        ?.then((value) {
+                      if (value == 'payment') {
+                        controller.onRefresh();
+                      }
                     });
                   },
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(left: 12, top: 0,right: 12,bottom: 12),
+                    padding: const EdgeInsets.only(
+                        left: 12, top: 0, right: 12, bottom: 12),
                     child: Container(
                       margin: EdgeInsets.only(bottom: 12),
                       constraints: BoxConstraints(
@@ -1837,6 +1843,169 @@ Widget categoryList(
                 );
               },
             ));
+}
+
+Widget categoryList(
+    HomeNewController controller, CounsellingData counsellingData) {
+
+  double screenWidth = MediaQuery.of(Get.context!).size.width;
+
+  // Determine crossAxisCount based on screen width
+  int crossAxisCount = 3;
+
+  return Obx(() => controller.isDataLoading.value
+      ? MediaQuery.of(Get.context!).size.width < 600
+      ? ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForMobile()
+      : ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForTab()
+      : counsellingData.categories.isEmpty
+      ? const Center(
+    child: Padding(
+      padding: EdgeInsets.all(24.0),
+      child: Text("No category found"),
+    ),
+  )
+      : Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: counsellingData.categories.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+          mainAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+          childAspectRatio: crossAxisCount == 2 ? 1.1 : 1,
+        ),
+        itemBuilder: (context, index) {
+          var data = counsellingData.categories[index];
+          return GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.mentorScreen, arguments: data)
+                  ?.then((value) {
+                if (value == 'payment') {
+                  controller.onRefresh();
+                }
+              });
+            },
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: ColorResource.white,
+                    border: Border.all(
+                        color: ColorResource.grey_4,
+                        width: 0.2
+                    ),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(crossAxisCount == 2 ? 12 : 10)
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(crossAxisCount == 2 ? 12.0 : 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: crossAxisCount == 2 ? 3 : 2,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  crossAxisCount == 2 ? 10.0 : 8.0
+                              ),
+                              child: Image.network(
+                                data.imageUrl,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(
+                                            crossAxisCount == 2 ? 10.0 : 8.0
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                        size: crossAxisCount == 2 ? 48 : 40,
+                                      ),
+                                    ),
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: crossAxisCount == 2 ? 2.5 : 2
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Spacing
+                        SizedBox(height: crossAxisCount == 2 ? 12 : 8),
+
+                        // Title
+                        Expanded(
+                          flex: crossAxisCount == 2 ? 2 : 1,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              data.title,
+                              maxLines: crossAxisCount == 2 ? 3 : 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: crossAxisCount == 2
+                                    ? MediaQuery.of(context).size.height * 0.018
+                                    : MediaQuery.of(context).size.height * 0.014,
+                                height: 1.2,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Arrow Icon
+                Positioned(
+                  top: crossAxisCount == 2 ? 12 : 8,
+                  right: crossAxisCount == 2 ? 12 : 8,
+                  child: Container(
+                    padding: EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: crossAxisCount == 2 ? 18 : 16,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+  ));
 }
 
 List<Widget> _buildInfoChip({List<String>? tags}) {
