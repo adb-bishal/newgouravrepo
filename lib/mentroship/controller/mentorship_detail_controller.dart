@@ -76,6 +76,7 @@ class MentorshipDetailController extends GetxController {
     // mentorshipId = Get.arguments['id'];
 
     var mentorshipId = Get.arguments?['id'] ?? '';
+    print("mentorShip $mentorshipId");
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
 
     fetchMentorshipData(mentorshipId);
@@ -149,7 +150,7 @@ class MentorshipDetailController extends GetxController {
 
 // URLs for Beta
     String url =
-        '${baseUrl}${mentorshipId}?device=${Platform.isIOS ? "ios" : "android"}';
+        '$baseUrl$mentorshipId?device=${Platform.isIOS ? "ios" : "android"}';
 
 // For reference
 // Beta base URL: 'https://sp-backend-beta.stockpathshala.com'; // beta link

@@ -36,6 +36,8 @@ import '../../view/widgets/alert_dialog_popup.dart';
 import '../../view_model/controllers/root_view_controller/root_view_controller.dart';
 
 class MentorshipDetailScreen extends StatefulWidget {
+  const MentorshipDetailScreen({super.key});
+
   @override
   State<MentorshipDetailScreen> createState() => _MentorshipDetailScreenState();
 }
@@ -74,7 +76,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           var mentorshipData = service.mentorshipDetailData.value;
 
           if (mentorship == null) {
-            return Center(child: Text('No data found'));
+            return const Center(child: Text('No data found'));
           }
 
           String formatDate(DateTime date) {
@@ -196,14 +198,14 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                             ListView.builder(
                                               shrinkWrap: true,
                                               physics:
-                                                  NeverScrollableScrollPhysics(),
+                                                  const NeverScrollableScrollPhysics(),
                                               itemCount:
                                                   mentorship?.property.length ??
                                                       0,
                                               itemBuilder: (context, index) {
                                                 return Padding(
                                                     padding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets.symmetric(
                                                       vertical: 2,
                                                     ),
                                                     // Add some spacing if needed
@@ -227,7 +229,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                       ? 16
                                                       : 26,
                                                 ),
-                                                SizedBox(width: 5),
+                                                const SizedBox(width: 5),
                                                 Text(
                                                   mentorshipDuration,
                                                   style: TextStyle(
@@ -247,11 +249,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                       Align(
                                         alignment: Alignment.topRight,
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 8, vertical: 6),
-                                          margin: EdgeInsets.symmetric(
+                                          margin: const EdgeInsets.symmetric(
                                               vertical: 14),
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             color: Color(0xFFFCF6CA),
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(12),
@@ -309,7 +311,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                   Container(),
                                               errorWidget:
                                                   (context, url, error) =>
-                                                      Icon(Icons.error),
+                                                      const Icon(Icons.error),
                                               height: isLargeScreen ? 70 : 50,
                                               width: isLargeScreen ? 70 : 50,
                                             )),
@@ -322,7 +324,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -355,9 +357,9 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                               ),
                               SizedBox(height: screenWidth < 500 ? 20 : 35),
                               _buildCurriculumSection(isLargeScreen, context),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               _buildMentorInfo(context),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               Divider(
                                 color: Colors.grey,
                                 thickness: screenWidth < 500 ? 1 : 3,
@@ -376,9 +378,9 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                 ),
                               ),
                               _buildFAQSection(context),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               _buildGuidanceSection(isLargeScreen, context),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                             ],
                           ),
                         ),
@@ -412,7 +414,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
     final isLargeScreen = size.width > 600;
 
     return SingleChildScrollView(
-      physics: ClampingScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -426,7 +428,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(16),
                 bottomRight: Radius.circular(16),
               ),
@@ -449,12 +451,12 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                   //     ),
                   //   ),
                   // ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   Shimmer.fromColors(
                     baseColor: Colors.grey[400]!,
                     highlightColor: Colors.grey[200]!,
-                    period: Duration(milliseconds: 1000),
+                    period: const Duration(milliseconds: 1000),
                     child: Container(
                       height: 20,
                       width: size.width * 0.6,
@@ -464,22 +466,22 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Shimmer.fromColors(
                     baseColor: Colors.grey[400]!,
                     highlightColor: Colors.grey[200]!,
-                    period: Duration(milliseconds: 1000),
+                    period: const Duration(milliseconds: 1000),
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: 3,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: Row(
                             children: [
-                              Icon(Icons.circle, color: Colors.grey, size: 18),
-                              SizedBox(width: 8),
+                              const Icon(Icons.circle, color: Colors.grey, size: 18),
+                              const SizedBox(width: 8),
                               Container(
                                 height: 15,
                                 width: size.width * 0.5,
@@ -494,16 +496,16 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       },
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Shimmer.fromColors(
                     baseColor: Colors.grey[400]!,
                     highlightColor: Colors.grey[200]!,
-                    period: Duration(milliseconds: 1000),
+                    period: const Duration(milliseconds: 1000),
                     child: Row(
                       children: [
-                        Icon(Icons.calendar_today,
+                        const Icon(Icons.calendar_today,
                             color: Colors.grey, size: 16),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Container(
                           height: 15,
                           width: size.width * 0.3,
@@ -529,19 +531,19 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 Shimmer.fromColors(
                   baseColor: Colors.grey[400]!,
                   highlightColor: Colors.grey[200]!,
-                  period: Duration(milliseconds: 1000),
-                  child: Divider(
+                  period: const Duration(milliseconds: 1000),
+                  child: const Divider(
                     color: Colors.grey,
                     thickness: 2,
                     indent: 15,
                     endIndent: 15,
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Shimmer.fromColors(
                   baseColor: Colors.grey[400]!,
                   highlightColor: Colors.grey[200]!,
-                  period: Duration(milliseconds: 1000),
+                  period: const Duration(milliseconds: 1000),
                   child: Container(
                     height: isLargeScreen ? 24 : 20,
                     width: size.width * 0.8,
@@ -551,12 +553,12 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Shimmer.fromColors(
                   baseColor: Colors.grey[400]!,
                   highlightColor: Colors.grey[200]!,
-                  period: Duration(milliseconds: 1000),
-                  child: Divider(
+                  period: const Duration(milliseconds: 1000),
+                  child: const Divider(
                     color: Colors.grey,
                     thickness: 2,
                     indent: 15,
@@ -576,7 +578,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 Shimmer.fromColors(
                   baseColor: Colors.grey[400]!,
                   highlightColor: Colors.grey[200]!,
-                  period: Duration(milliseconds: 1000),
+                  period: const Duration(milliseconds: 1000),
                   child: Container(
                     height: 20,
                     width: size.width * 0.4,
@@ -586,10 +588,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 3,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -597,7 +599,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       child: Shimmer.fromColors(
                         baseColor: Colors.grey[400]!,
                         highlightColor: Colors.grey[200]!,
-                        period: Duration(milliseconds: 1000),
+                        period: const Duration(milliseconds: 1000),
                         child: Container(
                           height: size.height * 0.1,
                           width: double.infinity,
@@ -623,7 +625,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 Shimmer.fromColors(
                   baseColor: Colors.grey[400]!,
                   highlightColor: Colors.grey[200]!,
-                  period: Duration(milliseconds: 1000),
+                  period: const Duration(milliseconds: 1000),
                   child: Container(
                     height: 20,
                     width: size.width * 0.3,
@@ -633,10 +635,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 2,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -644,7 +646,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       child: Shimmer.fromColors(
                         baseColor: Colors.grey[400]!,
                         highlightColor: Colors.grey[200]!,
-                        period: Duration(milliseconds: 1000),
+                        period: const Duration(milliseconds: 1000),
                         child: Container(
                           height: size.height * 0.08,
                           width: double.infinity,
@@ -679,10 +681,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
               fontWeight: FontWeight.bold,
               color: hexToColor(mentorship?.classTitleColor)),
         ),
-        SizedBox(height: 2),
+        const SizedBox(height: 2),
         GridView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: isLargeScreen ? 4 : 2,
               // Adjust columns for screen size
@@ -711,7 +713,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           color: Colors.white,
           size: resWidth < 500 ? 15 : 24,
         ),
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
         Expanded(
@@ -809,14 +811,14 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
             return Column(
               children: [
                 if (index == firstRecordedIndex) ...[
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   ProfessionalDivider(
                     text: "Past Sessions",
                     textColor: Colors.black87,
                     color: Colors.grey.shade300,
                     thickness: 1,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
                 _buildCurriculumItem(
                   onTapCallback: () {
@@ -925,7 +927,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       } else {
                         toastShow(message: 'Joining...');
                         controller.joinForLiveClass(item.id, "join");
-                        Future.delayed(Duration(seconds: 2), () async {
+                        Future.delayed(const Duration(seconds: 2), () async {
                           String link = Get.find<MentorshipDetailController>()
                               .participant
                               .value
@@ -1099,7 +1101,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
               // if (classStatus == "running")
               // Check if classStatus is running
 
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               Expanded(
@@ -1184,7 +1186,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 3),
+                    const SizedBox(height: 3),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -1192,7 +1194,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                           Icons.access_time,
                           size: isLargeScreen ? 19 : 12,
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           duration,
                           style: TextStyle(fontSize: isLargeScreen ? 18 : 11),
@@ -1213,7 +1215,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       child: GestureDetector(
                         onTap: onTapCallback,
                         child: Container(
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                               left: 5, right: 5, top: 6, bottom: 6),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
@@ -1223,7 +1225,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                             children: [
                               mentorshipData?.isPurchased != 0 &&
                                       recording.isNotEmpty
-                                  ? Icon(
+                                  ? const Icon(
                                       CupertinoIcons.play,
                                       size: 30,
                                     )
@@ -1248,7 +1250,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       ? controller.isRegisterList[index] == 1
                           ? classStatus != "running"
                               ? Container(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                       left: 10, right: 5, top: 6, bottom: 6),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
@@ -1316,20 +1318,17 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                       .mentorshipDetailData
                                                       .value!
                                                       .userNamePrompt
-                                                      .promptdescription ??
-                                                  "",
+                                                      .promptdescription,
                                               buttonTitle: controller
                                                       .mentorshipDetailData
                                                       .value!
                                                       .userNamePrompt
-                                                      .promptconfirmButton ??
-                                                  "",
+                                                      .promptconfirmButton,
                                               imageUrl: controller
                                                       .mentorshipDetailData
                                                       .value!
                                                       .userNamePrompt
-                                                      .promptimageUrl ??
-                                                  "",
+                                                      .promptimageUrl,
                                               titleColor: controller
                                                       .mentorshipDetailData
                                                       .value!
@@ -1362,7 +1361,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                             message: 'Joining... Please wait');
                                         controller.joinForLiveClass(id, "join");
                                         // Wait for 3 seconds before navigating to the next screen
-                                        Future.delayed(Duration(seconds: 2),
+                                        Future.delayed(const Duration(seconds: 2),
                                             () async {
                                           String link = Get.find<
                                                   MentorshipDetailController>()
@@ -1396,7 +1395,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                       }
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                           left: 5, right: 5, top: 6, bottom: 6),
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
@@ -1469,8 +1468,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                   .mentorshipDetailData
                                                   .value!
                                                   .userNamePrompt
-                                                  .prompttitleColor ??
-                                              "",
+                                                  .prompttitleColor,
                                           descriptionColor: controller
                                                   .mentorshipDetailData
                                                   .value!
@@ -1498,7 +1496,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                     controller.onRegisterForLiveClass(
                                         id, "register");
 
-                                    Timer(Duration(seconds: 1), () async {
+                                    Timer(const Duration(seconds: 1), () async {
                                       SharedPreferences mentorId =
                                           await SharedPreferences.getInstance();
                                       String mentorIdValue =
@@ -1516,7 +1514,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                   }
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                       left: 5, right: 5, top: 6, bottom: 6),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
@@ -1659,7 +1657,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                 controller.onRegisterForLiveClass(
                                     id, "register");
 
-                                Timer(Duration(seconds: 1), () async {
+                                Timer(const Duration(seconds: 1), () async {
                                   SharedPreferences mentorId =
                                       await SharedPreferences.getInstance();
                                   String mentorIdValue =
@@ -1675,7 +1673,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                               }
                             },
                             child: Container(
-                              padding: EdgeInsets.only(
+                              padding: const EdgeInsets.only(
                                   left: 5, right: 5, top: 6, bottom: 6),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
@@ -1696,7 +1694,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                               int.tryParse(controller.time[index].trim()) ?? 0;
                           return timeInSeconds > 0
                               ? Container(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                       left: 5, right: 5, top: 6, bottom: 6),
                                   decoration: BoxDecoration(
                                       color: hexToColor(
@@ -1811,7 +1809,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                             message: 'Joining... Please wait');
                                         controller.joinForLiveClass(id, "join");
                                         // Wait for 3 seconds before navigating to the next screen
-                                        Future.delayed(Duration(seconds: 2),
+                                        Future.delayed(const Duration(seconds: 2),
                                             () async {
                                           String link = Get.find<
                                                   MentorshipDetailController>()
@@ -1845,7 +1843,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                       }
                                     },
                                     child: Container(
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                           left: 5, right: 5, top: 6, bottom: 6),
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
@@ -1883,6 +1881,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     bool isLargeScreen =
         screenWidth > 600; // Treat screens wider than 600px as large
+    final imageUrl = service.mentorshipDetailData.value?.teacher.profile_image;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1907,12 +1906,17 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
               height: isLargeScreen ? 120 : 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(service
-                      .mentorshipDetailData.value!.teacher.profile_image),
+                color: Colors.grey.shade200, // fallback background
+                image: (imageUrl != null && imageUrl.isNotEmpty)
+                    ? DecorationImage(
+                  image: NetworkImage(imageUrl),
                   fit: BoxFit.cover,
-                ),
+                )
+                    : null,
               ),
+              child: (imageUrl == null || imageUrl.isEmpty)
+                  ? const Icon(Icons.person, size: 30, color: Colors.grey)
+                  : null,
             ),
             SizedBox(width: screenWidth * 0.03),
 
@@ -1982,11 +1986,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
       child: Row(
         children: [
           Icon(icon, color: Colors.green, size: 18),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Flexible(
             child: Text(
               text,
-              style: TextStyle(fontWeight: FontWeight.w400),
+              style: const TextStyle(fontWeight: FontWeight.w400),
               overflow: TextOverflow.ellipsis, // Handle long text gracefully
             ),
           ),
@@ -2054,6 +2058,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
   Widget _buildGuidanceSection(bool isLargeScreen, BuildContext context) {
     var mentorship = service.mentorshipDetailData.value?.mentorshipDetailUI;
     final screenWidth = MediaQuery.of(context).size.width;
+    final imageUrl = mentorship?.callbackImageUrl;
+
     return Container(
       padding: const EdgeInsets.all(18),
       child: Column(
@@ -2062,13 +2068,18 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           CircleAvatar(
             radius: screenWidth < 500
                 ? isLargeScreen
-                    ? 40
-                    : 30
+                ? 40
+                : 30
                 : isLargeScreen
-                    ? 50
-                    : 30,
-            backgroundImage: NetworkImage(mentorship?.callbackImageUrl ??
-                ''), // Replace with actual image URL
+                ? 50
+                : 30,
+            backgroundColor: Colors.grey.shade200,
+            backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+                ? NetworkImage(imageUrl)
+                : null,
+            child: (imageUrl == null || imageUrl.isEmpty)
+                ? const Icon(Icons.person, color: Colors.grey)
+                : null,
           ),
           const SizedBox(height: 16),
           Text(
@@ -2085,7 +2096,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 color: hexToColor(mentorship?.callbackTitleColor)),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(
             mentorship?.callbackSubtitle ??
                 "Our counsellors can help you guide for your Olympiads preparation.",
@@ -2122,7 +2133,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
 
             child: screenWidth < 500
                 ? Container(
-                    padding: EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     // margin: EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
@@ -2131,8 +2142,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.phone, color: Colors.black),
-                        SizedBox(
+                        const Icon(Icons.phone, color: Colors.black),
+                        const SizedBox(
                           width: 10,
                         ),
                         Text(
@@ -2156,7 +2167,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 18),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(18),
                             border: Border.all(color: Colors.black),
@@ -2165,8 +2176,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(Icons.phone, color: Colors.black),
-                              SizedBox(
+                              const Icon(Icons.phone, color: Colors.black),
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(
@@ -2186,7 +2197,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20, // Adjust the height as needed
                         ),
                       ],
@@ -2205,7 +2216,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
 
     return Container(
       color: hexToColor(mentorship?.footerBgColor),
-      padding: EdgeInsets.only(top: 18, bottom: 20, left: 15, right: 15),
+      padding: const EdgeInsets.only(top: 18, bottom: 20, left: 15, right: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -2248,23 +2259,15 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
               }
               ;
             },
-            child: Text(
-              mentorship?.footerButtonText ?? "Join this Batch",
-              style: TextStyle(
-                fontSize: screenWidth < 500 ? 16 : 24,
-                fontWeight: FontWeight.bold,
-                color: hexToColor(mentorship?.footerButtonTextColor),
-              ),
-            ),
             style: screenWidth < 500
                 ? ElevatedButton.styleFrom(
                     backgroundColor:
                         hexToColor(mentorship?.footerButtonBgColor),
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    minimumSize: Size(double.infinity, 50), // Full-width button
+                    minimumSize: const Size(double.infinity, 50), // Full-width button
                   )
                 : ElevatedButton.styleFrom(
                     backgroundColor:
@@ -2279,10 +2282,18 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     minimumSize:
-                        Size(double.minPositive, 50), // Full-width button
+                        const Size(double.minPositive, 50), // Full-width button
                   ),
+            child: Text(
+              mentorship?.footerButtonText ?? "Join this Batch",
+              style: TextStyle(
+                fontSize: screenWidth < 500 ? 16 : 24,
+                fontWeight: FontWeight.bold,
+                color: hexToColor(mentorship?.footerButtonTextColor),
+              ),
+            ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           )
         ],
@@ -2333,7 +2344,7 @@ void showBuyMentorshipPopup({
         decoration: BoxDecoration(
           color: hexToColor(
               mentorshipData!.mentorshipPopup.popUpBgColor ?? "#ffffff"),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -2347,7 +2358,7 @@ void showBuyMentorshipPopup({
                 backgroundImage: NetworkAvifImage(imageUrl),
                 // backgroundColor: Colors.transparent,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Title
               Text(
                 title,
@@ -2362,7 +2373,7 @@ void showBuyMentorshipPopup({
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               // Subtitle
               Text(
                 subtitle,
@@ -2376,7 +2387,7 @@ void showBuyMentorshipPopup({
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Action Button
               GestureDetector(
                 onTap: () {
@@ -2393,7 +2404,7 @@ void showBuyMentorshipPopup({
                 },
                 child: Container(
                   width: screenWidth * 0.8,
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   decoration: BoxDecoration(
                     color: hexToColor(
                         mentorshipData!.mentorshipPopup.popUpButtonBgColor ??
@@ -2446,6 +2457,8 @@ void showRecommendedMentorshipPopup({
       var screenWidth = MediaQuery.of(context).size.width;
       var screenHeight = MediaQuery.of(context).size.height;
       final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+      final isValidImage = imageUrl != null && imageUrl.isNotEmpty;
+
 
       return SizedBox(
         width: screenWidth,
@@ -2459,7 +2472,7 @@ void showRecommendedMentorshipPopup({
                 color: hexToColor(
                     mentorshipData!.recommendedMentorshipPopup.popupBgColor ??
                         "#ffffff"),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -2469,11 +2482,14 @@ void showRecommendedMentorshipPopup({
                   children: [
                     // Circle Avatar Section (Image)
                     CircleAvatar(
-                      radius: screenHeight *
-                          0.09, // Adjust size based on screen height
-                      backgroundImage: NetworkImage(imageUrl),
+                      radius: screenHeight * 0.09,
+                      backgroundColor: Colors.grey.shade200,
+                      backgroundImage: isValidImage ? NetworkImage(imageUrl) : null,
+                      child: !isValidImage
+                          ? const Icon(Icons.person, color: Colors.grey, size: 40)
+                          : null,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     // Title
                     Text(
                       title,
@@ -2488,7 +2504,7 @@ void showRecommendedMentorshipPopup({
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     // Subtitle
                     Text(
                       subtitle,
@@ -2502,7 +2518,7 @@ void showRecommendedMentorshipPopup({
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     // Action Button
                     GestureDetector(
                       onTap: () {
@@ -2524,7 +2540,7 @@ void showRecommendedMentorshipPopup({
                         width: screenWidth *
                             0.8, // Keep the button width 80% of the screen width
                         padding:
-                            EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                            const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                         decoration: BoxDecoration(
                           color: hexToColor(mentorshipData!
                                   .recommendedMentorshipPopup.buttonBgColor ??
@@ -2592,7 +2608,7 @@ void showUserNamePopUp({
         decoration: BoxDecoration(
           color: hexToColor(
               mentorshipData!.mentorshipPopup.popUpBgColor ?? "#ffffff"),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Padding(
           padding: EdgeInsets.only(
@@ -2610,7 +2626,7 @@ void showUserNamePopUp({
                     screenHeight * 0.09, // Adjust size based on screen height
                 backgroundImage: NetworkAvifImage(imageUrl),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Title
               Text(
                 title,
@@ -2623,7 +2639,7 @@ void showUserNamePopUp({
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               // Subtitle
               Text(
                 description,
@@ -2635,7 +2651,7 @@ void showUserNamePopUp({
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // TextField for Name Input
               TextField(
                 controller: nameController,
@@ -2648,7 +2664,7 @@ void showUserNamePopUp({
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Action Button
               GestureDetector(
                 onTap: () {
@@ -2676,7 +2692,7 @@ void showUserNamePopUp({
                 },
                 child: Container(
                   width: screenWidth * 0.8,
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   decoration: BoxDecoration(
                     color: hexToColor(
                         mentorshipData.mentorshipPopup.popUpButtonBgColor ??
@@ -2712,10 +2728,10 @@ class BlinkerWidget extends StatelessWidget {
     return Container(
       width: 20,
       height: 20,
-      child: Pulsator(
-        style: const PulseStyle(color: Colors.red),
+      child: const Pulsator(
+        style: PulseStyle(color: Colors.red),
         count: 3,
-        duration: const Duration(seconds: 4),
+        duration: Duration(seconds: 4),
         repeat: 0,
         startFromScratch: false,
         autoStart: true,
@@ -2733,7 +2749,7 @@ class BlinkerWidget extends StatelessWidget {
                 backgroundColor: ColorResource.white,
                 radius: 4.75,
                 child: Visibility(
-                  child: const CircleAvatar(
+                  child: CircleAvatar(
                     backgroundColor: ColorResource.redColor,
                     radius: 3,
                   ),

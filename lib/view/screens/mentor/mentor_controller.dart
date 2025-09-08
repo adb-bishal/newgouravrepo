@@ -96,9 +96,9 @@ class MentorController extends GetxController {
     currentIndex.value = index;
   }
 
-  bool isLoadingFor(int mentorId) {
-    return mentorLoadingMap[mentorId]?.value ?? false;
-  }
+  // bool isLoadingFor(int mentorId) {
+  //   return mentorLoadingMap[mentorId]?.value ?? false;
+  // }
 
   void setLoadingFor(int mentorId, bool value) {
     if (!mentorLoadingMap.containsKey(mentorId)) {

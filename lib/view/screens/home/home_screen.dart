@@ -7,6 +7,7 @@ import 'package:stockpathshala_beta/model/utils/dimensions_resource.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:get/get.dart';
+import 'package:stockpathshala_beta/view/screens/home/category_list_shimmer.dart';
 import 'package:stockpathshala_beta/view/widgets/shimmer_widget/shimmer_widget.dart';
 import '../../../model/utils/hex_color.dart';
 import '../home/home_new_controller.dart';
@@ -929,7 +930,7 @@ class HomeScreen extends GetView<HomeNewController> {
                                   ],
                                 ),
                               ),
-                              categoryList(
+                              categoryListWithShimmer(
                                   controller, controller.categoriesData.value)
                             ]),
                           ),
@@ -1845,168 +1846,557 @@ Widget categoryList1(
             ));
 }
 
-Widget categoryList(
+Widget categoryListWithShimmer(
     HomeNewController controller, CounsellingData counsellingData) {
-
   double screenWidth = MediaQuery.of(Get.context!).size.width;
+  int crossAxisCount = 2;
 
-  // Determine crossAxisCount based on screen width
-  int crossAxisCount = 3;
-
-  return Obx(() => controller.isDataLoading.value
-      ? MediaQuery.of(Get.context!).size.width < 600
-      ? ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForMobile()
-      : ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForTab()
-      : counsellingData.categories.isEmpty
-      ? const Center(
-    child: Padding(
-      padding: EdgeInsets.all(24.0),
-      child: Text("No category found"),
-    ),
-  )
-      : Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: counsellingData.categories.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: crossAxisCount == 2 ? 15 : 10,
-          mainAxisSpacing: crossAxisCount == 2 ? 15 : 10,
-          childAspectRatio: crossAxisCount == 2 ? 1.1 : 1,
-        ),
-        itemBuilder: (context, index) {
-          var data = counsellingData.categories[index];
-          return GestureDetector(
-            onTap: () {
-              Get.toNamed(Routes.mentorScreen, arguments: data)
-                  ?.then((value) {
-                if (value == 'payment') {
-                  controller.onRefresh();
-                }
-              });
-            },
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: ColorResource.white,
-                    border: Border.all(
-                        color: ColorResource.grey_4,
-                        width: 0.2
-                    ),
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(crossAxisCount == 2 ? 12 : 10)
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: Offset(0, 1),
-                      ),
-                    ],
+  return Obx(
+    () => controller.isDataLoading.value
+        ? screenWidth < 600
+            ? ShimmerEffect.instance.categoryListShimmerForTab()
+            : ShimmerEffect.instance.categoryListShimmerForTab()
+        : counsellingData.categories.isEmpty
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: Text("No category found"),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: counsellingData.categories.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+                    mainAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+                    childAspectRatio: crossAxisCount == 2 ? 1.1 : 1,
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.all(crossAxisCount == 2 ? 12.0 : 8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          flex: crossAxisCount == 2 ? 3 : 2,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  crossAxisCount == 2 ? 10.0 : 8.0
+                  itemBuilder: (context, index) {
+                    var data = counsellingData.categories[index];
+
+                    return Obx(() {
+                      bool isClicked =
+                          controller.clickedItemId[data.id] ?? false;
+
+                      return GestureDetector(
+                        onTap: () {
+                          controller.itemClick(data.id, true);
+                          Future.delayed(const Duration(milliseconds: 3), () {
+                            Get.toNamed(Routes.mentorScreen, arguments: data)
+                                ?.then((value) {
+                              if (value == 'payment') {
+                                controller.onRefresh();
+                              }
+                              controller.itemClick(data.id, false);
+                            });
+                          });
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: isClicked
+                                      ? ColorResource.primaryColor
+                                      : Colors.grey.shade200,
+                                  width: isClicked ? 1 : 1,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                      crossAxisCount == 2 ? 12 : 10),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: isClicked
+                                        ? ColorResource.primaryColor
+                                            .withOpacity(0.3)
+                                        : Colors.grey.withOpacity(0.1),
+                                    spreadRadius: 1,
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
                               ),
-                              child: Image.network(
-                                data.imageUrl,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(
-                                            crossAxisCount == 2 ? 10.0 : 8.0
+                              child: Padding(
+                                padding: EdgeInsets.all(
+                                    crossAxisCount == 2 ? 12.0 : 8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: crossAxisCount == 2 ? 3 : 2,
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            crossAxisCount == 2 ? 10.0 : 8.0,
+                                          ),
+                                          child: Image.network(
+                                            data.imageUrl,
+                                            fit: BoxFit.contain,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade200,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                  crossAxisCount == 2
+                                                      ? 10.0
+                                                      : 8.0,
+                                                ),
+                                              ),
+                                              child: Icon(
+                                                Icons.person,
+                                                color: Colors.grey,
+                                                size: crossAxisCount == 2
+                                                    ? 48
+                                                    : 40,
+                                              ),
+                                            ),
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return Container(
+                                                alignment: Alignment.center,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth:
+                                                      crossAxisCount == 2
+                                                          ? 2.5
+                                                          : 2,
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         ),
                                       ),
-                                      child: Icon(
-                                        Icons.person,
-                                        color: Colors.grey,
-                                        size: crossAxisCount == 2 ? 48 : 40,
+                                    ),
+                                    SizedBox(
+                                        height: crossAxisCount == 2 ? 12 : 8),
+                                    Expanded(
+                                      flex: crossAxisCount == 2 ? 2 : 1,
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        child: Text(
+                                          data.title,
+                                          maxLines: crossAxisCount == 2 ? 3 : 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: crossAxisCount == 2
+                                                ? MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.018
+                                                : MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.014,
+                                            height: 1.2,
+                                            color: isClicked
+                                                ? ColorResource.primaryColor
+                                                : Colors.black87,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  return Container(
-                                    alignment: Alignment.center,
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: crossAxisCount == 2 ? 2.5 : 2
-                                    ),
-                                  );
-                                },
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-
-                        // Spacing
-                        SizedBox(height: crossAxisCount == 2 ? 12 : 8),
-
-                        // Title
-                        Expanded(
-                          flex: crossAxisCount == 2 ? 2 : 1,
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              data.title,
-                              maxLines: crossAxisCount == 2 ? 3 : 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: crossAxisCount == 2
-                                    ? MediaQuery.of(context).size.height * 0.018
-                                    : MediaQuery.of(context).size.height * 0.014,
-                                height: 1.2,
-                                color: Colors.black87,
+                            Positioned(
+                              top: crossAxisCount == 2 ? 12 : 8,
+                              right: crossAxisCount == 2 ? 12 : 8,
+                              child: Container(
+                                padding:
+                                    EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
+                                decoration: BoxDecoration(
+                                  color: isClicked
+                                      ? ColorResource.primaryColor
+                                          .withOpacity(0.3)
+                                      : Colors.white.withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: crossAxisCount == 2 ? 18 : 16,
+                                  color: isClicked
+                                      ? ColorResource.secondaryBlue
+                                      : Colors.grey.shade600,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      );
+                    });
+                  },
                 ),
-
-                // Arrow Icon
-                Positioned(
-                  top: crossAxisCount == 2 ? 12 : 8,
-                  right: crossAxisCount == 2 ? 12 : 8,
-                  child: Container(
-                    padding: EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: crossAxisCount == 2 ? 18 : 16,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-  ));
+              ),
+  );
 }
+
+// Usage in your widget
+// Widget categoryListWithShimmer(
+//     HomeNewController controller, CounsellingData counsellingData) {
+//   double screenWidth = MediaQuery.of(Get.context!).size.width;
+//   int crossAxisCount = 2;
+//
+//   return
+//     Obx(
+//     () => controller.isDataLoading.value
+//         ? screenWidth < 600
+//             ? ShimmerEffect.instance.categoryListShimmerForTab()
+//             : ShimmerEffect.instance.categoryListShimmerForTab()
+//         : counsellingData.categories.isEmpty
+//             ? const Center(
+//                 child: Padding(
+//                   padding: EdgeInsets.all(24.0),
+//                   child: Text("No category found"),
+//                 ),
+//               )
+//             : Padding(
+//                 padding: const EdgeInsets.all(8.0),
+//                 child: GridView.builder(
+//                   physics: const NeverScrollableScrollPhysics(),
+//                   shrinkWrap: true,
+//                   itemCount: counsellingData.categories.length,
+//                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                     crossAxisCount: crossAxisCount,
+//                     crossAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+//                     mainAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+//                     childAspectRatio: crossAxisCount == 2 ? 1.1 : 1,
+//                   ),
+//                   itemBuilder: (context, index) {
+//                     var data = counsellingData.categories[index];
+//                     return
+//                       GestureDetector(
+//                       onTap: () {
+//                         controller.itemClick(data.id, true);
+//                         Future.delayed(const Duration(seconds: 5), () {
+//                           controller.itemClick(data.id, false);
+//
+//                           // Get.toNamed(Routes.mentorScreen, arguments: data)
+//                           //     ?.then((value) {
+//                           //   if (value == 'payment') {
+//                           //     controller.onRefresh();
+//                           //   }
+//                           // });
+//                         });
+//                       },
+//                       child: Stack(
+//                         children: [
+//                           Container(
+//                             decoration: BoxDecoration(
+//                               color: Colors.white,
+//                               border: Border.all(
+//                                 color: controller.clickedItemId[data.id]?.value ?? false
+//                                     ? ColorResource.primaryColor
+//                                     : Colors.grey.shade200,
+//
+//                                 width: controller.clickedItemId[data.id]?.value ?? false
+//                                     ? 1
+//                                     : 0.2,
+//                               ),
+//                               borderRadius: BorderRadius.all(
+//                                 Radius.circular(crossAxisCount == 2 ? 12 : 10),
+//                               ),
+//                               boxShadow: [
+//                                 BoxShadow(
+//                                   color: controller.clickedItemId[data.id]?.value ?? false
+//                                       ? ColorResource.primaryColor
+//                                           .withOpacity(0.3)
+//                                       : Colors.grey.withOpacity(0.1),
+//                                   spreadRadius: 1,
+//                                   blurRadius: 3,
+//                                   offset: const Offset(0, 1),
+//                                 ),
+//                               ],
+//                             ),
+//                             child: Padding(
+//                               padding: EdgeInsets.all(
+//                                   crossAxisCount == 2 ? 12.0 : 8.0),
+//                               child: Column(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   Expanded(
+//                                     flex: crossAxisCount == 2 ? 3 : 2,
+//                                     child: SizedBox(
+//                                       width: double.infinity,
+//                                       child: ClipRRect(
+//                                         borderRadius: BorderRadius.circular(
+//                                           crossAxisCount == 2 ? 10.0 : 8.0,
+//                                         ),
+//                                         child: Image.network(
+//                                           data.imageUrl,
+//                                           fit: BoxFit.contain,
+//                                           errorBuilder:
+//                                               (context, error, stackTrace) =>
+//                                                   Container(
+//                                             decoration: BoxDecoration(
+//                                               color: Colors.grey.shade200,
+//                                               borderRadius:
+//                                                   BorderRadius.circular(
+//                                                 crossAxisCount == 2
+//                                                     ? 10.0
+//                                                     : 8.0,
+//                                               ),
+//                                             ),
+//                                             child: Icon(
+//                                               Icons.person,
+//                                               color: Colors.grey,
+//                                               size:
+//                                                   crossAxisCount == 2 ? 48 : 40,
+//                                             ),
+//                                           ),
+//                                           loadingBuilder: (context, child,
+//                                               loadingProgress) {
+//                                             if (loadingProgress == null) {
+//                                               return child;
+//                                             }
+//                                             return Container(
+//                                               alignment: Alignment.center,
+//                                               child: CircularProgressIndicator(
+//                                                 strokeWidth: crossAxisCount == 2
+//                                                     ? 2.5
+//                                                     : 2,
+//                                               ),
+//                                             );
+//                                           },
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                   SizedBox(
+//                                       height: crossAxisCount == 2 ? 12 : 8),
+//                                   Expanded(
+//                                     flex: crossAxisCount == 2 ? 2 : 1,
+//                                     child: SizedBox(
+//                                       width: double.infinity,
+//                                       child: Text(
+//                                         data.title,
+//                                         maxLines: crossAxisCount == 2 ? 3 : 2,
+//                                         overflow: TextOverflow.ellipsis,
+//                                         textAlign: TextAlign.center,
+//                                         style: TextStyle(
+//                                           fontWeight: FontWeight.w500,
+//                                           fontSize: crossAxisCount == 2
+//                                               ? MediaQuery.of(context)
+//                                                       .size
+//                                                       .height *
+//                                                   0.018
+//                                               : MediaQuery.of(context)
+//                                                       .size
+//                                                       .height *
+//                                                   0.014,
+//                                           height: 1.2,
+//                                           color: Colors.black87,
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                           Positioned(
+//                             top: crossAxisCount == 2 ? 12 : 8,
+//                             right: crossAxisCount == 2 ? 12 : 8,
+//                             child: Container(
+//                               padding:
+//                                   EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
+//                               decoration: BoxDecoration(
+//                                 color: Colors.white.withOpacity(0.9),
+//                                 borderRadius: BorderRadius.circular(12),
+//                               ),
+//                               child: Icon(
+//                                 Icons.arrow_forward_ios_rounded,
+//                                 size: crossAxisCount == 2 ? 18 : 16,
+//                                 color: Colors.grey.shade600,
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ),
+//   );
+// }
+
+// Widget categoryList(
+//     HomeNewController controller, CounsellingData counsellingData) {
+//
+//   double screenWidth = MediaQuery.of(Get.context!).size.width;
+//
+//   int crossAxisCount = 3;
+//
+//   return Obx(() => controller.isDataLoading.value
+//       ? MediaQuery.of(Get.context!).size.width < 600
+//       ? ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForMobile()
+//       : ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForTab()
+//       : counsellingData.categories.isEmpty
+//       ? const Center(
+//     child: Padding(
+//       padding: EdgeInsets.all(24.0),
+//       child: Text("No category found"),
+//     ),
+//   )
+//       : Padding(
+//     padding: const EdgeInsets.all(8.0),
+//     child: GridView.builder(
+//         physics: NeverScrollableScrollPhysics(),
+//         shrinkWrap: true,
+//         itemCount: counsellingData.categories.length,
+//         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//           crossAxisCount: crossAxisCount,
+//           crossAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+//           mainAxisSpacing: crossAxisCount == 2 ? 15 : 10,
+//           childAspectRatio: crossAxisCount == 2 ? 1.1 : 1,
+//         ),
+//         itemBuilder: (context, index) {
+//           var data = counsellingData.categories[index];
+//           return GestureDetector(
+//             onTap: () {
+//               Get.toNamed(Routes.mentorScreen, arguments: data)
+//                   ?.then((value) {
+//                 if (value == 'payment') {
+//                   controller.onRefresh();
+//                 }
+//               });
+//             },
+//             child: Stack(
+//               children: [
+//                 Container(
+//                   decoration: BoxDecoration(
+//                     color: ColorResource.white,
+//                     border: Border.all(
+//                         color: ColorResource.grey_4,
+//                         width: 0.2
+//                     ),
+//                     borderRadius: BorderRadius.all(
+//                         Radius.circular(crossAxisCount == 2 ? 12 : 10)
+//                     ),
+//                     boxShadow: [
+//                       BoxShadow(
+//                         color: Colors.grey.withOpacity(0.1),
+//                         spreadRadius: 1,
+//                         blurRadius: 3,
+//                         offset: Offset(0, 1),
+//                       ),
+//                     ],
+//                   ),
+//                   child: Padding(
+//                     padding: EdgeInsets.all(crossAxisCount == 2 ? 12.0 : 8.0),
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       crossAxisAlignment: CrossAxisAlignment.center,
+//                       children: [
+//                         Expanded(
+//                           flex: crossAxisCount == 2 ? 3 : 2,
+//                           child: SizedBox(
+//                             width: double.infinity,
+//                             child: ClipRRect(
+//                               borderRadius: BorderRadius.circular(
+//                                   crossAxisCount == 2 ? 10.0 : 8.0
+//                               ),
+//                               child: Image.network(
+//                                 data.imageUrl,
+//                                 fit: BoxFit.contain,
+//                                 errorBuilder: (context, error, stackTrace) =>
+//                                     Container(
+//                                       decoration: BoxDecoration(
+//                                         color: Colors.grey.shade200,
+//                                         borderRadius: BorderRadius.circular(
+//                                             crossAxisCount == 2 ? 10.0 : 8.0
+//                                         ),
+//                                       ),
+//                                       child: Icon(
+//                                         Icons.person,
+//                                         color: Colors.grey,
+//                                         size: crossAxisCount == 2 ? 48 : 40,
+//                                       ),
+//                                     ),
+//                                 loadingBuilder: (context, child, loadingProgress) {
+//                                   if (loadingProgress == null) {
+//                                     return child;
+//                                   }
+//                                   return Container(
+//                                     alignment: Alignment.center,
+//                                     child: CircularProgressIndicator(
+//                                         strokeWidth: crossAxisCount == 2 ? 2.5 : 2
+//                                     ),
+//                                   );
+//                                 },
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//
+//                         // Spacing
+//                         SizedBox(height: crossAxisCount == 2 ? 12 : 8),
+//
+//                         // Title
+//                         Expanded(
+//                           flex: crossAxisCount == 2 ? 2 : 1,
+//                           child: SizedBox(
+//                             width: double.infinity,
+//                             child: Text(
+//                               data.title,
+//                               maxLines: crossAxisCount == 2 ? 3 : 2,
+//                               overflow: TextOverflow.ellipsis,
+//                               textAlign: TextAlign.center,
+//                               style: TextStyle(
+//                                 fontWeight: FontWeight.w500,
+//                                 fontSize: crossAxisCount == 2
+//                                     ? MediaQuery.of(context).size.height * 0.018
+//                                     : MediaQuery.of(context).size.height * 0.014,
+//                                 height: 1.2,
+//                                 color: Colors.black87,
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//
+//                 // Arrow Icon
+//                 Positioned(
+//                   top: crossAxisCount == 2 ? 12 : 8,
+//                   right: crossAxisCount == 2 ? 12 : 8,
+//                   child: Container(
+//                     padding: EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
+//                     decoration: BoxDecoration(
+//                       color: Colors.white.withOpacity(0.9),
+//                       borderRadius: BorderRadius.circular(12),
+//                     ),
+//                     child: Icon(
+//                       Icons.arrow_forward_ios_rounded,
+//                       size: crossAxisCount == 2 ? 18 : 16,
+//                       color: Colors.grey.shade600,
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           );
+//         }),
+//   ));
+// }
 
 List<Widget> _buildInfoChip({List<String>? tags}) {
   if (tags == null || tags.isEmpty) return [];

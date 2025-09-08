@@ -173,10 +173,18 @@ class HomeNewController extends GetxController {
 
   RxDouble expansion = 1.0.obs;
 
+  RxMap<int, bool> clickedItemId = <int, bool>{}.obs;
+
+  void itemClick(int categoryId, bool value) {
+    clickedItemId[categoryId] = value;
+  }
+
   @override
   void onInit() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     logPrint("profile controller");
+    clickedItemId?.clear();
+
     getCategories();
     getBanner();
     scrollController.addListener(handleScroll);
@@ -187,6 +195,7 @@ class HomeNewController extends GetxController {
   Future<void> getBanner() async {
     await getHomeData();
   }
+
   void handleScroll() {
     if (!scrollController.hasClients) return;
 
@@ -195,13 +204,17 @@ class HomeNewController extends GetxController {
     final expandedHeight = (screenWidth < 600 ? 250.0 : 280.0);
     const collapsedHeight = 45.0;
 
-    final scrollProgress = (currentOffset / (expandedHeight - collapsedHeight)).clamp(0.0, 1.0);
+    final scrollProgress =
+        (currentOffset / (expandedHeight - collapsedHeight)).clamp(0.0, 1.0);
     expansion.value = 1.0 - scrollProgress;
 
-    isTitleVisible.value = expansion.value < 0.2; // Show title when nearly collapsed
-    print("Expansion: ${expansion.value}, Title visible: ${isTitleVisible.value}");
+    isTitleVisible.value =
+        expansion.value < 0.2; // Show title when nearly collapsed
+    print(
+        "Expansion: ${expansion.value}, Title visible: ${isTitleVisible.value}");
     lastScrollOffset = currentOffset;
   }
+
   @override
   void onReady() {
     super.onReady();
@@ -220,6 +233,7 @@ class HomeNewController extends GetxController {
     isTitleVisible.value = false;
     lastScrollOffset = 0.0;
   }
+
   Future<void> getHomeData() async {
     logPrint("user token ${box.read(StringResource.instance.token)}");
 
@@ -1023,6 +1037,7 @@ class HomeNewController extends GetxController {
 
   Future<void> onRefresh() async {
     await Future.delayed(const Duration(seconds: 1));
+    clickedItemId.clear();
     await getCategories();
     await getHomeData();
     Get.find<RootViewController>().getProfile();
@@ -1179,7 +1194,6 @@ class HomeNewController extends GetxController {
       'text': textParts,
     };
   }
-
 
   void resetScrollStateImmediate() {
     // Set state immediately without any delays

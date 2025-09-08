@@ -24,6 +24,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../../view_model/controllers/root_view_controller/root_view_controller.dart';
+import '../home/mentor_shimmer.dart';
 import '../mentor/mentor_controller.dart';
 import 'package:confetti/confetti.dart';
 
@@ -80,8 +81,7 @@ class MentorScreen extends GetView<MentorController> {
                     child: controller.isLoading.value &&
                             controller.onRefreshLoading.value == false
                         ? MediaQuery.of(context).size.width < 600
-                            ? ShimmerEffect.instance
-                                .upcomingLiveWebinarClassLoaderForMobile()
+                            ? MentorShimmer.mentorList()
                             : ShimmerEffect.instance
                                 .upcomingLiveWebinarClassLoaderForTab()
                         : controller.categoriesData.value.mentors.isEmpty
@@ -861,15 +861,7 @@ Widget categoryList(controller, List<Mentors> mentors) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // const Padding(
-        //   padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
-        //   child: Text(
-        //     'Select a mentor and book your counselling slot.',
-        //     style: TextStyle(
-        //       fontSize: 12,
-        //     ),
-        //   ),
-        // ),
+
         ListView.builder(
           itemCount: mentors.length,
           shrinkWrap: true,
