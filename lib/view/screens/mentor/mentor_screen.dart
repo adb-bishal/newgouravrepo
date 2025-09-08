@@ -691,7 +691,8 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                 final slotStartLocal = DateTime.parse(slot.slotStart).toLocal();
 
                 // Format slotSart to string for comparison
-                final formattedSlotStart = DateFormat('yyyy-MM-dd HH:mm:ss').format(slotStartLocal);
+                final formattedSlotStart =
+                    DateFormat('yyyy-MM-dd HH:mm:ss').format(slotStartLocal);
 
                 final isSelected = formattedSlotStart == _selectedSlot;
 
@@ -704,14 +705,19 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
-                      color: isSelected ? ColorResource.primaryColor : Colors.white,
+                      color: isSelected
+                          ? ColorResource.primaryColor
+                          : Colors.white,
                       border: Border.all(
-                        color: isSelected ? ColorResource.primaryColor : Colors.grey.shade300,
+                        color: isSelected
+                            ? ColorResource.primaryColor
+                            : Colors.grey.shade300,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      DateFormat('hh:mm a').format(slotStartLocal), // Use local time for display
+                      DateFormat('hh:mm a')
+                          .format(slotStartLocal), // Use local time for display
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: isSelected ? ColorResource.white : Colors.black,
@@ -721,7 +727,6 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                 );
               }).toList(),
             ),
-
             const SizedBox(height: 24),
             GestureDetector(
               onTap: () {

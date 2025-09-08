@@ -670,24 +670,24 @@ class HomeScreen extends GetView<HomeNewController> {
                                                                               right: 0,
                                                                               child: cachedNetworkImage(dataAtIndex.image ?? "", fit: BoxFit.fill),
                                                                             ),
-                                                                            Align(
-                                                                              alignment: Alignment.bottomLeft,
-                                                                              child: Container(
-                                                                                margin: const EdgeInsets.only(
-                                                                                  bottom: DimensionResource.marginSizeDefault + 10,
-                                                                                  left: DimensionResource.marginSizeDefault,
-                                                                                  right: DimensionResource.marginSizeDefault,
-                                                                                ),
-                                                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: ColorResource.white),
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                                                                                child: Text(
-                                                                                  dataAtIndex.title ?? "",
-                                                                                  style: StyleResource.instance.styleLight(fontSize: screenWidth < 500 ? DimensionResource.fontSizeExtraSmall : DimensionResource.fontSizeDefault),
-                                                                                  maxLines: 1,
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                ),
-                                                                              ),
-                                                                            ),
+                                                                            // Align(
+                                                                            //   alignment: Alignment.bottomLeft,
+                                                                            //   child: Container(
+                                                                            //     margin: const EdgeInsets.only(
+                                                                            //       bottom: DimensionResource.marginSizeDefault + 10,
+                                                                            //       left: DimensionResource.marginSizeDefault,
+                                                                            //       right: DimensionResource.marginSizeDefault,
+                                                                            //     ),
+                                                                            //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: ColorResource.white),
+                                                                            //     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                            //     child: Text(
+                                                                            //       dataAtIndex.title ?? "",
+                                                                            //       style: StyleResource.instance.styleLight(fontSize: screenWidth < 500 ? DimensionResource.fontSizeExtraSmall : DimensionResource.fontSizeDefault),
+                                                                            //       maxLines: 1,
+                                                                            //       overflow: TextOverflow.ellipsis,
+                                                                            //     ),
+                                                                            //   ),
+                                                                            // ),
                                                                             Visibility(
                                                                               visible: dataAtIndex.isPromotional != null && dataAtIndex.isPromotional == 1,
                                                                               child: Align(
