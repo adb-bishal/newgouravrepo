@@ -46,8 +46,8 @@
 //
 // class _FileVideoWidgetState extends State<FileVideoWidget> {
 //   bool isBetterPlayer = false;
-//   better.BetterPlayerDataSource? _dataSource;
-//   better.BetterPlayerController? _betterPlayerController;
+//   better.BetterPlayerDataSource? dataSource;
+//   better.BetterPlayerController? betterPlayerController;
 //   final pageManager = getIt<PageManager>();
 //   bool isRecording = false;
 //
@@ -66,12 +66,12 @@
 //     // Use BetterPlayer for non-m3u8 URLs
 //     isBetterPlayer = !widget.url.contains('.m3u8');
 //     if (isBetterPlayer) {
-//       _dataSource = widget.isVideo
+//       dataSource = widget.isVideo
 //           ? better.BetterPlayerDataSource.network(widget.url)
 //           : better.BetterPlayerDataSource.file(widget.url);
 //
 //       Future.delayed(const Duration(milliseconds: 200), () {
-//         _betterPlayerController = better.BetterPlayerController(
+//         betterPlayerController = better.BetterPlayerController(
 //           better.BetterPlayerConfiguration(
 //             autoPlay: widget.autoPlay,
 //             looping: true,
@@ -96,8 +96,8 @@
 //           ),
 //         );
 //
-//         _betterPlayerController!
-//           ..setupDataSource(_dataSource!)
+//         betterPlayerController!
+//           ..setupDataSource(dataSource!)
 //           ..addEventsListener(_handleEvent);
 //         setState(() {}); // Refresh to show player
 //       });
@@ -141,14 +141,14 @@
 //       WakelockPlus.disable();
 //     }
 //     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-//       await _betterPlayerController?.pause();
+//       await betterPlayerController?.pause();
 //     }
 //   }
 //
 //   @override
 //   void dispose() {
 //     WakelockPlus.disable();
-//     _betterPlayerController?.dispose();
+//     betterPlayerController?.dispose();
 //     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 //     super.dispose();
 //   }
@@ -162,18 +162,18 @@
 //           final vis = info.visibleFraction * 100;
 //           if (widget.autoPlay) {
 //             if (vis > 80) {
-//               await _betterPlayerController?.play();
+//               await betterPlayerController?.play();
 //               WakelockPlus.enable();
 //             } else {
-//               await _betterPlayerController?.pause();
+//               await betterPlayerController?.pause();
 //               WakelockPlus.disable();
 //             }
 //           }
 //         },
 //         child: isBetterPlayer
-//             ? (_betterPlayerController == null
+//             ? (betterPlayerController == null
 //             ? const Center(child: CircularProgressIndicator())
-//             : better.BetterPlayer(controller: _betterPlayerController!))
+//             : better.BetterPlayer(controller: betterPlayerController!))
 //             : HlsVideoPlayer(
 //           thumbnail: widget.thumbnail,
 //           m3u8Show: widget.showQualityPicker,
@@ -207,6 +207,7 @@ import 'package:better_player/src/video_player/video_player_platform_interface.d
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:screen_protector/screen_protector.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:stockpathshala_beta/model/services/player/widgets/custom_controls_widget.dart';
 import 'package:stockpathshala_beta/service/video_hls_player/video_view.dart';
 import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
@@ -218,24 +219,7 @@ import '../../../service/page_manager.dart';
 import '../../network_calls/dio_client/get_it_instance.dart';
 import '../../utils/color_resource.dart';
 
-// proper code
-import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-import 'package:better_player/better_player.dart' as better;
-import 'package:video_player/video_player.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
-
-// NOTE: Replace below imports with your actual imports in project
-// import 'your_cached_network_image.dart';
-// import 'your_screen_protector.dart';
-// import 'your_page_manager.dart';
-// import 'your_hls_video_player.dart';
-// import 'your_color_resource.dart';
-// import 'your_custom_controls_widget.dart';
-// import 'your_video_event.dart';
 
 class FileVideoWidget extends StatefulWidget {
   final String url;
@@ -271,31 +255,35 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   late VideoPlayerController videoPlayerController;
   bool isBetterPlayer = false;
   bool isRecording = false;
+  bool manualFullScreen = false;
+  bool isFullscreenNow = false;
+  StreamSubscription<AccelerometerEvent>? accelerometerSubscription;
 
-  late better.BetterPlayerController _betterPlayerController;
-  late better.BetterPlayerDataSource _dataSource;
+  late better.BetterPlayerController betterPlayerController;
+  late better.BetterPlayerDataSource dataSource;
   better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
 
   List<better.BetterPlayerEvent> events = [];
-  final pageManager =
-      getIt<PageManager>(); // Replace with your actual pageManager
+  final pageManager = getIt<PageManager>();
 
   @override
   void initState() {
     super.initState();
+    manualFullScreen = false;
+    isFullscreenNow = false;
 
     ScreenProtector.protectDataLeakageOn();
     checkScreenRecording();
     changeOrient();
 
     // Initially show system UI and enable edgeToEdge mode
-      SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: [
-      SystemUiOverlay.top,    // Status bar
-      SystemUiOverlay.bottom, // Navigation bar
-    ],
-  );
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [
+        SystemUiOverlay.top, // Status bar
+        SystemUiOverlay.bottom, // Navigation bar
+      ],
+    );
 
     if (!widget.url.contains(".m3u8")) {
       isBetterPlayer = true;
@@ -305,21 +293,21 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
           try {
             File file = File(widget.url);
             List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-            _dataSource = better.BetterPlayerDataSource.memory(
+            dataSource = better.BetterPlayerDataSource.memory(
               bytes,
               videoExtension: "mp4",
             );
           } catch (e) {
-            _dataSource = better.BetterPlayerDataSource.file(widget.url);
+            dataSource = better.BetterPlayerDataSource.file(widget.url);
           }
         } else {
-          _dataSource = better.BetterPlayerDataSource.network(widget.url);
+          dataSource = better.BetterPlayerDataSource.network(widget.url);
         }
       } else {
-        _dataSource = better.BetterPlayerDataSource.network(widget.url);
+        dataSource = better.BetterPlayerDataSource.network(widget.url);
       }
 
-      _betterPlayerController = better.BetterPlayerController(
+      betterPlayerController = better.BetterPlayerController(
         better.BetterPlayerConfiguration(
           autoPlay: widget.autoPlay,
           looping: true,
@@ -339,7 +327,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
               orientation: widget.orientation,
               controller: controller,
               onControlsVisibilityChanged: onControlsVisibilityChanged,
-              onFullScreenTap: _toggleFullScreen,
+              onFullScreenTap: manualToggleFullScreen,
             ),
           ),
           aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
@@ -347,39 +335,138 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
         ),
       );
 
-      _betterPlayerController.setupDataSource(_dataSource);
-      _betterPlayerController.addEventsListener(_handleEvent);
+      betterPlayerController.setupDataSource(dataSource);
+      betterPlayerController.addEventsListener(_handleEvent);
+    }
+
+    startOrientationListener();
+  }
+
+  void startOrientationListener() {
+    accelerometerSubscription = accelerometerEvents.listen((event) {
+      if (!manualFullScreen) {
+        if (event.x.abs() < 3 && event.y.abs() > 7 && isFullscreenNow) {
+          exitFullscreen(autoRotated: true);
+        } else if (event.y.abs() < 3 && event.x > 7 && !isFullscreenNow) {
+          enterFullscreen(autoRotated: true);
+        }
+      }
+    });
+  }
+
+  void stopOrientationListener() {
+    accelerometerSubscription?.cancel();
+  }
+
+  void enterFullscreen({bool autoRotated = false}) {
+    if (!isFullscreenNow) {
+      isFullscreenNow = true;
+      betterPlayerController.enterFullScreen();
+
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+      ]);
+
+      if (!autoRotated) {
+        manualFullScreen = true;
+        stopOrientationListener();
+      }
     }
   }
 
-  void _toggleFullScreen() {
-    if (_betterPlayerController.isFullScreen) {
-      _betterPlayerController.exitFullScreen();
+  void exitFullscreen({bool autoRotated = false}) {
+    if (isFullscreenNow) {
+      isFullscreenNow = false;
+      betterPlayerController.exitFullScreen();
 
-      // Show system UI overlays and allow portrait orientation
-        SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: [
-      SystemUiOverlay.top,    // Status bar
-      SystemUiOverlay.bottom, // Navigation bar
-    ],
-  );
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    } else {
-      _betterPlayerController.enterFullScreen();
-
-      // Show system UI overlays and allow landscape orientations
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
         SystemUiOverlay.top,
         SystemUiOverlay.bottom,
       ]);
       SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitUp,
       ]);
+
+      if (!autoRotated) {
+        manualFullScreen = false;
+        startOrientationListener();
+      }
     }
   }
 
+  void manualToggleFullScreen() {
+    if (isFullscreenNow) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
+  }
+
+  // void _toggleFullScreen() {
+  //   if (betterPlayerController.isFullScreen) {
+  //     betterPlayerController.exitFullScreen();
+  //
+  //     // Show system UI overlays and allow portrait orientation
+  //     SystemChrome.setEnabledSystemUIMode(
+  //       SystemUiMode.manual,
+  //       overlays: [
+  //         SystemUiOverlay.top, // Status bar
+  //         SystemUiOverlay.bottom, // Navigation bar
+  //       ],
+  //     );
+  //     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  //   } else {
+  //     betterPlayerController.enterFullScreen();
+  //
+  //     // Show system UI overlays and allow landscape orientations
+  //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+  //       SystemUiOverlay.top,
+  //       SystemUiOverlay.bottom,
+  //     ]);
+  //     SystemChrome.setPreferredOrientations([
+  //       DeviceOrientation.landscapeLeft,
+  //       // DeviceOrientation.landscapeRight,
+  //     ]);
+  //   }
+  // }
+
+  // void manualToggleFullScreen() {
+  //   setState(() {
+  //     manualFullScreen = true;
+  //   });
+  //   if (betterPlayerController.isFullScreen) {
+  //     setState(() {
+  //       manualFullScreen = false;
+  //     });
+  //     betterPlayerController.exitFullScreen();
+  //
+  //     // Show system UI overlays and allow portrait orientation
+  //     SystemChrome.setEnabledSystemUIMode(
+  //       SystemUiMode.manual,
+  //       overlays: [
+  //         SystemUiOverlay.top,    // Status bar
+  //         SystemUiOverlay.bottom, // Navigation bar
+  //       ],
+  //     );
+  //     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  //   } else {
+  //     setState(() {
+  //       manualFullScreen = true;
+  //     });
+  //     betterPlayerController.enterFullScreen();
+  //
+  //     // Show system UI overlays and allow landscape orientations
+  //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
+  //       SystemUiOverlay.top,
+  //       SystemUiOverlay.bottom,
+  //     ]);
+  //     SystemChrome.setPreferredOrientations([
+  //       DeviceOrientation.landscapeLeft,
+  //       DeviceOrientation.landscapeRight,
+  //     ]);
+  //   }
+  // }
   Future<void> checkScreenRecording() async {
     bool recording = await ScreenProtector.isRecording();
     if (recording != isRecording) {
@@ -408,7 +495,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     );
   }
 
- void changeOrient() {
+  void changeOrient() {
     if (!widget.orientation) {
       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     }
@@ -432,7 +519,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     }
 
     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-      await _betterPlayerController.pause();
+      await betterPlayerController.pause();
     }
   }
 
@@ -445,6 +532,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   @override
   void dispose() {
     super.dispose();
+    accelerometerSubscription?.cancel();
+    betterPlayerController.dispose();
     _disposePlayer();
   }
 
@@ -452,15 +541,15 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     if (!isBetterPlayer) {
       await videoPlayerController.pause();
     } else {
-      await _betterPlayerController.pause();
+      await betterPlayerController.pause();
     }
-      SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: [
-      SystemUiOverlay.top,    // Status bar
-      SystemUiOverlay.bottom, // Navigation bar
-    ],
-  );
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [
+        SystemUiOverlay.top, // Status bar
+        SystemUiOverlay.bottom, // Navigation bar
+      ],
+    );
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WakelockPlus.disable();
   }
@@ -471,13 +560,13 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     if (!isBetterPlayer) {
       await videoPlayerController.dispose();
     }
-      SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: [
-      SystemUiOverlay.top,    // Status bar
-      SystemUiOverlay.bottom, // Navigation bar
-    ],
-  );
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [
+        SystemUiOverlay.top, // Status bar
+        SystemUiOverlay.bottom, // Navigation bar
+      ],
+    );
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
@@ -497,14 +586,14 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                   if (widget.autoPlay) {
                     if (visiblePercentage > 80) {
                       if (isBetterPlayer) {
-                        await _betterPlayerController.play();
+                        await betterPlayerController.play();
                       } else {
                         await videoPlayerController.play();
                       }
                       WakelockPlus.enable();
                     } else {
                       if (isBetterPlayer && widget.isScalp) {
-                        await _betterPlayerController.pause();
+                        await betterPlayerController.pause();
                       } else {
                         await videoPlayerController.pause();
                       }
@@ -520,28 +609,28 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                             GestureDetector(
                               onTap: widget.isScalp
                                   ? () async {
-                                      if (await _betterPlayerController
+                                      if (await betterPlayerController
                                               .isPlaying() ??
                                           false) {
-                                        await _betterPlayerController.pause();
+                                        await betterPlayerController.pause();
                                         WakelockPlus.disable();
                                       } else {
-                                        await _betterPlayerController.play();
+                                        await betterPlayerController.play();
                                         WakelockPlus.enable();
                                       }
                                       bool isPlaying =
-                                          await _betterPlayerController
+                                          await betterPlayerController
                                                   .isPlaying() ??
                                               false;
                                       widget.onPlayButton?.call(isPlaying);
                                     }
                                   : null,
                               child: better.BetterPlayer(
-                                controller: _betterPlayerController,
+                                controller: betterPlayerController,
                               ),
                             ),
                             StreamBuilder(
-                              stream: _betterPlayerController
+                              stream: betterPlayerController
                                   .videoPlayerController
                                   ?.videoEventStreamController
                                   .stream,
@@ -664,8 +753,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   bool fullscreen = false;
   bool isBetterPlayer = false;
   bool isRecording = false;
-  late better.BetterPlayerController _betterPlayerController;
-  late better.BetterPlayerDataSource _dataSource;
+  late better.BetterPlayerController betterPlayerController;
+  late better.BetterPlayerDataSource dataSource;
   better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
 
   List<better.BetterPlayerEvent> events = [];
@@ -686,21 +775,21 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
           try {
             File file = File(widget.url);
             List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-            _dataSource = better.BetterPlayerDataSource.memory(
+            dataSource = better.BetterPlayerDataSource.memory(
               bytes,
               videoExtension: "mp4",
             );
           } catch (e) {
-            _dataSource = better.BetterPlayerDataSource.file(widget.url);
+            dataSource = better.BetterPlayerDataSource.file(widget.url);
           }
         } else {
-          _dataSource = better.BetterPlayerDataSource.network(widget.url);
+          dataSource = better.BetterPlayerDataSource.network(widget.url);
         }
       } else {
-        _dataSource = better.BetterPlayerDataSource.network(widget.url);
+        dataSource = better.BetterPlayerDataSource.network(widget.url);
       }
 
-      _betterPlayerController = better.BetterPlayerController(
+      betterPlayerController = better.BetterPlayerController(
         better.BetterPlayerConfiguration(
           autoPlay: widget.autoPlay,
           looping: true,
@@ -721,10 +810,10 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                   controller: controller,
                   onControlsVisibilityChanged: onControlsVisibilityChanged,
                   onFullScreenTap: () {
-                    if (_betterPlayerController.isFullScreen) {
-                      _betterPlayerController.exitFullScreen();
+                    if (betterPlayerController.isFullScreen) {
+                      betterPlayerController.exitFullScreen();
                     } else {
-                      _betterPlayerController.enterFullScreen();
+                      betterPlayerController.enterFullScreen();
                     }
                   },
                 ),
@@ -734,8 +823,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
         ),
       );
 
-      _betterPlayerController.setupDataSource(_dataSource);
-      _betterPlayerController.addEventsListener(_handleEvent);
+      betterPlayerController.setupDataSource(dataSource);
+      betterPlayerController.addEventsListener(_handleEvent);
     }
   }
 
@@ -788,7 +877,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     }
 
     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-      await _betterPlayerController.pause();
+      await betterPlayerController.pause();
     }
   }
 
@@ -808,7 +897,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     if (!isBetterPlayer) {
       await videoPlayerController.pause();
     } else {
-      await _betterPlayerController.pause();
+      await betterPlayerController.pause();
     }
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WakelockPlus.disable();
@@ -837,14 +926,14 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                 if (widget.autoPlay) {
                   if (visiblePercentage > 80) {
                     if (isBetterPlayer) {
-                      await _betterPlayerController.play();
+                      await betterPlayerController.play();
                     } else {
                       await videoPlayerController.play();
                     }
                     WakelockPlus.enable();
                   } else {
                     if (isBetterPlayer && widget.isScalp) {
-                      await _betterPlayerController.pause();
+                      await betterPlayerController.pause();
                     } else {
                       await videoPlayerController.pause();
                     }
@@ -859,25 +948,25 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                   GestureDetector(
                     onTap: widget.isScalp
                         ? () async {
-                      if (await _betterPlayerController.isPlaying() ?? false) {
-                        await _betterPlayerController.pause();
+                      if (await betterPlayerController.isPlaying() ?? false) {
+                        await betterPlayerController.pause();
                         WakelockPlus.disable();
                       } else {
-                        await _betterPlayerController.play();
+                        await betterPlayerController.play();
                         WakelockPlus.enable();
                       }
 
                       bool isPlaying =
-                          await _betterPlayerController.isPlaying() ?? false;
+                          await betterPlayerController.isPlaying() ?? false;
                       widget.onPlayButton?.call(isPlaying);
                     }
                         : null,
                     child: better.BetterPlayer(
-                      controller: _betterPlayerController,
+                      controller: betterPlayerController,
                     ),
                   ),
                   StreamBuilder(
-                    stream: _betterPlayerController
+                    stream: betterPlayerController
                         .videoPlayerController?.videoEventStreamController.stream,
                     builder: (context, snapshot) {
                       return Visibility(
@@ -1011,8 +1100,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //   bool fullscreen = false;
 //   bool isBetterPlayer = false;
 //   bool isRecording = false;
-//   late better.BetterPlayerController _betterPlayerController;
-//   late better.BetterPlayerDataSource _dataSource;
+//   late better.BetterPlayerController betterPlayerController;
+//   late better.BetterPlayerDataSource dataSource;
 //   better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
 //
 //   List<better.BetterPlayerEvent> events = [];
@@ -1034,7 +1123,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //           try {
 //             File file = File(widget.url);
 //             List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-//             _dataSource = better.BetterPlayerDataSource.memory(
+//             dataSource = better.BetterPlayerDataSource.memory(
 //               bytes,
 //               videoExtension: "mp4",
 //             );
@@ -1042,16 +1131,16 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //             if (e is PathNotFoundException) {
 //               logPrint("message ${e.message}");
 //             }
-//             _dataSource = better.BetterPlayerDataSource.file(widget.url);
+//             dataSource = better.BetterPlayerDataSource.file(widget.url);
 //           }
 //         } else {
-//           _dataSource = better.BetterPlayerDataSource.network(widget.url);
+//           dataSource = better.BetterPlayerDataSource.network(widget.url);
 //         }
 //       } else {
-//         _dataSource = better.BetterPlayerDataSource.network(widget.url);
+//         dataSource = better.BetterPlayerDataSource.network(widget.url);
 //       }
 //
-//       _betterPlayerController = better.BetterPlayerController(
+//       betterPlayerController = better.BetterPlayerController(
 //         better.BetterPlayerConfiguration(
 //           autoPlay: widget.autoPlay,
 //           looping: true,
@@ -1080,8 +1169,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //         ),
 //       );
 //
-//       _betterPlayerController.setupDataSource(_dataSource);
-//       _betterPlayerController.addEventsListener(_handleEvent);
+//       betterPlayerController.setupDataSource(dataSource);
+//       betterPlayerController.addEventsListener(_handleEvent);
 //     }
 //   }
 //
@@ -1134,7 +1223,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //     }
 //
 //     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-//       await _betterPlayerController.pause();
+//       await betterPlayerController.pause();
 //     }
 //   }
 //
@@ -1143,7 +1232,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //     if (!isBetterPlayer) {
 //       await videoPlayerController.pause();
 //     } else {
-//       await _betterPlayerController.pause();
+//       await betterPlayerController.pause();
 //     }
 //     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 //     WakelockPlus.disable();
@@ -1177,14 +1266,14 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //                 if (widget.autoPlay) {
 //                   if (visiblePercentage > 80) {
 //                     if (isBetterPlayer) {
-//                       await _betterPlayerController.play();
+//                       await betterPlayerController.play();
 //                     } else {
 //                       await videoPlayerController.play();
 //                     }
 //                     WakelockPlus.enable();
 //                   } else {
 //                     if (isBetterPlayer && widget.isScalp) {
-//                       await _betterPlayerController.pause();
+//                       await betterPlayerController.pause();
 //                     } else {
 //                       await videoPlayerController.pause();
 //                     }
@@ -1199,18 +1288,18 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //                   GestureDetector(
 //                     onTap: widget.isScalp
 //                         ? () async {
-//                       if (_betterPlayerController.isPlaying() ?? false) {
-//                         await _betterPlayerController.pause();
+//                       if (betterPlayerController.isPlaying() ?? false) {
+//                         await betterPlayerController.pause();
 //                         WakelockPlus.disable();
 //                       } else {
-//                         await _betterPlayerController.play();
+//                         await betterPlayerController.play();
 //                         WakelockPlus.enable();
 //                       }
-//                       widget.onPlayButton?.call(_betterPlayerController.isPlaying() ?? false);
+//                       widget.onPlayButton?.call(betterPlayerController.isPlaying() ?? false);
 //                     }
 //                         : null,
 //                     child: better.BetterPlayer(
-//                       controller: _betterPlayerController,
+//                       controller: betterPlayerController,
 //                     ),
 //                   ),
 //
@@ -1222,13 +1311,13 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //                       child: IconButton(
 //                         icon: Icon(Icons.fullscreen, color: Colors.white),
 //                         onPressed: () {
-//                           _betterPlayerController.enterFullScreen();
+//                           betterPlayerController.enterFullScreen();
 //                         },
 //                       ),
 //                     ),
 //
 //                   StreamBuilder(
-//                     stream: _betterPlayerController.videoPlayerController?.videoEventStreamController.stream,
+//                     stream: betterPlayerController.videoPlayerController?.videoEventStreamController.stream,
 //                     builder: (context, snapshot) {
 //                       return Visibility(
 //                         visible: snapshot.data?.eventType == null ||
@@ -1361,8 +1450,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //   bool fullscreen = false;
 //   bool isBetterPlayer = false;
 //   bool isRecording = false;
-//   late better.BetterPlayerController _betterPlayerController;
-//   late better.BetterPlayerDataSource _dataSource;
+//   late better.BetterPlayerController betterPlayerController;
+//   late better.BetterPlayerDataSource dataSource;
 //   better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
 //
 //   List<better.BetterPlayerEvent> events = [];
@@ -1394,7 +1483,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //           try {
 //             File file = File(widget.url);
 //             List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-//             _dataSource = better.BetterPlayerDataSource.memory(
+//             dataSource = better.BetterPlayerDataSource.memory(
 //               bytes,
 //               videoExtension: "mp4",
 //             );
@@ -1402,16 +1491,16 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //             if (e is PathNotFoundException) {
 //               logPrint("message ${e.message}");
 //             }
-//             _dataSource = better.BetterPlayerDataSource.file(widget.url);
+//             dataSource = better.BetterPlayerDataSource.file(widget.url);
 //           }
 //         } else {
-//           _dataSource = better.BetterPlayerDataSource.network(widget.url);
+//           dataSource = better.BetterPlayerDataSource.network(widget.url);
 //         }
 //       } else {
-//         _dataSource = better.BetterPlayerDataSource.network(widget.url);
+//         dataSource = better.BetterPlayerDataSource.network(widget.url);
 //       }
 //
-//       _betterPlayerController = better.BetterPlayerController(
+//       betterPlayerController = better.BetterPlayerController(
 //         better.BetterPlayerConfiguration(
 //           autoPlay: widget.autoPlay,
 //           looping: true,
@@ -1434,8 +1523,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //           fit: BoxFit.contain,
 //         ),
 //       );
-//       _betterPlayerController.setupDataSource(_dataSource);
-//       _betterPlayerController.addEventsListener(_handleEvent);
+//       betterPlayerController.setupDataSource(dataSource);
+//       betterPlayerController.addEventsListener(_handleEvent);
 //     }
 //   }
 //
@@ -1488,7 +1577,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //       );
 //     }
 //     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-//       await _betterPlayerController.pause();
+//       await betterPlayerController.pause();
 //     }
 //   }
 //
@@ -1497,7 +1586,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //     if (!isBetterPlayer) {
 //       await videoPlayerController.pause();
 //     } else {
-//       await _betterPlayerController.pause();
+//       await betterPlayerController.pause();
 //     }
 //
 //     logPrint("deactivate file");
@@ -1545,13 +1634,13 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //                 if (widget.autoPlay) {
 //                   if (visiblePercentage > 80) {
 //                     if (isBetterPlayer) {
-//                       await _betterPlayerController.play();
+//                       await betterPlayerController.play();
 //                     } else {
 //                       await videoPlayerController.play();
 //                     }
 //                   } else {
 //                     if (isBetterPlayer && widget.isScalp) {
-//                       await _betterPlayerController.pause();
+//                       await betterPlayerController.pause();
 //                     } else {
 //                       await videoPlayerController.pause();
 //                     }
@@ -1565,25 +1654,25 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
 //                   GestureDetector(
 //                     onTap: widget.isScalp
 //                         ? () async {
-//                       if (_betterPlayerController.isPlaying() ??
+//                       if (betterPlayerController.isPlaying() ??
 //                           false) {
-//                         await _betterPlayerController.pause();
+//                         await betterPlayerController.pause();
 //                       } else {
-//                         await _betterPlayerController.play();
+//                         await betterPlayerController.play();
 //                       }
 //                       if (widget.onPlayButton != null) {
 //                         widget.onPlayButton!(
-//                             _betterPlayerController.isPlaying() ??
+//                             betterPlayerController.isPlaying() ??
 //                                 false);
 //                       }
 //                     }
 //                         : null,
 //                     child: better.BetterPlayer(
-//                       controller: _betterPlayerController,
+//                       controller: betterPlayerController,
 //                     ),
 //                   ),
 //                   StreamBuilder(
-//                     stream: _betterPlayerController
+//                     stream: betterPlayerController
 //                         .videoPlayerController
 //                         ?.videoEventStreamController
 //                         .stream,

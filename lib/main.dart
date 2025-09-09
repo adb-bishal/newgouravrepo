@@ -122,7 +122,7 @@ Future<void> main() async {
   await initServices();
 
   // // 📱 Edge-to-edge UI support for Android 10+
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   //
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(

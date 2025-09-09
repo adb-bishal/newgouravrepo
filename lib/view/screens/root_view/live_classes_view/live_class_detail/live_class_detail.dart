@@ -94,7 +94,7 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                   showQualityPicker: false,
                   url: localVideoPath!,
                   eventCallBack: (progress, totalDuration) {},
-                )
+          )
               : (controller.liveClassDetail.value.data?.fileUrl == null ||
                       controller.liveClassDetail.value.data?.fileUrl == "")
                   ? SizedBox(

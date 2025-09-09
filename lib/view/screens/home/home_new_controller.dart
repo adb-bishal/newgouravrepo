@@ -103,7 +103,7 @@ class HomeNewController extends GetxController {
   List continueDataList = <cont.Datum>[].obs;
   LiveProvider liveProvider = getIt();
   final ScrollController scrollController = ScrollController();
-
+  RxInt itemSelected = (-1).obs;
   final GetStorage box = GetStorage();
   Rx<HomeDataModelDatum> trendingData = HomeDataModelDatum().obs;
   Rx<HomeDataModelDatum> scalpData = HomeDataModelDatum().obs;

@@ -88,8 +88,9 @@ class MentorController extends GetxController {
     counsellingPrice: 0,
   ).obs;
 
-  late int mentorId;
+  late int categoryId;
   late String mentorTitle;
+
   final RxList<int> selectedChip = <int>[].obs;
 
   void setCurrentIndex(int index) {
@@ -119,15 +120,15 @@ class MentorController extends GetxController {
     // confettiController.play();
     final arguments = Get.arguments;
     if (arguments is CounsellingCategory) {
-      mentorId = arguments.id;
+      categoryId = arguments.id;
       mentorTitle = arguments.title;
     } else {
-      mentorId = 0; // Default value or handle error
+      categoryId = 0; // Default value or handle error
       logPrint("Warning: Invalid mentorId argument: $arguments");
     }
 
-    logPrint("mentorId $mentorId");
-    getCategories(mentorId);
+    logPrint("mentorId $categoryId");
+    getCategories(categoryId);
     TransactionService.instance
         .initServiceEvent(onPaymentEvent: onPaymentEvent);
   }
@@ -146,7 +147,7 @@ class MentorController extends GetxController {
     onRefreshLoading.value = true;
     try {
       await Future.delayed(const Duration(seconds: 1));
-      await getCategories(mentorId);
+      await getCategories(categoryId);
     } catch (e) {
       logPrint("Error during refresh: $e");
       toastShow(message: 'Failed to refresh data');
@@ -157,7 +158,7 @@ class MentorController extends GetxController {
 
   Future<void> onBuyCounselling(
       String? slotId,
-      String? amount, {
+      String? amount, int? categoryId, {
         String orderType = "be_a_pro",
         required void Function(PaymentSuccessResponse response, String razorpayOrderId) onPaymentSuccess,
       }) async {
@@ -191,6 +192,8 @@ class MentorController extends GetxController {
         mapData: {
           "slot_id": slotId,
           "amount": amountInRupees,
+          "category_id":categoryId,
+          // "category_id":''
         },
         onError: (message, errorMap) {
           logPrint("razorpay sp-db error: $errorMap");
@@ -315,11 +318,11 @@ class MentorController extends GetxController {
     }
   }
 
-  Future<void> getCategories(int mentorId) async {
+  Future<void> getCategories(int categoryId) async {
     try {
       isLoading(true);
 
-      final response = await getCounsellingMentors(mentorId);
+      final response = await getCounsellingMentors(categoryId);
 
       if (response['success'] == true && response['data'] != null) {
         print('Total mentors: ${categoriesData.value.totalMentors}');
@@ -335,11 +338,11 @@ class MentorController extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>> getCounsellingMentors(int mentorId) async {
+  Future<Map<String, dynamic>> getCounsellingMentors(int categoryId) async {
     bool isAvailable = true;
     try {
       final String url =
-          '${AppConstants.instance.baseUrl}${AppConstants.instance.mentorList}?category_ids=$mentorId&is_mentor_slot_available=$isAvailable';
+          '${AppConstants.instance.baseUrl}${AppConstants.instance.mentorList}?category_ids=$categoryId&is_mentor_slot_available=$isAvailable';
           // 'https://dev2.stockpathshala.com/api/v1/counselling/all-mentor?category_ids=$mentorId';
       print("getCounsellingMentors url $url");
 

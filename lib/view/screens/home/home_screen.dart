@@ -1879,11 +1879,15 @@ Widget categoryListWithShimmer(
                     var data = counsellingData.categories[index];
 
                     return Obx(() {
+                      bool isSelected = controller.itemSelected.value == index;
                       bool isClicked =
                           controller.clickedItemId[data.id] ?? false;
 
                       return GestureDetector(
                         onTap: () {
+                          controller.itemSelected.value = index;
+
+                          //if want multiple selection , disable right now
                           controller.itemClick(data.id, true);
                           Future.delayed(const Duration(milliseconds: 3), () {
                             Get.toNamed(Routes.mentorScreen, arguments: data)
@@ -1891,6 +1895,7 @@ Widget categoryListWithShimmer(
                               if (value == 'payment') {
                                 controller.onRefresh();
                               }
+                              controller.itemSelected.value = -1;
                               controller.itemClick(data.id, false);
                             });
                           });
@@ -1901,10 +1906,10 @@ Widget categoryListWithShimmer(
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 border: Border.all(
-                                  color: isClicked
+                                  color: isSelected
                                       ? ColorResource.primaryColor
                                       : Colors.grey.shade200,
-                                  width: isClicked ? 1 : 1,
+                                  width: isSelected ? 1 : 1,
                                 ),
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(
@@ -1912,7 +1917,7 @@ Widget categoryListWithShimmer(
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: isClicked
+                                    color: isSelected
                                         ? ColorResource.primaryColor
                                             .withOpacity(0.3)
                                         : Colors.grey.withOpacity(0.1),
@@ -2003,7 +2008,7 @@ Widget categoryListWithShimmer(
                                                         .height *
                                                     0.014,
                                             height: 1.2,
-                                            color: isClicked
+                                            color: isSelected
                                                 ? ColorResource.primaryColor
                                                 : Colors.black87,
                                           ),
@@ -2021,7 +2026,7 @@ Widget categoryListWithShimmer(
                                 padding:
                                     EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
                                 decoration: BoxDecoration(
-                                  color: isClicked
+                                  color: isSelected
                                       ? ColorResource.primaryColor
                                           .withOpacity(0.3)
                                       : Colors.white.withOpacity(0.9),
@@ -2030,7 +2035,7 @@ Widget categoryListWithShimmer(
                                 child: Icon(
                                   Icons.arrow_forward_ios_rounded,
                                   size: crossAxisCount == 2 ? 18 : 16,
-                                  color: isClicked
+                                  color: isSelected
                                       ? ColorResource.secondaryBlue
                                       : Colors.grey.shade600,
                                 ),

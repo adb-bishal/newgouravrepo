@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:stockpathshala_beta/model/models/batch_models/batch_details_model.dart';
 import 'package:stockpathshala_beta/model/services/auth_service.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
@@ -90,6 +91,7 @@ class LiveClassDetailController extends GetxController {
 
   RxDouble downloadProgress = 0.0.obs;
   RxString downloadStatus = "".obs;
+  RxString orientation = "".obs;
 
   var videos = <Video>[].obs; // Use an Rx list to hold the videos.
   var isLoading = true.obs;
@@ -125,6 +127,7 @@ class LiveClassDetailController extends GetxController {
   void onInit() async {
     fetchVideos();
     loadVideos();
+
     // if (currentFileUrl != null &&
     //     currentFileName != null &&
     //     isDownloading.value) {
@@ -145,6 +148,18 @@ class LiveClassDetailController extends GetxController {
     await getLiveDataDetail();
     getDownloadState();
     Get.find<RootViewController>().getTrialData();
+
+    accelerometerEvents.listen((AccelerometerEvent event) {
+
+    //   if (event.x.abs() < 3 && event.y.abs() > 7) {
+    //     orientation.value = "Portrait";
+    //   } else if (event.y.abs() < 3 && event.x.abs() > 7) {
+    //     orientation.value= "Landscape";
+    //   } else {
+    //     orientation.value = "Flat or Diagonal";
+    //   }
+    //
+    });
     super.onInit();
   }
 

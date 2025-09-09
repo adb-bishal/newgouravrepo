@@ -163,6 +163,7 @@ class MentorScreen extends GetView<MentorController> {
                                 },
                                 controller,
                                 slotId: '',
+                                categoryId: controller.categoryId,
                                 amount: (int.parse(controller.categoriesData
                                             .value.counsellingPrice) *
                                         100)
@@ -469,6 +470,7 @@ Future<void> initiateCounsellingPayment(
   MentorController controller, {
   String? slotId,
   required String amount,
+      int? categoryId,
   required VoidCallback onSuccess,
   required void Function(
           PaymentSuccessResponse response, String razorpayOrderId)
@@ -479,6 +481,7 @@ Future<void> initiateCounsellingPayment(
   controller.onBuyCounselling(
     slotId,
     amount,
+      categoryId,
     onPaymentSuccess: (paymentSuccessResponse, razorpayOrderId) {
       onPaymentCallBack(paymentSuccessResponse, razorpayOrderId);
     },
@@ -780,6 +783,7 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                     },
                     widget.controller,
                     slotId: slotId.toString() ?? '',
+                    categoryId:widget.controller.categoryId,
                     amount: (int.parse(widget.controller.categoriesData.value
                                 .counsellingPrice) *
                             100)

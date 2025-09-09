@@ -83,11 +83,11 @@ class VideoBaseView<T extends GetxController> extends GetView {
           top: false,
           right: false,
           left: false,
-          bottom: Platform.isIOS ? false : false,
+          bottom: Platform.isIOS ? false : true,
           child: OrientationBuilder(builder: (context, orientation) {
             return SafeArea(
               top: true,
-              bottom: false,
+              bottom: true,
               left: false,
               right: false,
               child: Scaffold(
@@ -211,23 +211,23 @@ class _OrientationChangeDetectorState extends State<OrientationChangeDetector>
   RootProvider rootProvider = getIt();
   int countVal = 0;
 
-  @override
-  void didChangeMetrics() {
-    final orientation = MediaQuery.of(Get.context!).orientation;
-    EasyDebounce.debounce(
-        countVal.toString(), const Duration(milliseconds: 100), () {
-      if (orientation == Orientation.landscape) {
-        // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-      } else {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-            overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
-      }
-      setState(() {
-        countVal++;
-      });
-    });
-    super.didChangeMetrics();
-  }
+  // @override
+  // void didChangeMetrics() {
+  //   final orientation = MediaQuery.of(Get.context!).orientation;
+  //   EasyDebounce.debounce(
+  //       countVal.toString(), const Duration(milliseconds: 100), () {
+  //     if (orientation == Orientation.landscape) {
+  //       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  //     } else {
+  //       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+  //           overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
+  //     }
+  //     setState(() {
+  //       countVal++;
+  //     });
+  //   });
+  //   super.didChangeMetrics();
+  // }
 
   postUserActivity() async {
     // isDataLoading(true);
