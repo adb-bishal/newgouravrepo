@@ -139,7 +139,7 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
     var expiredPopup =
         Get.find<LiveClassesController>().liveData.value.data?.expiredUserPopup;
 
-    final ui = Get.find<LiveClassesController>().liveData.value?.cardUi!;
+    final ui = Get.find<LiveClassesController>().liveData.value?.cardUi;
 
     // final LiveClassDetailController ccontroller = Get.find<LiveClassDetailController>();
     print("Downloading... ${liveClassDetailController.isDownloading.value}");

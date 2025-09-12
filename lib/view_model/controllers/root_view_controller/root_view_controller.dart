@@ -158,8 +158,6 @@ class RootViewController extends GetxController {
     super.onReady();
     // await GetStorage.init();
 
-
-
     final categoryId = int.tryParse(
             box.read(CommonEnum.mentorScreen.name)?.toString() ?? '0') ??
         0;
@@ -188,31 +186,13 @@ class RootViewController extends GetxController {
 
     if (categoryId != 0 && !isGuestUser) {
       selectedTab.value = 0;
-      print("catergory id $categoryId");
+      print("category id $categoryId");
       Get.toNamed(Routes.mentorScreen, arguments: categoryId);
       box.write(CommonEnum.mentorScreen.name, 0);
       return;
     }
 
-    if (liveClassDetailId != 0 && !isGuestUser) {
-      selectedTab.value = 2;
-      Get.toNamed(
-        Routes.liveClassDetail(id: liveClassDetailId.toString()),
-        arguments: [true, liveClassDetailId.toString()],
-      );
-      box.write(CommonEnum.liveClassDetail.name, 0);
-      return;
-    }
 
-    if (mentorShipDetailId != 0 && !isGuestUser) {
-      selectedTab.value = 1;
-      Get.toNamed(
-        Routes.mentorshipDetail(id: mentorShipDetailId.toString()),
-        arguments: {'id': mentorShipDetailId.toString()},
-      );
-      box.write(CommonEnum.mentorshipDetailScreen.name, 0);
-      return;
-    }
     selectedTab.value = 2;
   }
 
