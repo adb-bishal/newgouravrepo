@@ -670,39 +670,39 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
     );
   }
 
-  Widget _buildTitleSection(bool isLargeScreen) {
-    var mentorship = service.mentorshipDetailData.value?.mentorshipDetailUI;
-    var mentorshipData = service.mentorshipDetailData.value;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "What Will You Get?",
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: hexToColor(mentorship?.classTitleColor)),
-        ),
-        const SizedBox(height: 2),
-        GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: isLargeScreen ? 4 : 2,
-              // Adjust columns for screen size
-              // mainAxisSpacing: 2,
-              crossAxisSpacing: 8,
-              childAspectRatio: 6, // Adjust aspect ratio for layout
-            ),
-            itemCount: mentorship?.property.length,
-            itemBuilder: (context, index) {
-              return _buildChip(
-                  Icons.check_circle, mentorship!.property[index], context);
-            }),
-      ],
-    );
-  }
+  // Widget _buildTitleSection(bool isLargeScreen) {
+  //   var mentorship = service.mentorshipDetailData.value?.mentorshipDetailUI;
+  //   var mentorshipData = service.mentorshipDetailData.value;
+  //
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         "What Will You Get?",
+  //         style: TextStyle(
+  //             fontSize: 18,
+  //             fontWeight: FontWeight.bold,
+  //             color: hexToColor(mentorship?.classTitleColor)),
+  //       ),
+  //       const SizedBox(height: 2),
+  //       GridView.builder(
+  //           shrinkWrap: true,
+  //           physics: const NeverScrollableScrollPhysics(),
+  //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //             crossAxisCount: isLargeScreen ? 4 : 2,
+  //             // Adjust columns for screen size
+  //             // mainAxisSpacing: 2,
+  //             crossAxisSpacing: 8,
+  //             childAspectRatio: 6, // Adjust aspect ratio for layout
+  //           ),
+  //           itemCount: mentorship?.property.length,
+  //           itemBuilder: (context, index) {
+  //             return _buildChip(
+  //                 Icons.check_circle, mentorship!.property[index], context);
+  //           }),
+  //     ],
+  //   );
+  // }
 
   Widget _buildChip(IconData icon, String text, BuildContext context) {
     var mentorship = service.mentorshipDetailData.value;

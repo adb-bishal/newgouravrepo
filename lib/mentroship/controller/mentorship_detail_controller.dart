@@ -133,7 +133,6 @@ class MentorshipDetailController extends GetxController {
     print("Reload triggered.");
   }
 
-
   Future<void> fetchMentorshipData(String mentorshipId) async {
     // isLoading(true);
     errorMessage('');
@@ -197,13 +196,11 @@ class MentorshipDetailController extends GetxController {
             mentorshipClassTimeDifferences
                 .add(timeDifference.inSeconds); // store difference in seconds
 
-            // Add the start and end times as a map to the mentorshipClassTimes list
             mentorshipClassTimes.add({
               'startTime': startTime,
               'endTime': endTime,
             });
 
-            // Check if the time difference is less than 3600 seconds and start countdown if true
             if (timeDifference.inSeconds < 86400) {
               startCountdownForClass(i); // Start countdown for this class
             }
@@ -212,7 +209,6 @@ class MentorshipDetailController extends GetxController {
           }
         }
 
-// Print the mentorshipClassTimes list for verification
         print('Mentorship Class Times:');
         mentorshipClassTimes.forEach((classTime) {
           print(
@@ -294,7 +290,6 @@ class MentorshipDetailController extends GetxController {
       });
     }
   }
-
 
   Future<void> joinForLiveClass(int id, String type) async {
     String baseUrl =

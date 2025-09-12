@@ -44,6 +44,7 @@ import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/widget_controllers/ask_for_rating_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../enum/enum.dart';
+import '../../../mentroship/controller/mentorship_controller.dart';
 import '../../../model/models/course_models/course_by_id_model.dart';
 import '../../../model/models/drawer_model/drawer_item_model.dart';
 import '../../../model/models/service_model/service_model.dart';
@@ -177,8 +178,20 @@ class RootViewController extends GetxController {
     print('isSubscribed: $isSubscribed');
     print('isGuestUser: $isGuestUser');
 
+    if (categoryId != 0) {
+      box.remove(CommonEnum.mentorScreen.name);
+    }
+    if (mentorShipDetailId != 0) {
+      box.remove(CommonEnum.mentorshipDetailScreen.name);
+    }
+    if (liveClassDetailId != 0) {
+      box.remove(CommonEnum.liveClassDetail.name);
+    }
+
+
     if (!isGuestUser && isSubscribed) {
       selectedTab.value = 2;
+
       Get.toNamed(Routes.subscriptionView);
       box.write(CommonEnum.subscription.name, false);
       return;
@@ -186,12 +199,20 @@ class RootViewController extends GetxController {
 
     if (categoryId != 0 && !isGuestUser) {
       selectedTab.value = 0;
-      print("category id $categoryId");
       Get.toNamed(Routes.mentorScreen, arguments: categoryId);
       box.write(CommonEnum.mentorScreen.name, 0);
       return;
     }
 
+    if (mentorShipDetailId != 0 && !isGuestUser) {
+      selectedTab.value = 1;
+      Get.toNamed(
+        Routes.mentorshipDetail(id: mentorShipDetailId.toString()),
+        arguments: {'id': mentorShipDetailId.toString()},
+      );
+      box.write(CommonEnum.mentorshipDetailScreen.name, 0);
+      return;
+    }
 
     selectedTab.value = 2;
   }
@@ -200,6 +221,7 @@ class RootViewController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     Get.put(HomeNewController());
+    Get.put(MentorshipController());
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     checkTime();
     logPrint("hi ${Get.find<AuthService>().isPro.value}");
