@@ -113,7 +113,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // 🛡️ Protect screen recording & screenshot
-  // await disableScreenCapture();
+  await disableScreenCapture();
 
   // 🌐 Your initial setups
   await getInit();

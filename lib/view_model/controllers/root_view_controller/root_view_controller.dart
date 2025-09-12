@@ -188,7 +188,6 @@ class RootViewController extends GetxController {
       box.remove(CommonEnum.liveClassDetail.name);
     }
 
-
     if (!isGuestUser && isSubscribed) {
       selectedTab.value = 2;
 
