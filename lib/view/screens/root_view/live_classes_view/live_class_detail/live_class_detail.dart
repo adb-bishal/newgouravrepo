@@ -4,6 +4,8 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:stockpathshala_beta/enum/enum.dart';
+import 'package:stockpathshala_beta/model/models/common_container_model/common_container_model.dart';
 import 'package:stockpathshala_beta/model/services/auth_service.dart';
 import 'package:stockpathshala_beta/model/services/player/file_video_widget.dart';
 import 'package:stockpathshala_beta/model/utils/app_constants.dart';
@@ -94,7 +96,7 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                   showQualityPicker: false,
                   url: localVideoPath!,
                   eventCallBack: (progress, totalDuration) {},
-          )
+                )
               : (controller.liveClassDetail.value.data?.fileUrl == null ||
                       controller.liveClassDetail.value.data?.fileUrl == "")
                   ? SizedBox(
@@ -135,9 +137,9 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
         Get.put(LiveClassDetailController());
 
     var expiredPopup =
-        Get.find<LiveClassesController>().liveData.value.data!.expiredUserPopup;
+        Get.find<LiveClassesController>().liveData.value.data?.expiredUserPopup;
 
-    final ui = Get.find<LiveClassesController>().liveData.value!.cardUi!;
+    final ui = Get.find<LiveClassesController>().liveData.value?.cardUi!;
 
     // final LiveClassDetailController ccontroller = Get.find<LiveClassDetailController>();
     print("Downloading... ${liveClassDetailController.isDownloading.value}");
@@ -483,17 +485,21 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                           ? ColorResource.primaryColor
                           : (userRole == "pro_user" || userRole == "trial_user")
                               ? controller.isStarted.value
-                                  ? hexToColor(ui.joinButtonColor)
-                                  : hexToColor(ui.timerButtonColor)
+                                  ? hexToColor(ui?.joinButtonColor)
+                                  : hexToColor(ui?.timerButtonColor)
                               : !['trial_user', 'pro_user', 'fresh_user']
                                       .contains(userRole)
-                                  ? hexToColor(ui.unlockButtonColor)
-                                  : hexToColor(ui.registerButtonColor),
+                                  ? hexToColor(ui?.unlockButtonColor)
+                                  : hexToColor(ui?.registerButtonColor),
                       isDisable: false,
                       loading: controller.isContactLoading.value,
                       onPressed: Get.find<AuthService>().isGuestUser.value
                           ? () {
-                              ProgressDialog().showFlipDialog(isForPro: false);
+                              print("classs ${controller.liveClassId.value}");
+                              ProgressDialog().showFlipDialog(
+                                  isForPro: false,
+                                  name: CommonEnum.liveClassDetail.name,
+                                  data: controller.liveClassId.value);
                             }
                           : controller.isStarted.value
                               ? controller.onJoinNow
@@ -521,7 +527,9 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                                       timeInSeconds: controller.liveClassDetail
                                                   .value.data?.startTime
                                                   ?.difference(DateTime.parse(
-                                          controller.liveClassDetail.value.serverTime.toString()))
+                                                      controller.liveClassDetail
+                                                          .value.serverTime
+                                                          .toString()))
                                                   .inSeconds
                                                   .isNegative ??
                                               true
@@ -529,7 +537,9 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                                           : controller.liveClassDetail.value
                                                   .data?.startTime
                                                   ?.difference(DateTime.parse(
-                                          controller.liveClassDetail.value.serverTime.toString()))
+                                                      controller.liveClassDetail
+                                                          .value.serverTime
+                                                          .toString()))
                                                   .inSeconds ??
                                               0,
                                       isHrs: true,
@@ -576,10 +586,16 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                                       .isGuestUser
                                       .value
                                   ? () {
-                                      Get.find<LoginController>()
-                                          .emailController
-                                          .text = "Enter phone number";
-                                      Get.offAllNamed(Routes.loginScreen);
+                                      print(
+                                          "classs ${controller.liveClassId.value}");
+                                      ProgressDialog().showFlipDialog(
+                                          isForPro: false,
+                                          name: CommonEnum.liveClassDetail.name,
+                                          data: controller.liveClassId.value);
+                                      // Get.find<LoginController>()
+                                      //     .emailController
+                                      //     .text = "Enter phone number";
+                                      // Get.offAllNamed(Routes.loginScreen);
                                     }
                                   : controller.isStarted.value
                                       ? controller.onJoinNow
@@ -605,15 +621,15 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                                   : (userRole == "pro_user" ||
                                           userRole == "trial_user")
                                       ? controller.isStarted.value
-                                          ? hexToColor(ui.joinButtonColor)
-                                          : hexToColor(ui.registerButtonColor)
+                                          ? hexToColor(ui?.joinButtonColor)
+                                          : hexToColor(ui?.registerButtonColor)
                                       : ![
                                           'trial_user',
                                           'pro_user',
                                           'fresh_user'
                                         ].contains(userRole)
-                                          ? hexToColor(ui.unlockButtonColor)
-                                          : hexToColor(ui.registerButtonColor),
+                                          ? hexToColor(ui?.unlockButtonColor)
+                                          : hexToColor(ui?.registerButtonColor),
                               icon: Get.find<AuthService>().isGuestUser.value
                                   ? Icons.person
                                   : (userRole == "pro_user" ||
@@ -644,9 +660,20 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                       loading: controller.isContactLoading.value,
                       onPressed: Get.find<AuthService>().isGuestUser.value
                           ? () {
+                              print("classs ${controller.liveClassId.value}");
+                              // ProgressDialog().showFlipDialog(isForPro: false,name: CommonEnum.liveClassDetail.name
+                              //     ,data: controller.liveClassId.value);
+                              final box = GetStorage();
+                              box.write(CommonEnum.liveClassDetail.name,
+                                  controller.liveClassId.value);
+                              Get.put(LoginController());
                               Get.find<LoginController>().emailController.text =
                                   "Enter phone number";
                               Get.offAllNamed(Routes.loginScreen);
+                              //
+                              // Get.find<LoginController>().emailController.text =
+                              //     "Enter phone number";
+                              // Get.offAllNamed(Routes.loginScreen);
                             }
                           : controller.isStarted.value
                               ? controller.onJoinNow
@@ -690,12 +717,12 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                           ? ColorResource.primaryColor
                           : (userRole == "pro_user" || userRole == "trial_user")
                               ? controller.isStarted.value
-                                  ? hexToColor(ui.joinButtonColor)
-                                  : hexToColor(ui.registerButtonColor)
+                                  ? hexToColor(ui?.joinButtonColor)
+                                  : hexToColor(ui?.registerButtonColor)
                               : !['trial_user', 'pro_user', 'fresh_user']
                                       .contains(userRole)
-                                  ? hexToColor(ui.unlockButtonColor)
-                                  : hexToColor(ui.registerButtonColor),
+                                  ? hexToColor(ui?.unlockButtonColor)
+                                  : hexToColor(ui?.registerButtonColor),
                       icon: Get.find<AuthService>().isGuestUser.value
                           ? Icons.person
                           : (userRole == "pro_user" || userRole == "trial_user")
@@ -747,12 +774,12 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                       ? ColorResource.primaryColor
                       : (userRole == "pro_user" || userRole == "trial_user")
                           ? controller.isStarted.value
-                              ? hexToColor(ui.joinButtonColor)
-                              : hexToColor(ui.registerButtonColor)
+                              ? hexToColor(ui?.joinButtonColor)
+                              : hexToColor(ui?.registerButtonColor)
                           : !['trial_user', 'pro_user', 'fresh_user']
                                   .contains(userRole)
-                              ? hexToColor(ui.unlockButtonColor)
-                              : hexToColor(ui.registerButtonColor),
+                              ? hexToColor(ui?.unlockButtonColor)
+                              : hexToColor(ui?.registerButtonColor),
                   icon: Get.find<AuthService>().isGuestUser.value
                       ? Icons.person
                       : (userRole == "pro_user" || userRole == "trial_user")

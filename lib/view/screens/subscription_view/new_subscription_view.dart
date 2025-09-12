@@ -74,7 +74,8 @@ class SubscriptionView2 extends StatelessWidget {
     final MentorshipDetailController service =
         Get.put(MentorshipDetailController());
     return SafeArea(
-      child: Scaffold(
+      child:
+      Scaffold(
           backgroundColor: const Color(0xFFF8F7F7),
           bottomNavigationBar: Obx(
             () => !controller.isOfferDataLoading.value
@@ -102,14 +103,14 @@ class SubscriptionView2 extends StatelessWidget {
                               controller.offerController.value.text = "";
                             }
                             if (isMentorShow == true) {
-                              if (mentorPrice != 0) {
+                              if (int.parse(mentorPrice) != 0) {
                                 // if (controller
                                 //         .selectedSubscription.value.disable ==
                                 //     0) {
                                 controller.onBuyNow(orderType: "mentorship");
                                 // }
                               } else {
-                                Get.find<RootViewController>().getPopUpData2();
+                                Get.find<RootViewController>().getPopUpDataNew();
                               }
                             } else {
                               if (controller.selectedSubscription.value.price !=

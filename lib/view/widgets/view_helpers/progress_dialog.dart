@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stockpathshala_beta/view/widgets/button_view/animated_box.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/dashboard_controller/dashboard_controller.dart';
 
+import '../../../enum/enum.dart';
 import '../../../model/utils/color_resource.dart';
 import '../../../model/utils/dimensions_resource.dart';
 import '../../../model/utils/image_resource.dart';
@@ -188,7 +190,8 @@ class ProgressDialog {
       String? title,
       String? actionTitle,
       bool showCancel = true,
-      VoidCallback? onTap}) async {
+      VoidCallback? onTap,
+      dynamic? data, String? name}) async {
     return showAnimatedDialog(
         Get.context!,
         MyDialog(
@@ -248,6 +251,8 @@ class ProgressDialog {
                             Get.toNamed(Routes.subscriptionView);
                           }
                         } else {
+                          final box = GetStorage();
+                          box.write('$name',data);
                           Get.put(LoginController());
                           Get.find<LoginController>().emailController.text =
                               "Enter phone number";

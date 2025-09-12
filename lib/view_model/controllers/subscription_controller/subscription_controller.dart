@@ -17,6 +17,7 @@ import 'package:stockpathshala_beta/model/utils/app_constants.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 
+import '../../../enum/enum.dart';
 import '../../../iap.dart';
 import '../../../model/models/promocode_model/offer_applied_model.dart';
 import '../../../model/models/subscription_models/offer_banner_model.dart';
@@ -549,7 +550,8 @@ class SubscriptionController extends GetxController {
         if (Get.find<AuthService>().isGuestUser.value) {
           isOfferDataLoading.value = false;
 
-          ProgressDialog().showFlipDialog(isForPro: false);
+          ProgressDialog().showFlipDialog(
+              isForPro: false, name: CommonEnum.subscription.name, data: true);
         } else if (selectedSubscription.value.subBatch != null &&
             selectedSubBatch.value == 0) {
           toastShow(message: 'Please select sub batch first', error: true);
@@ -662,26 +664,27 @@ class SubscriptionController extends GetxController {
           print("Product list is empty.");
         }
       } else {
-
-        if (offerController.value.text == "" ) {
+        if (offerController.value.text == "") {
           afterOfferMentorshipPrice.value =
               (mentorshipDetailController.mentorshipDetailData.value!.price);
-          print("afterOfferMentorshipPrice : ${afterOfferMentorshipPrice.value}");
+          print(
+              "afterOfferMentorshipPrice : ${afterOfferMentorshipPrice.value}");
         }
 
-        if (appliedOffer.value.data?.discountType == 'Percentage' && afterOfferPrice.value != "") {
+        if (appliedOffer.value.data?.discountType == 'Percentage' &&
+            afterOfferPrice.value != "") {
           price = ((appliedOffer.value.data?.discountValue ?? 0) *
                   double.parse(mentorshipDetailController
                       .mentorshipDetailData.value!.price)) /
               100;
-
         } else {
-          price = double.parse(mentorshipDetailController.mentorshipDetailData.value!.price) ?? 0.0;
+          price = double.parse(mentorshipDetailController
+                  .mentorshipDetailData.value!.price) ??
+              0.0;
         }
 
-        if(offerController.value.text != "" ) {
-          tempMentorshipCouponCode.value = offerController.value.text ;
-
+        if (offerController.value.text != "") {
+          tempMentorshipCouponCode.value = offerController.value.text;
         }
 
         if (Get.find<AuthService>().isGuestUser.value) {
@@ -691,11 +694,9 @@ class SubscriptionController extends GetxController {
         } else {
           if (mentorshipDetailController.mentorshipDetailData.value!.id !=
               null) {
-
             print(
                 "afterOfferMentorshipPrice: ${afterOfferMentorshipPrice.value}");
-            print(
-                "offer price iss : ${offerController.value.text}");
+            print("offer price iss : ${offerController.value.text}");
             print(
                 "offer price iss : temp mentorshipCouponCode is: ${afterOfferMentorshipPrice.value}");
             print(
@@ -763,19 +764,21 @@ class SubscriptionController extends GetxController {
                         .mentorshipDetailData.value?.id,
                     "amount":
 
-                    // afterOfferMentorshipPrice.value,
-                    appliedOffer.value.data?.id == null
-                    // offerController.value.text == ""
-                        ? mentorshipDetailController.mentorshipDetailData.value!.price
-                        : afterOfferMentorshipPrice.value ??
-                            "0",
-                    "promo_code":
-                    offerController.value.text == "" ? "": tempMentorshipCouponCode.value,
+                        // afterOfferMentorshipPrice.value,
+                        appliedOffer.value.data?.id == null
+                            // offerController.value.text == ""
+                            ? mentorshipDetailController
+                                .mentorshipDetailData.value!.price
+                            : afterOfferMentorshipPrice.value ?? "0",
+                    "promo_code": offerController.value.text == ""
+                        ? ""
+                        : tempMentorshipCouponCode.value,
                     // appliedOffer.value.data?.id == null
                     //     ? ""
                     //     : appliedOffer.value.data!.code,
-                    "promo_code_id":
-                    offerController.value.text == "" ? "": tempMentorshipCouponID.value
+                    "promo_code_id": offerController.value.text == ""
+                        ? ""
+                        : tempMentorshipCouponID.value
                     // selectedOffer.value.id,
                     // 'super_subscription': selectedSubscription.value.superSub,
                     // "batch_start_date":
@@ -784,7 +787,6 @@ class SubscriptionController extends GetxController {
                     //         : null,
                     // "batch_id": selectedSubscription.value.batchId,
                   });
-
             } catch (e) {
               Future.delayed(const Duration(seconds: 1), () {
                 isBuyLoading.value = false;

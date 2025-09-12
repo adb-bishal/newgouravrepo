@@ -131,7 +131,9 @@ class LoginController extends GetxController {
           Get.find<AuthService>().removeToken();
           if (data != null) {
             isLoading.value = false;
-            Get.toNamed(Routes.otpScreen, arguments: emailController.text);
+            Get.toNamed(Routes.otpScreen, arguments: emailController.text)?.then((onValue){
+              emailController.clear();
+            });
             toastShow(message: message);
           }
         });

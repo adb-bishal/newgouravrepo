@@ -68,7 +68,6 @@ class HomeScreen extends GetView<HomeNewController> {
     //   controller.expansion.value = 1.0;
     //   controller.isTitleVisible.value = false;
     // });
-
     final screenWidth = MediaQuery.of(context).size.width;
     Get.put(HomeNewController());
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -1727,7 +1726,7 @@ Widget categoryList1(
                 return GestureDetector(
                   onTap: () {
                     Get.toNamed(Routes.mentorScreen,
-                            arguments: counsellingData.categories[index])
+                            arguments: counsellingData.categories[index].id)
                         ?.then((value) {
                       if (value == 'payment') {
                         controller.onRefresh();
@@ -1890,7 +1889,7 @@ Widget categoryListWithShimmer(
                           //if want multiple selection , disable right now
                           controller.itemClick(data.id, true);
                           Future.delayed(const Duration(milliseconds: 3), () {
-                            Get.toNamed(Routes.mentorScreen, arguments: data)
+                            Get.toNamed(Routes.mentorScreen, arguments: data.id)
                                 ?.then((value) {
                               if (value == 'payment') {
                                 controller.onRefresh();

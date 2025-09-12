@@ -24,6 +24,7 @@ import 'package:stockpathshala_beta/view/screens/subscription_view/subscription_
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
 
+import '../../enum/enum.dart';
 import '../../model/services/auth_service.dart';
 import '../../model/services/player/file_video_widget.dart';
 import '../../model/utils/dimensions_resource.dart';
@@ -33,6 +34,7 @@ import '../../view/screens/root_view/live_classes_view/live_class_detail/live_cl
 import '../../view/screens/root_view/live_classes_view/live_classes_view.dart';
 import '../../view/screens/root_view/quiz_view/quiz_list.dart';
 import '../../view/widgets/alert_dialog_popup.dart';
+import '../../view/widgets/view_helpers/progress_dialog.dart';
 import '../../view_model/controllers/root_view_controller/root_view_controller.dart';
 
 class MentorshipDetailScreen extends StatefulWidget {
@@ -204,8 +206,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                       0,
                                               itemBuilder: (context, index) {
                                                 return Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
                                                       vertical: 2,
                                                     ),
                                                     // Add some spacing if needed
@@ -398,7 +400,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        child: _buildFooterSection(context),
+                        child: _buildFooterSection(context, service.mentorshipDetailData.value?.id),
                       )
                     : Container(),
               ],
@@ -480,7 +482,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: Row(
                             children: [
-                              const Icon(Icons.circle, color: Colors.grey, size: 18),
+                              const Icon(Icons.circle,
+                                  color: Colors.grey, size: 18),
                               const SizedBox(width: 8),
                               Container(
                                 height: 15,
@@ -784,10 +787,12 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
             final screenWidth = MediaQuery.of(context).size.width;
             final serverDateTime = DateTime.parse(service.serverTime.value);
 
-            final startDate =
-                DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.startDatetime);
-            final endDate =
-                DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.endDatetime);
+            // final startDate =
+            //     DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.startDatetime);
+            // final endDate =
+            //     DateFormat("yyyy-MM-dd HH:mm:ss").parse(item.endDatetime);
+            final startDate = DateTime.parse(item.startDatetime);
+            final endDate = DateTime.parse(item.endDatetime);
 
             final formattedDate = DateFormat('d MMM').format(startDate);
             final formattedStartTime = DateFormat('h:mm a').format(startDate);
@@ -825,6 +830,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                     if (mentorshipData?.isPurchased == 0) {
                       if (mentorshipData?.allowPurchase != 0) {
                         showBuyMentorshipPopup(
+                          id: controller.mentorshipDetailData.value?.id,
                           context: Get.context!,
                           title: controller.mentorshipDetailData.value
                                   ?.mentorshipPopup.popUptitle ??
@@ -1315,20 +1321,20 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                       .prompttitle ??
                                                   "hiii",
                                               description: controller
-                                                      .mentorshipDetailData
-                                                      .value!
-                                                      .userNamePrompt
-                                                      .promptdescription,
+                                                  .mentorshipDetailData
+                                                  .value!
+                                                  .userNamePrompt
+                                                  .promptdescription,
                                               buttonTitle: controller
-                                                      .mentorshipDetailData
-                                                      .value!
-                                                      .userNamePrompt
-                                                      .promptconfirmButton,
+                                                  .mentorshipDetailData
+                                                  .value!
+                                                  .userNamePrompt
+                                                  .promptconfirmButton,
                                               imageUrl: controller
-                                                      .mentorshipDetailData
-                                                      .value!
-                                                      .userNamePrompt
-                                                      .promptimageUrl,
+                                                  .mentorshipDetailData
+                                                  .value!
+                                                  .userNamePrompt
+                                                  .promptimageUrl,
                                               titleColor: controller
                                                       .mentorshipDetailData
                                                       .value!
@@ -1361,7 +1367,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                             message: 'Joining... Please wait');
                                         controller.joinForLiveClass(id, "join");
                                         // Wait for 3 seconds before navigating to the next screen
-                                        Future.delayed(const Duration(seconds: 2),
+                                        Future.delayed(
+                                            const Duration(seconds: 2),
                                             () async {
                                           String link = Get.find<
                                                   MentorshipDetailController>()
@@ -1465,10 +1472,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                   .promptimageUrl ??
                                               "",
                                           titleColor: controller
-                                                  .mentorshipDetailData
-                                                  .value!
-                                                  .userNamePrompt
-                                                  .prompttitleColor,
+                                              .mentorshipDetailData
+                                              .value!
+                                              .userNamePrompt
+                                              .prompttitleColor,
                                           descriptionColor: controller
                                                   .mentorshipDetailData
                                                   .value!
@@ -1809,7 +1816,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                             message: 'Joining... Please wait');
                                         controller.joinForLiveClass(id, "join");
                                         // Wait for 3 seconds before navigating to the next screen
-                                        Future.delayed(const Duration(seconds: 2),
+                                        Future.delayed(
+                                            const Duration(seconds: 2),
                                             () async {
                                           String link = Get.find<
                                                   MentorshipDetailController>()
@@ -1909,9 +1917,9 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                 color: Colors.grey.shade200, // fallback background
                 image: (imageUrl != null && imageUrl.isNotEmpty)
                     ? DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.cover,
-                )
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      )
                     : null,
               ),
               child: (imageUrl == null || imageUrl.isEmpty)
@@ -2068,11 +2076,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           CircleAvatar(
             radius: screenWidth < 500
                 ? isLargeScreen
-                ? 40
-                : 30
+                    ? 40
+                    : 30
                 : isLargeScreen
-                ? 50
-                : 30,
+                    ? 50
+                    : 30,
             backgroundColor: Colors.grey.shade200,
             backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
                 ? NetworkImage(imageUrl)
@@ -2209,7 +2217,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
     );
   }
 
-  Widget _buildFooterSection(BuildContext context) {
+  Widget _buildFooterSection(BuildContext context, int? id) {
     var mentorship = service.mentorshipDetailData.value?.mentorshipDetailUI;
     var mentorshipData = service.mentorshipDetailData.value;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -2232,6 +2240,11 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           SizedBox(height: screenWidth < 500 ? 16 : 36),
           ElevatedButton(
             onPressed: () {
+              if (Get.find<AuthService>().isGuestUser.value) {
+                ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorshipDetailScreen.name,data:id);
+                return;
+              }
+
               if (mentorshipData?.allowPurchase != 0) {
                 Get.toNamed(Routes.subscriptionView, arguments: {
                   'isMentorShow': true,
@@ -2267,7 +2280,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    minimumSize: const Size(double.infinity, 50), // Full-width button
+                    minimumSize:
+                        const Size(double.infinity, 50), // Full-width button
                   )
                 : ElevatedButton.styleFrom(
                     backgroundColor:
@@ -2325,6 +2339,7 @@ void showBuyMentorshipPopup({
   required String buttonTitle,
   required String imageUrl,
   VoidCallback? onButtonPressed,
+  int? id,
 }) {
   final MentorshipDetailController service =
       Get.find<MentorshipDetailController>();
@@ -2391,6 +2406,10 @@ void showBuyMentorshipPopup({
               // Action Button
               GestureDetector(
                 onTap: () {
+                  if (Get.find<AuthService>().isGuestUser.value) {
+                    ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorshipDetailScreen.name,data:id);
+                    return;
+                  }
                   Get.toNamed(Routes.subscriptionView, arguments: {
                     'isMentorShow': true,
                     'title': mentorshipData?.mentorshipDetailFirst.toString(),
@@ -2404,7 +2423,8 @@ void showBuyMentorshipPopup({
                 },
                 child: Container(
                   width: screenWidth * 0.8,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   decoration: BoxDecoration(
                     color: hexToColor(
                         mentorshipData!.mentorshipPopup.popUpButtonBgColor ??
@@ -2459,7 +2479,6 @@ void showRecommendedMentorshipPopup({
       final bottomInset = MediaQuery.of(context).viewInsets.bottom;
       final isValidImage = imageUrl != null && imageUrl.isNotEmpty;
 
-
       return SizedBox(
         width: screenWidth,
         // Set the height to two-thirds of the screen height
@@ -2472,7 +2491,8 @@ void showRecommendedMentorshipPopup({
                 color: hexToColor(
                     mentorshipData!.recommendedMentorshipPopup.popupBgColor ??
                         "#ffffff"),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -2484,9 +2504,11 @@ void showRecommendedMentorshipPopup({
                     CircleAvatar(
                       radius: screenHeight * 0.09,
                       backgroundColor: Colors.grey.shade200,
-                      backgroundImage: isValidImage ? NetworkImage(imageUrl) : null,
+                      backgroundImage:
+                          isValidImage ? NetworkImage(imageUrl) : null,
                       child: !isValidImage
-                          ? const Icon(Icons.person, color: Colors.grey, size: 40)
+                          ? const Icon(Icons.person,
+                              color: Colors.grey, size: 40)
                           : null,
                     ),
                     const SizedBox(height: 16),
@@ -2539,8 +2561,8 @@ void showRecommendedMentorshipPopup({
                       child: Container(
                         width: screenWidth *
                             0.8, // Keep the button width 80% of the screen width
-                        padding:
-                            const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 32),
                         decoration: BoxDecoration(
                           color: hexToColor(mentorshipData!
                                   .recommendedMentorshipPopup.buttonBgColor ??
@@ -2692,7 +2714,8 @@ void showUserNamePopUp({
                 },
                 child: Container(
                   width: screenWidth * 0.8,
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
                   decoration: BoxDecoration(
                     color: hexToColor(
                         mentorshipData.mentorshipPopup.popUpButtonBgColor ??

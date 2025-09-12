@@ -124,20 +124,12 @@ class LiveClassDetailController extends GetxController {
   }
 
   @override
-  void onInit() async {
-    fetchVideos();
-    loadVideos();
-
-    // if (currentFileUrl != null &&
-    //     currentFileName != null &&
-    //     isDownloading.value) {
-    //   // UI state will reflect the ongoing download
-    //   isDownloading.value = true;
-    // }
-
+  Future<void> onReady() async {
+    super.onReady();
     if (Get.arguments != null && Get.arguments[0] is bool) {
       isPast.value = Get.arguments[0];
       liveClassId.value = Get.arguments[1];
+      print("liveClassId ${liveClassId.value}");
 
       if ((Get.arguments as List).length > 3) {
         batchId = Get.arguments[2];
@@ -149,17 +141,20 @@ class LiveClassDetailController extends GetxController {
     getDownloadState();
     Get.find<RootViewController>().getTrialData();
 
-    accelerometerEvents.listen((AccelerometerEvent event) {
+  }
+  @override
+  void onInit() async {
+    fetchVideos();
+    loadVideos();
 
-    //   if (event.x.abs() < 3 && event.y.abs() > 7) {
-    //     orientation.value = "Portrait";
-    //   } else if (event.y.abs() < 3 && event.x.abs() > 7) {
-    //     orientation.value= "Landscape";
-    //   } else {
-    //     orientation.value = "Flat or Diagonal";
-    //   }
-    //
-    });
+    // if (currentFileUrl != null &&
+    //     currentFileName != null &&
+    //     isDownloading.value) {
+    //   // UI state will reflect the ongoing download
+    //   isDownloading.value = true;
+    // }
+
+
     super.onInit();
   }
 

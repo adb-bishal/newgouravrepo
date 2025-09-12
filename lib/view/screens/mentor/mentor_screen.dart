@@ -23,6 +23,7 @@ import 'package:stockpathshala_beta/view/widgets/circular_indicator/circular_ind
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import '../../../enum/enum.dart';
 import '../../../view_model/controllers/root_view_controller/root_view_controller.dart';
 import '../home/mentor_shimmer.dart';
 import '../mentor/mentor_controller.dart';
@@ -109,6 +110,10 @@ class MentorScreen extends GetView<MentorController> {
                           alignment: Alignment.bottomCenter,
                           child: GestureDetector(
                             onTap: () {
+                              if (Get.find<AuthService>().isGuestUser.value) {
+                                ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorScreen.name,data:controller.categoryId);
+                                return;
+                              }
                               initiateCounsellingPayment(
                                 onPaymentCallBack: (response, orderId) async {
                                   try {
@@ -1108,10 +1113,10 @@ Widget categoryList(controller, List<Mentors> mentors) {
                       // Get.offAllNamed(Routes.rootView);
                       // Get.find<RootViewController>().onRedirectHome(0);
                       // Get.back(result: 'payment');
-
                       //
+
                       if (Get.find<AuthService>().isGuestUser.value) {
-                        ProgressDialog().showFlipDialog(isForPro: false);
+                        ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorScreen.name,data:controller.categoryId);
                         return;
                       }
                       MentorSlotModel? response =
@@ -1200,87 +1205,87 @@ Widget categoryList(controller, List<Mentors> mentors) {
     ),
   );
 }
-
-class UserGreetingWidget extends StatelessWidget {
-  final String? title;
-  final double titleFontSize;
-  final double subTitleFontSize;
-
-  UserGreetingWidget({
-    this.title,
-    this.titleFontSize = DimensionResource.fontSizeSmall - 1,
-    this.subTitleFontSize = DimensionResource.fontSizeExtraLarge - 1,
-    super.key,
-  });
-
-  HomeController homeController = Get.put(HomeController());
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    return Obx(() {
-      return Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title ?? greeting(),
-                style: StyleResource.instance.styleLight(
-                    color: hexToColor(homeController
-                        .homeData.value.homepageUi?.userGreetingColor),
-                    fontSize: screenWidth < 500
-                        ? titleFontSize
-                        : DimensionResource.fontSizeLarge),
-              ),
-              Text(
-                Get.find<AuthService>().user.value.name == null
-                    ? "User"
-                    : Get.find<AuthService>()
-                        .user
-                        .value
-                        .name
-                        .toString()
-                        .capitalize!,
-                style: StyleResource.instance.styleMedium(
-                    color: hexToColor(homeController
-                        .homeData.value.homepageUi?.userNameColor),
-                    fontSize: screenWidth < 500
-                        ? subTitleFontSize
-                        : DimensionResource.fontSizeOverLarge),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-          const Spacer(),
-          InkWell(
-            onTap: () {
-              if (!Get.find<AuthService>().isGuestUser.value) {
-                Get.toNamed(Routes.profileScreen);
-              } else {
-                ProgressDialog().showFlipDialog(isForPro: false);
-              }
-            },
-            child: imageCircleContainer(
-                radius: screenWidth < 500 ? 19 : 25,
-                url: Get.find<AuthService>().user.value.profileImage ?? ""),
-          ),
-        ],
-      );
-    });
-  }
-
-  String greeting() {
-    var hour = DateTime.now().hour;
-    if (hour < 12) {
-      return StringResource.goodMorning;
-    }
-    if (hour < 17) {
-      return StringResource.goodAfternoon;
-    }
-    return StringResource.goodEvening;
-  }
-}
+//
+// class UserGreetingWidget extends StatelessWidget {
+//   final String? title;
+//   final double titleFontSize;
+//   final double subTitleFontSize;
+//
+//   UserGreetingWidget({
+//     this.title,
+//     this.titleFontSize = DimensionResource.fontSizeSmall - 1,
+//     this.subTitleFontSize = DimensionResource.fontSizeExtraLarge - 1,
+//     super.key,
+//   });
+//
+//   HomeController homeController = Get.put(HomeController());
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final screenWidth = MediaQuery.of(context).size.width;
+//     return Obx(() {
+//       return Row(
+//         children: [
+//           Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Text(
+//                 title ?? greeting(),
+//                 style: StyleResource.instance.styleLight(
+//                     color: hexToColor(homeController
+//                         .homeData.value.homepageUi?.userGreetingColor),
+//                     fontSize: screenWidth < 500
+//                         ? titleFontSize
+//                         : DimensionResource.fontSizeLarge),
+//               ),
+//               Text(
+//                 Get.find<AuthService>().user.value.name == null
+//                     ? "User"
+//                     : Get.find<AuthService>()
+//                         .user
+//                         .value
+//                         .name
+//                         .toString()
+//                         .capitalize!,
+//                 style: StyleResource.instance.styleMedium(
+//                     color: hexToColor(homeController
+//                         .homeData.value.homepageUi?.userNameColor),
+//                     fontSize: screenWidth < 500
+//                         ? subTitleFontSize
+//                         : DimensionResource.fontSizeOverLarge),
+//                 overflow: TextOverflow.ellipsis,
+//               ),
+//             ],
+//           ),
+//           const Spacer(),
+//           InkWell(
+//             onTap: () {
+//               if (!Get.find<AuthService>().isGuestUser.value) {
+//                 Get.toNamed(Routes.profileScreen);
+//               } else {
+//                 ProgressDialog().showFlipDialog(isForPro: false);
+//               }
+//             },
+//             child: imageCircleContainer(
+//                 radius: screenWidth < 500 ? 19 : 25,
+//                 url: Get.find<AuthService>().user.value.profileImage ?? ""),
+//           ),
+//         ],
+//       );
+//     });
+//   }
+//
+//   String greeting() {
+//     var hour = DateTime.now().hour;
+//     if (hour < 12) {
+//       return StringResource.goodMorning;
+//     }
+//     if (hour < 17) {
+//       return StringResource.goodAfternoon;
+//     }
+//     return StringResource.goodEvening;
+//   }
+// }
 
 Color hexToColor(String? hexColor) {
   if (hexColor == null || hexColor.isEmpty) {

@@ -25,7 +25,7 @@ import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockpathshala_beta/model/models/account_models/language_model.dart'
-as lang;
+    as lang;
 import 'package:stockpathshala_beta/model/models/popup_model/pop_up_model.dart';
 import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_helper/auth_provider.dart';
 import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_helper/live_provider.dart';
@@ -43,6 +43,7 @@ import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/video_course_detail_controller/video_course_detail_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/widget_controllers/ask_for_rating_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../enum/enum.dart';
 import '../../../model/models/course_models/course_by_id_model.dart';
 import '../../../model/models/drawer_model/drawer_item_model.dart';
 import '../../../model/models/service_model/service_model.dart';
@@ -92,9 +93,9 @@ class RootViewController extends GetxController {
   RxList<CourseWishlist> textCourseData = <CourseWishlist>[].obs;
   RxList<CourseWishlist> blogsData = <CourseWishlist>[].obs;
   final AskForRatingController askForRatingController =
-  Get.put(AskForRatingController());
+      Get.put(AskForRatingController());
   final LiveClassDetailController liveClassDetailController =
-  Get.put(LiveClassDetailController());
+      Get.put(LiveClassDetailController());
   RxBool hasShownRating = false.obs;
 
   WishListProvider wishListProvider = getIt();
@@ -103,7 +104,7 @@ class RootViewController extends GetxController {
   RxList<DropDownData> languageData = <DropDownData>[].obs;
   RxBool isAskRatingShow = false.obs;
 
-   RxInt selectedTab  = RxInt(2);
+  RxInt selectedTab = RxInt(2);
 
   RxBool isShow = true.obs;
   RxBool isAvailable = false.obs;
@@ -153,8 +154,72 @@ class RootViewController extends GetxController {
   RxInt days = 0.obs;
   TooltipController toolTipcontroller = TooltipController();
   @override
+  void onReady() async {
+    super.onReady();
+    // await GetStorage.init();
+
+
+
+    final categoryId = int.tryParse(
+            box.read(CommonEnum.mentorScreen.name)?.toString() ?? '0') ??
+        0;
+    final mentorShipDetailId = int.tryParse(
+            box.read(CommonEnum.mentorshipDetailScreen.name)?.toString() ??
+                '0') ??
+        0;
+    final liveClassDetailId = int.tryParse(
+            box.read(CommonEnum.liveClassDetail.name)?.toString() ?? '0') ??
+        0;
+    final isSubscribed = box.read(CommonEnum.subscription.name) == true;
+    final isGuestUser = Get.find<AuthService>().isGuestUser.value;
+
+    print('categoryId: $categoryId');
+    print('mentorShipDetailId: $mentorShipDetailId');
+    print('liveClassDetailId: $liveClassDetailId');
+    print('isSubscribed: $isSubscribed');
+    print('isGuestUser: $isGuestUser');
+
+    if (!isGuestUser && isSubscribed) {
+      selectedTab.value = 2;
+      Get.toNamed(Routes.subscriptionView);
+      box.write(CommonEnum.subscription.name, false);
+      return;
+    }
+
+    if (categoryId != 0 && !isGuestUser) {
+      selectedTab.value = 0;
+      print("catergory id $categoryId");
+      Get.toNamed(Routes.mentorScreen, arguments: categoryId);
+      box.write(CommonEnum.mentorScreen.name, 0);
+      return;
+    }
+
+    if (liveClassDetailId != 0 && !isGuestUser) {
+      selectedTab.value = 2;
+      Get.toNamed(
+        Routes.liveClassDetail(id: liveClassDetailId.toString()),
+        arguments: [true, liveClassDetailId.toString()],
+      );
+      box.write(CommonEnum.liveClassDetail.name, 0);
+      return;
+    }
+
+    if (mentorShipDetailId != 0 && !isGuestUser) {
+      selectedTab.value = 1;
+      Get.toNamed(
+        Routes.mentorshipDetail(id: mentorShipDetailId.toString()),
+        arguments: {'id': mentorShipDetailId.toString()},
+      );
+      box.write(CommonEnum.mentorshipDetailScreen.name, 0);
+      return;
+    }
+    selectedTab.value = 2;
+  }
+
+  @override
   Future<void> onInit() async {
     super.onInit();
+    Get.put(HomeNewController());
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     checkTime();
     logPrint("hi ${Get.find<AuthService>().isPro.value}");
@@ -212,9 +277,9 @@ class RootViewController extends GetxController {
 
     final args = Get.arguments as Map<String, dynamic>?;
     if (args != null && args['selectedTab'] != null) {
-      selectedTab.value = args['selectedTab'];
-    }else{
-      selectedTab.value = 2;
+      // selectedTab.value = args['selectedTab'];
+    } else {
+      // selectedTab.value = 2;
     }
     if (args?['resetHome'] == true && args?['selectedTab'] == 0) {
       // Initialize home controller after navigation
@@ -254,19 +319,22 @@ class RootViewController extends GetxController {
     if (selectedTab.value == index) return; // Don't do anything if same tab
     selectedTab.value = index;
     // Reset home controller state immediately when switching to home tab
-    if (index == 0) { // Assuming 0 is home tab
+    if (index == 0) {
+      // Assuming 0 is home tab
       if (Get.isRegistered<HomeNewController>()) {
         final homeController = Get.find<HomeNewController>();
         homeController.resetScrollStateImmediate();
       }
     }
-
   }
+
   void onRedirectHome(int index) {
     if (index == 0) {
-      Get.offAllNamed(Routes.rootView, arguments: {'selectedTab': 0, 'resetHome': true});
+      Get.offAllNamed(Routes.rootView,
+          arguments: {'selectedTab': 0, 'resetHome': true});
     }
   }
+
 // In your bottom navigation widget
   void onTabTapped(int index) {
     // Reset home state immediately before changing tab
@@ -279,6 +347,7 @@ class RootViewController extends GetxController {
     // Then change the tab
     Get.find<RootViewController>().changeTab(index);
   }
+
   RootViewController([int? i]) {
     if (RootViewController.promptData.isEmpty &&
         RootViewController.bgData.isEmpty) {
@@ -540,20 +609,20 @@ class RootViewController extends GetxController {
   // ].obs;
 
   VoidCallback get checkPermission => () async {
-    PermissionStatus camaraPermissionStatus =
-    await Permission.camera.status;
-    if (camaraPermissionStatus.isGranted) {
-      ImagePicker()
-          .getImage(source: ImageSource.camera, imageQuality: 30)
-          .then((PickedFile? pickedFile) async {})
-          .catchError((e) {
-        logPrint(e);
-      });
-    } else {
-      PermissionHandlerHelper.permissionConfirmationDialog(
-          context: Get.context!, onMethodCall: checkPermission);
-    }
-  };
+        PermissionStatus camaraPermissionStatus =
+            await Permission.camera.status;
+        if (camaraPermissionStatus.isGranted) {
+          ImagePicker()
+              .getImage(source: ImageSource.camera, imageQuality: 30)
+              .then((PickedFile? pickedFile) async {})
+              .catchError((e) {
+            logPrint(e);
+          });
+        } else {
+          PermissionHandlerHelper.permissionConfirmationDialog(
+              context: Get.context!, onMethodCall: checkPermission);
+        }
+      };
 
   Future<void> fetchDrawerItems() async {
     try {
@@ -692,8 +761,7 @@ class RootViewController extends GetxController {
               } else {}
             },
             onContinue: () {}, emailController: emailController,
-          )
-          ,
+          ),
           barrierColor: Colors.black.withOpacity(0.5), // Optional
           isDismissible: true,
           isScrollControlled: true, // Optional
@@ -713,8 +781,8 @@ class RootViewController extends GetxController {
       if (isTrial.value == 1 &&
           Get.find<AuthService>().user.value.name == null) {
         Future(() async => showSucessDialog(
-          // days.value == 1
-          //     ?
+            // days.value == 1
+            //     ?
             promptData,
 
             // "Trial Activated for ${popUpModel.days} Day!"
@@ -727,8 +795,8 @@ class RootViewController extends GetxController {
     if (showName) {
       if (Get.find<AuthService>().user.value.name == null) {
         Future(() async => showSucessDialog(
-          // days.value == 1
-          //     ?
+            // days.value == 1
+            //     ?
             promptData,
 
             // "Trial Activated for ${popUpModel.days} Day!"
@@ -741,23 +809,23 @@ class RootViewController extends GetxController {
   }
 
   showSucessDialog(
-      Map<String, String> trialPromptData,
-      hasName,
-      Map<String, String> backgroundData,
-      ) {
+    Map<String, String> trialPromptData,
+    hasName,
+    Map<String, String> backgroundData,
+  ) {
     // Retrieve each prompt field from the trialPromptData map
     final confettiController =
-    ConfettiController(duration: const Duration(seconds: 5));
+        ConfettiController(duration: const Duration(seconds: 5));
     // confettiController.play();
 
     logPrint(
         "-------Confetti mytrialPromptData is : " + trialPromptData.toString());
 
     final promptTitle =
-    (trialPromptData['title'] ?? '').replaceAll(r'\n', '\n');
+        (trialPromptData['title'] ?? '').replaceAll(r'\n', '\n');
     final promptTitleColor = trialPromptData['titleColor'] ?? '#000000';
     final promptDescription =
-    (trialPromptData['description'] ?? '').replaceAll(r'\n', '\n');
+        (trialPromptData['description'] ?? '').replaceAll(r'\n', '\n');
     final promptDescriptionColor =
         trialPromptData['descriptionColor'] ?? '#000000';
     final confirmButtonText =
@@ -785,7 +853,7 @@ class RootViewController extends GetxController {
 
     Timer(
       const Duration(seconds: 0),
-          () {
+      () {
         Get.bottomSheet(
           WillPopScope(
             onWillPop: () async => animationCompleted,
@@ -799,9 +867,9 @@ class RootViewController extends GetxController {
                         : Colors.transparent,
                     image: bgType == 'image'
                         ? DecorationImage(
-                      image: NetworkImage(bgImage),
-                      fit: BoxFit.cover,
-                    )
+                            image: NetworkImage(bgImage),
+                            fit: BoxFit.cover,
+                          )
                         : null,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(25.0),
@@ -815,17 +883,17 @@ class RootViewController extends GetxController {
                         // Display the image from promptImage_url
                         promptImage_url.isNotEmpty
                             ? Image.network(
-                          promptImage_url,
-                          height: 100,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Icon(Icons.image_not_supported,
-                                size: 100);
-                          },
-                        )
+                                promptImage_url,
+                                height: 100,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.image_not_supported,
+                                      size: 100);
+                                },
+                              )
                             : Image.asset(
-                          ImageResource.instance.successIcon,
-                          height: 100,
-                        ),
+                                ImageResource.instance.successIcon,
+                                height: 100,
+                              ),
                         SizedBox(height: 15),
                         Text(
                           promptTitle,
@@ -852,46 +920,46 @@ class RootViewController extends GetxController {
                         const SizedBox(height: 16),
                         Get.find<AuthService>().user.value.name == null
                             ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 0),
-                          child: Obx(
-                                () => Form(
-                              key: signInFormKey,
-                              child: SizedBox(
-                                width: Get.width * 0.8,
-                                child: CommonTextField(
-                                  showEdit: false,
-                                  isTrailPopUp: true,
-                                  readOnly: isLoading.value,
-                                  onTap: () {
-                                    emailController.text = "";
-                                  },
-                                  isLogin: false,
-                                  isLabel: true,
-                                  isHint: true,
-                                  controller: emailController,
-                                  keyboardType: TextInputType.text,
-                                  validator: (value) {
-                                    if (value ==
-                                        promptNameInputPlaceholder) {
-                                      emailError.value =
-                                          StringResource.nameInvalidError;
-                                      return "";
-                                    } else if (value!.length <= 3) {
-                                      emailError.value =
-                                          StringResource.nameInvalidError;
-                                      return "";
-                                    } else {
-                                      emailError.value = "";
-                                      return null;
-                                    }
-                                  },
-                                  errorText: emailError.value,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 0),
+                                child: Obx(
+                                  () => Form(
+                                    key: signInFormKey,
+                                    child: SizedBox(
+                                      width: Get.width * 0.8,
+                                      child: CommonTextField(
+                                        showEdit: false,
+                                        isTrailPopUp: true,
+                                        readOnly: isLoading.value,
+                                        onTap: () {
+                                          emailController.text = "";
+                                        },
+                                        isLogin: false,
+                                        isLabel: true,
+                                        isHint: true,
+                                        controller: emailController,
+                                        keyboardType: TextInputType.text,
+                                        validator: (value) {
+                                          if (value ==
+                                              promptNameInputPlaceholder) {
+                                            emailError.value =
+                                                StringResource.nameInvalidError;
+                                            return "";
+                                          } else if (value!.length <= 3) {
+                                            emailError.value =
+                                                StringResource.nameInvalidError;
+                                            return "";
+                                          } else {
+                                            emailError.value = "";
+                                            return null;
+                                          }
+                                        },
+                                        errorText: emailError.value,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        )
+                              )
                             : Container(),
                         SizedBox(
                           width: Get.width * 0.8,
@@ -1032,47 +1100,47 @@ class RootViewController extends GetxController {
               ),
               isName
                   ? const SizedBox(
-                height: 14,
-              )
+                      height: 14,
+                    )
                   : const SizedBox(),
               isName
                   ? Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 0),
-                child: Obx(
-                      () => Form(
-                    key: signInFormKey,
-                    child: CommonTextField(
-                      showEdit: false,
-                      isSpace: true,
-                      isTrailPopUp: true,
-                      readOnly: isLoading.value,
-                      onTap: () {
-                        emailController.text = "";
-                      },
-                      isLogin: false,
-                      isHint: false,
-                      controller: emailController,
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value == "Enter your name") {
-                          emailError.value =
-                              StringResource.nameInvalidError;
-                          return "";
-                        } else if (value!.length <= 3) {
-                          emailError.value =
-                              StringResource.nameInvalidError;
-                          return "";
-                        } else {
-                          emailError.value = "";
-                          return null;
-                        }
-                      },
-                      errorText: emailError.value,
-                    ),
-                  ),
-                ),
-              )
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 0),
+                      child: Obx(
+                        () => Form(
+                          key: signInFormKey,
+                          child: CommonTextField(
+                            showEdit: false,
+                            isSpace: true,
+                            isTrailPopUp: true,
+                            readOnly: isLoading.value,
+                            onTap: () {
+                              emailController.text = "";
+                            },
+                            isLogin: false,
+                            isHint: false,
+                            controller: emailController,
+                            keyboardType: TextInputType.text,
+                            validator: (value) {
+                              if (value == "Enter your name") {
+                                emailError.value =
+                                    StringResource.nameInvalidError;
+                                return "";
+                              } else if (value!.length <= 3) {
+                                emailError.value =
+                                    StringResource.nameInvalidError;
+                                return "";
+                              } else {
+                                emailError.value = "";
+                                return null;
+                              }
+                            },
+                            errorText: emailError.value,
+                          ),
+                        ),
+                      ),
+                    )
                   : Container(),
               const SizedBox(
                 height: 12,
@@ -1122,6 +1190,7 @@ class RootViewController extends GetxController {
       // barrierDismissible: false
     );
   }
+
   Future<void> getPopUpData(data, int index) async {
     logPrint("Fetching popup data...");
 
@@ -1154,7 +1223,8 @@ class RootViewController extends GetxController {
         else if (isPro || isTrial) {
           if (hasName) {
             liveController.isDataLoading.value = true;
-            liveController.dataPagingController.value.list[index].isLoading = true;
+            liveController.dataPagingController.value.list[index].isLoading =
+                true;
             liveController.isOnTapAllowd.value = false;
 
             // Handle registration
@@ -1279,9 +1349,9 @@ class RootViewController extends GetxController {
                 });
                 Get.find<QuizController>().getQuizById(data.id.toString());
                 Get.find<QuizController>().quizType.value =
-                data.isScholarship == 1
-                    ? QuizType.scholarship
-                    : QuizType.free;
+                    data.isScholarship == 1
+                        ? QuizType.scholarship
+                        : QuizType.free;
                 Get.find<QuizController>().isTimeUp.value = false;
               } else {
                 toastShow(message: StringResource.quizAttempted);
@@ -1292,6 +1362,86 @@ class RootViewController extends GetxController {
             // getProfile(true);
           }
         }));
+  }
+
+  Future<void> getPopUpDataNew({
+    String? title,
+    String? subtitle,
+    String? buttonTitle,
+    String? imageUrl,
+  }) async {
+    final authService = Get.find<AuthService>();
+    final profileController = Get.find<ProfileController>();
+    final userRole = authService.userRole.value;
+    final userName = authService.user.value.name;
+    final isGuest = authService.isGuestUser.value;
+    final isPro = authService.isPro.value;
+
+    logPrint("Entering getPopUpData2");
+
+    await rootProvider.getPopUpData(
+      onError: (e, m) {
+        logPrint("Failed to fetch popup data: $e");
+      },
+      onSuccess: (message, json) {
+        final popUpModel = PopUpModel.fromJson(json!);
+        isTrial.value = popUpModel.isTrial != 0;
+        logPrint("Days 2: ${popUpModel.days}");
+
+        if (isGuest) {
+          ProgressDialog().showFlipDialog(isForPro: false);
+          return;
+        }
+
+        if (isPro) {
+          getProfile();
+          profileController.getCurrentUserData();
+
+          if (userName == null || userName == 'null') {
+            logPrint("----Prompting Trial Activation---------");
+            showSucessDialog(
+              popUpModel.trialPromptData,
+              true,
+              popUpModel.backgroundData,
+            );
+          }
+          return;
+        }
+
+        switch (userRole) {
+          case "fresh_user":
+            dialogBoxForTrial(popUpModel); // Popup with name
+            break;
+
+          case "pro_expired_user":
+          case "trial_expired_user":
+            logPrint("Showing expired trial popup");
+            liveClassDetailController.expireTrialPlanPopUp(
+                imageUrl, title, subtitle, buttonTitle);
+            break;
+
+          case "trial_user":
+            if (popUpModel.isTrial == 1) {
+              Get.toNamed(Routes.subscriptionView);
+            }
+            break;
+
+          default:
+            if ((popUpModel.isPro == 1 &&
+                    (popUpModel.isTrial == 1 || popUpModel.isTrial == 0)) &&
+                (userName == null || userName == 'null')) {
+              getProfile();
+              profileController.getCurrentUserData();
+              logPrint("----Prompting Trial Activation---------");
+              showSucessDialog(
+                popUpModel.trialPromptData,
+                true,
+                popUpModel.backgroundData,
+              );
+            }
+        }
+      },
+    );
   }
 
   Future<void> getPopUpData2({
@@ -1347,10 +1497,7 @@ class RootViewController extends GetxController {
           case "trial_expired_user":
             logPrint("Showing expired trial popup");
             liveClassDetailController.expireTrialPlanPopUp(
-                imageUrl,
-                title,
-                subtitle,
-                buttonTitle);
+                imageUrl, title, subtitle, buttonTitle);
             break;
 
           case "trial_user":
@@ -1360,7 +1507,8 @@ class RootViewController extends GetxController {
             break;
 
           default:
-            if ((popUpModel.isPro == 1 && (popUpModel.isTrial == 1 || popUpModel.isTrial == 0)) &&
+            if ((popUpModel.isPro == 1 &&
+                    (popUpModel.isTrial == 1 || popUpModel.isTrial == 0)) &&
                 (userName == null || userName == 'null')) {
               getProfile();
               profileController.getCurrentUserData();
@@ -1375,7 +1523,6 @@ class RootViewController extends GetxController {
       },
     );
   }
-
 
   getPopUpData6([bool isBatch = false]) async {
     final authService = Get.find<AuthService>();
@@ -1411,10 +1558,10 @@ class RootViewController extends GetxController {
         },
         onSuccess: (message, json) {
           ShowToastFlash(
-              title: StringResource.callBackArrange,
-              message: "",
-              positiveButton: "",
-              negativeButton: "")
+                  title: StringResource.callBackArrange,
+                  message: "",
+                  positiveButton: "",
+                  negativeButton: "")
               .present(context, onPositiveAction: () {});
           isOpenLoading(false);
           userNameController.value.clear();
@@ -1443,10 +1590,10 @@ class RootViewController extends GetxController {
           showOpenAccountDialog();
         } else {
           PermissionAlertDialog(
-              title: null,
-              message: null,
-              positiveButton: "Yes",
-              negativeButton: "no")
+                  title: null,
+                  message: null,
+                  positiveButton: "Yes",
+                  negativeButton: "no")
               .present(context, onPositiveAction: () {
             userNameController.value.text =
                 Get.find<AuthService>().user.value.name ?? "";
@@ -1459,7 +1606,7 @@ class RootViewController extends GetxController {
         break;
       case 'downloads':
         if ((!Get.find<AuthService>().isGuestUser.value) &&
-            (Get.find<AuthService>().isPro.value) ||
+                (Get.find<AuthService>().isPro.value) ||
             (Get.find<AuthService>().isTrial.value)) {
           Get.toNamed(Routes.downloadListView);
         } else {
@@ -1567,7 +1714,7 @@ class RootViewController extends GetxController {
         break;
 
       default:
-      //refer and earn
+        //refer and earn
         if (!Get.find<AuthService>().isGuestUser.value) {
           Get.toNamed(Routes.referAndEarn);
         } else {
@@ -1585,7 +1732,7 @@ class RootViewController extends GetxController {
           title: "Permission Request",
           image: ImageResource.instance.permissionSettingsIcon,
           description:
-          "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
+              "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
           isFailed: false,
           yesText: "Continue",
           noText: "Cancel",
@@ -1609,7 +1756,7 @@ class RootViewController extends GetxController {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     key: openAccountFormKey,
                     child: Obx(
-                          () => Column(
+                      () => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CommonTextField(
@@ -1799,8 +1946,8 @@ class RootViewController extends GetxController {
               Get.back();
               if (shoDialog) {
                 showSucessDialog(
-                  // days.value == 1
-                  //     ?
+                    // days.value == 1
+                    //     ?
                     promptData.value,
                     // "Trial Activated for ${popUpModel.days} Day!"
                     //     :
@@ -1939,7 +2086,7 @@ class RootViewController extends GetxController {
             break;
           default:
 
-          ///share text course
+            ///share text course
             Get.toNamed(
                 Routes.textCourseDetail(
                     id: Get.find<AuthService>().courseId.value),
@@ -1958,17 +2105,17 @@ class RootViewController extends GetxController {
   void initDynamicLinks() async {
     try {
       FirebaseDynamicLinks.instance.onLink.listen(
-              (PendingDynamicLinkData dynamicLink) async {
-            final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks
-                .instance
-                .getDynamicLink(dynamicLink.link);
-            if (initialLink != null) {
-              Get.find<AuthService>().trimShortUrl(initialLink.link.path);
-            } else {
-              Get.find<AuthService>().trimShortUrl(dynamicLink.link.path);
-            }
-            onDynamicLinkRedirect();
-          }, onError: (e) async {
+          (PendingDynamicLinkData dynamicLink) async {
+        final PendingDynamicLinkData? initialLink = await FirebaseDynamicLinks
+            .instance
+            .getDynamicLink(dynamicLink.link);
+        if (initialLink != null) {
+          Get.find<AuthService>().trimShortUrl(initialLink.link.path);
+        } else {
+          Get.find<AuthService>().trimShortUrl(dynamicLink.link.path);
+        }
+        onDynamicLinkRedirect();
+      }, onError: (e) async {
         throw Exception(e);
       });
     } catch (e) {
@@ -1978,43 +2125,43 @@ class RootViewController extends GetxController {
 
   saveToWatchLater(
       {required int id,
-        required String type,
-        required Function(WishListSaveModel data) response}) async {
+      required String type,
+      required Function(WishListSaveModel data) response}) async {
     if (!Get.find<AuthService>().isGuestUser.value) {
       CourseWishlist courseWishlist = CourseWishlist();
       switch (type) {
         case "video":
           courseWishlist = Get.find<RootViewController>().videoData.firstWhere(
-                  (p0) => p0.id?.value == id,
+              (p0) => p0.id?.value == id,
               orElse: () => CourseWishlist());
           break;
         case "audio":
           courseWishlist = Get.find<RootViewController>().audioData.firstWhere(
-                  (p0) => p0.id?.value == id,
+              (p0) => p0.id?.value == id,
               orElse: () => CourseWishlist());
           break;
         case AppConstants.textCourse:
           courseWishlist = Get.find<RootViewController>()
               .textCourseData
               .firstWhere((p0) => p0.id?.value == id,
-              orElse: () => CourseWishlist());
+                  orElse: () => CourseWishlist());
           break;
         case AppConstants.videoCourse:
           courseWishlist = Get.find<RootViewController>()
               .videoCourseData
               .firstWhere((p0) => p0.id?.value == id,
-              orElse: () => CourseWishlist());
+                  orElse: () => CourseWishlist());
           break;
         case AppConstants.audioCourse:
           courseWishlist = Get.find<RootViewController>()
               .audioCourseData
               .firstWhere((p0) => p0.id?.value == id,
-              orElse: () => CourseWishlist());
+                  orElse: () => CourseWishlist());
           break;
         default:
-        //blogs
+          //blogs
           courseWishlist = Get.find<RootViewController>().blogsData.firstWhere(
-                  (p0) => p0.id?.value == id,
+              (p0) => p0.id?.value == id,
               orElse: () => CourseWishlist());
           break;
       }
@@ -2065,8 +2212,8 @@ class RootViewController extends GetxController {
     Get.find<AuthService>().isGuestUser.value
         ? userType = "is_guest"
         : Get.find<AuthService>().isPro.value
-        ? userType = "pro_user"
-        : userType = "non_pro_user";
+            ? userType = "pro_user"
+            : userType = "non_pro_user";
 
     // if (Get.find<AuthService>().isGuestUser.value) {
     //   userType = "is_guest";
@@ -2091,9 +2238,9 @@ class RootViewController extends GetxController {
   postUserActivity() async {
     // isDataLoading(true);
     DateTime activeTime =
-    await Get.find<AuthService>().getUserTime(isActive: true);
+        await Get.find<AuthService>().getUserTime(isActive: true);
     DateTime inActiveTime =
-    await Get.find<AuthService>().getUserTime(isActive: false);
+        await Get.find<AuthService>().getUserTime(isActive: false);
     String date = DateFormat("yyyy-MM-dd").format(activeTime);
     Duration duration = inActiveTime.difference(activeTime);
 
@@ -2125,12 +2272,11 @@ class RootViewController extends GetxController {
     buildShowModalBottomSheet(
       context,
       AddAskRatingWidget(
-        // courseDatum: courseDatum,
-      ),
+          // courseDatum: courseDatum,
+          ),
       isDismissible: true,
     );
   }
-
 
   showReferByDialog() {
     return showAnimatedDialog(
@@ -2139,7 +2285,7 @@ class RootViewController extends GetxController {
           title: "Permission Request",
           image: ImageResource.instance.permissionSettingsIcon,
           description:
-          "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
+              "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
           isFailed: false,
           yesText: "Continue",
           noText: "Cancel",
@@ -2192,23 +2338,23 @@ class RootViewController extends GetxController {
   }
 
   VoidCallback get onAudioClose => () async {
-    pageManager.stop();
-    await pageManager.removeAll();
-    pageManager.currentPlayingMedia.value =
-    const MediaItem(id: "", title: "");
-    logPrint("playlist notifire ${pageManager.playlistNotifier.length}");
+        pageManager.stop();
+        await pageManager.removeAll();
+        pageManager.currentPlayingMedia.value =
+            const MediaItem(id: "", title: "");
+        logPrint("playlist notifire ${pageManager.playlistNotifier.length}");
 
-    logPrint(pageManager.currentPlayingMedia.value.id);
-    logPrint("close");
-  };
+        logPrint(pageManager.currentPlayingMedia.value.id);
+        logPrint("close");
+      };
 
   VoidCallback get playButtonClicked => () {
-    if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-      pageManager.pause();
-    } else {
-      pageManager.play();
-    }
-  };
+        if (pageManager.playButtonNotifier.value == ButtonState.playing) {
+          pageManager.pause();
+        } else {
+          pageManager.play();
+        }
+      };
 
   Rx<ProgressBarState> progressAudioNotifier = const ProgressBarState(
     current: Duration.zero,
@@ -2229,10 +2375,10 @@ class RootViewController extends GetxController {
   onChangeEnd(double value) {
     logPrint("kjhknk $value");
     EasyDebounce.debounce(value.toString(), const Duration(milliseconds: 50),
-            () {
-          isManualSlide.value = false;
-          pageManager.seek(Duration(seconds: value.ceil()));
-        });
+        () {
+      isManualSlide.value = false;
+      pageManager.seek(Duration(seconds: value.ceil()));
+    });
   }
 
   /// getUpdateVersion
@@ -2257,7 +2403,7 @@ class RootViewController extends GetxController {
   void onUpdateLaterClick() {
     if (Platform.isAndroid || Platform.isIOS) {
       final appId =
-      Platform.isAndroid ? 'com.codeclinic.stockpathshala' : '6446473535';
+          Platform.isAndroid ? 'com.codeclinic.stockpathshala' : '6446473535';
       try {
         launchUrl(Uri.parse("market://details?id=$appId"));
       } on PlatformException {
@@ -2386,13 +2532,13 @@ class RootViewController extends GetxController {
         DateTime dateTimeFromString = DateTime.parse(classStartTime.value);
 
         DateTime sixtyMinutesFromNow =
-        currentDateTime.add(Duration(minutes: classDuration.value));
+            currentDateTime.add(Duration(minutes: classDuration.value));
         bool isWithinNextSixtyMinutes =
             currentDateTime.isAfter(dateTimeFromString) &&
                 dateTimeFromString.isBefore(sixtyMinutesFromNow);
 
         DateTime fiveMinutesBefore =
-        dateTimeFromString.subtract(const Duration(minutes: 5));
+            dateTimeFromString.subtract(const Duration(minutes: 5));
         bool isWithinFiveMinutesBefore =
             currentDateTime.isAfter(fiveMinutesBefore) &&
                 currentDateTime.isBefore(dateTimeFromString);
@@ -2411,7 +2557,7 @@ class RootViewController extends GetxController {
   showMyBottomSheet(json, str) {
     if (isShow.value) {
       List<String> points =
-      getPoints(json["navigation_flow"]["${str}_msg"] ?? "");
+          getPoints(json["navigation_flow"]["${str}_msg"] ?? "");
 
       int time = json["navigation_flow"]["${str}_time"];
       Timer(Duration(seconds: time), () {
@@ -2459,10 +2605,10 @@ class RootViewController extends GetxController {
                       Expanded(
                         child: Text(
                           json["navigation_flow"]["${str}_title"].replaceAll(
-                              '[first-name]',
-                              json['name'].length >= 10
-                                  ? json['name'].split(" ")[0]
-                                  : json['name']) ??
+                                  '[first-name]',
+                                  json['name'].length >= 10
+                                      ? json['name'].split(" ")[0]
+                                      : json['name']) ??
                               "",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
@@ -2525,7 +2671,7 @@ class RootViewController extends GetxController {
                                         style: const TextStyle(
                                             color: ColorResource.black,
                                             fontSize:
-                                            DimensionResource.fontSizeSmall,
+                                                DimensionResource.fontSizeSmall,
                                             fontWeight: FontWeight.w500))),
                               ],
                             ),
@@ -2548,22 +2694,22 @@ class RootViewController extends GetxController {
                         Get.toNamed(Routes.subscriptionView);
 
                         break;
-                    // case 4:
-                    //   Get.back();
-                    //   selectedTab.value=value-1;
-                    //   break;
-                    // case 3:
-                    //   Get.back();
-                    //   Get.toNamed(Routes.subscriptionView);
-                    //   break;
-                    // case 2:
-                    //   Get.back();
-                    //   Get.toNamed(Routes.subscriptionView);
-                    //   break;
-                    // case 1:
-                    //   Get.back();
-                    //   Get.toNamed(Routes.subscriptionView);
-                    //   break;
+                      // case 4:
+                      //   Get.back();
+                      //   selectedTab.value=value-1;
+                      //   break;
+                      // case 3:
+                      //   Get.back();
+                      //   Get.toNamed(Routes.subscriptionView);
+                      //   break;
+                      // case 2:
+                      //   Get.back();
+                      //   Get.toNamed(Routes.subscriptionView);
+                      //   break;
+                      // case 1:
+                      //   Get.back();
+                      //   Get.toNamed(Routes.subscriptionView);
+                      //   break;
                       default:
                         Get.back();
                         selectedTab.value = value - 1;

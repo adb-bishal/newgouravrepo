@@ -28,7 +28,7 @@ class RootBinding extends Bindings {
     Get.lazyPut<ProfileController>(() => ProfileController());
     Get.lazyPut<RootViewController>(() => RootViewController());
     Get.lazyPut<GlobalService>(() => GlobalService());
-    Get.lazyPut<HomeController>(() => HomeController());
+    Get.lazyPut<HomeController>(() => HomeController(),fenix: true);
     Get.lazyPut<CoursesViewController>(() => CoursesViewController());
     Get.lazyPut<LiveClassesController>(() => LiveClassesController());
     Get.lazyPut<LiveClassDetailController>(() => LiveClassDetailController());

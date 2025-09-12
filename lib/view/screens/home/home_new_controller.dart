@@ -181,6 +181,9 @@ class HomeNewController extends GetxController {
 
   @override
   void onInit() {
+    print("cdljcdlskmvfs");
+
+
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     logPrint("profile controller");
     clickedItemId?.clear();

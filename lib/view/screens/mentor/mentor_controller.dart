@@ -89,7 +89,7 @@ class MentorController extends GetxController {
   ).obs;
 
   late int categoryId;
-  late String mentorTitle;
+  // late String mentorTitle;
 
   final RxList<int> selectedChip = <int>[].obs;
 
@@ -112,6 +112,13 @@ class MentorController extends GetxController {
     confettiController.dispose();
     super.dispose();
   }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+    GetStorage().write('categoryId',0);
+  }
   @override
   void onInit() {
     super.onInit();
@@ -119,13 +126,8 @@ class MentorController extends GetxController {
     confettiController = ConfettiController(duration: const Duration(seconds: 3));
     // confettiController.play();
     final arguments = Get.arguments;
-    if (arguments is CounsellingCategory) {
-      categoryId = arguments.id;
-      mentorTitle = arguments.title;
-    } else {
-      categoryId = 0; // Default value or handle error
-      logPrint("Warning: Invalid mentorId argument: $arguments");
-    }
+    categoryId = arguments ?? 0;
+    // mentorTitle = arguments.title;
 
     logPrint("mentorId $categoryId");
     getCategories(categoryId);
