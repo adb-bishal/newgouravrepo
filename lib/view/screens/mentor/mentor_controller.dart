@@ -89,7 +89,7 @@ class MentorController extends GetxController {
   ).obs;
 
   late int categoryId;
-  // late String mentorTitle;
+  late String mentorTitle;
 
   final RxList<int> selectedChip = <int>[].obs;
 
@@ -126,10 +126,11 @@ class MentorController extends GetxController {
     confettiController = ConfettiController(duration: const Duration(seconds: 3));
     // confettiController.play();
     final arguments = Get.arguments;
-    categoryId = arguments ?? 0;
-    // mentorTitle = arguments.title;
+    categoryId = arguments[0] ?? 0;
+    mentorTitle = arguments[1];
 
     logPrint("mentorId $categoryId");
+    logPrint("mentorTitle $mentorTitle");
     getCategories(categoryId);
     TransactionService.instance
         .initServiceEvent(onPaymentEvent: onPaymentEvent);
@@ -266,6 +267,12 @@ class MentorController extends GetxController {
     }
   }
 
+  // Future<void> getCounsellor () async {
+  //   await homeProvider.getCounselling(categoryId,,onError: ((onError,map){}), onSuccess: (onSuccess,map){
+  //
+  //   });
+  // }
+
   Future<void> createOrderId(
       String amount,
       String ordRefNum,
@@ -389,6 +396,7 @@ class MentorController extends GetxController {
 
     final String url =
         '${AppConstants.instance.baseUrl}${AppConstants.instance.mentorSlots}?mentor_id=$mentorId';
+        // 'https://dev2.stockpathshala.com/api/v1/counselling/mentor-app-slots?mentor_id=148609';
 
     try {
       final response = await ApiService.get(url);

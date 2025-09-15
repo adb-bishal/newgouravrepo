@@ -7,8 +7,8 @@ import 'package:stockpathshala_beta/model/utils/dimensions_resource.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:get/get.dart';
-import 'package:stockpathshala_beta/view/screens/mentor/mentor_slot_model.dart'
-    hide Mentor;
+import 'package:stockpathshala_beta/service/video_hls_player/src/utils/extensions/duration_extensions.dart';
+import 'package:stockpathshala_beta/view/screens/mentor/mentor_slot_model.dart';
 import 'package:stockpathshala_beta/view/screens/root_view/home_view/mentor_model.dart';
 import 'package:stockpathshala_beta/view/widgets/shimmer_widget/shimmer_widget.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
@@ -45,9 +45,9 @@ class MentorScreen extends GetView<MentorController> {
             iconTheme: const IconThemeData(
               color: Colors.white,
             ),
-            title: Text(
+            title: const Text(
               'Choose Your Mentor',
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 14,
                   color: ColorResource.white,
                   fontWeight: FontWeight.w600),
@@ -111,89 +111,96 @@ class MentorScreen extends GetView<MentorController> {
                           child: GestureDetector(
                             onTap: () {
                               if (Get.find<AuthService>().isGuestUser.value) {
-                                ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorScreen.name,data:controller.categoryId);
+                                ProgressDialog().showFlipDialog(
+                                    isForPro: false,
+                                    name: CommonEnum.mentorScreen.name,
+                                    data: controller.categoryId);
                                 return;
                               }
-                              initiateCounsellingPayment(
-                                onPaymentCallBack: (response, orderId) async {
-                                  try {
-                                    await controller.verifyPayment(
-                                      response,
-                                      orderId,
-                                      (data) {
-                                        print(
-                                            "Payment verification success: $data");
-                                        showBookingConfirmationDialog(
-                                          successMessage: data?.message,
-                                          Get.context!,
-                                          isSuccess: true,
-                                          onConfirm: () =>
-                                              Navigator.pop(context),
-                                        );
-                                        controller.confettiController.play();
-                                      },
-                                      (error) {
-                                        print(
-                                            "Payment verification failed: $error");
-                                        showBookingConfirmationDialog(
-                                          Get.context!,
-                                          isSuccess: false,
-                                          onConfirm: () =>
-                                              Navigator.pop(context),
-                                        );
-                                      },
-                                    );
-                                  } catch (e, stack) {
-                                    print(
-                                        "🚨 Exception in payment verification: $e");
-                                    print(stack);
-
-                                    showDialog(
-                                      context: Get.context!,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text(
-                                            "Payment Verification Error"),
-                                        content: const Text(
-                                            "An unexpected error occurred while verifying payment. Please contact support."),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(),
-                                            child: const Text("OK"),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                },
-                                controller,
-                                slotId: '',
-                                categoryId: controller.categoryId,
-                                amount: (int.parse(controller.categoriesData
-                                            .value.counsellingPrice) *
-                                        100)
-                                    .toString(),
-                                onSuccess: () {
-                                  print(" Payment Successful");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("Payment successful!")),
-                                  );
-                                },
-                                onError: (message) {
-                                  print(" Payment Failed: $message");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(message)),
-                                  );
-                                },
-                                onCancel: () {
-                                  print(" Payment Cancelled");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text("Payment cancelled")),
-                                  );
-                                },
-                              );
+                              Future.delayed(const Duration(seconds: 1), () {
+                                showBeforeBookingConfirmationDialog(Get.context!,
+                                    controller: controller, slotId: '');
+                              });
+                              // initiateCounsellingPayment(
+                              //   onPaymentCallBack: (response, orderId) async {
+                              //     try {
+                              //       await controller.verifyPayment(
+                              //         response,
+                              //         orderId,
+                              //         (data) {
+                              //           print(
+                              //               "Payment verification success: $data");
+                              //           showBookingConfirmedDialog(
+                              //             successMessage: data?.message,
+                              //             Get.context!,
+                              //             isSuccess: true,
+                              //             onConfirm: () =>
+                              //                 Navigator.pop(context),
+                              //           );
+                              //           controller.confettiController.play();
+                              //         },
+                              //         (error) {
+                              //           print(
+                              //               "Payment verification failed: $error");
+                              //           showBookingConfirmedDialog(
+                              //             Get.context!,
+                              //             isSuccess: false,
+                              //             onConfirm: () =>
+                              //                 Navigator.pop(context),
+                              //           );
+                              //         },
+                              //       );
+                              //     } catch (e, stack) {
+                              //       print(
+                              //           "🚨 Exception in payment verification: $e");
+                              //       print(stack);
+                              //
+                              //       showDialog(
+                              //         context: Get.context!,
+                              //         builder: (context) => AlertDialog(
+                              //           title: const Text(
+                              //               "Payment Verification Error"),
+                              //           content: const Text(
+                              //               "An unexpected error occurred while verifying payment. Please contact support."),
+                              //           actions: [
+                              //             TextButton(
+                              //               onPressed: () =>
+                              //                   Navigator.of(context).pop(),
+                              //               child: const Text("OK"),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       );
+                              //     }
+                              //   },
+                              //   controller,
+                              //   slotId: '',
+                              //   categoryId: controller.categoryId,
+                              //   amount: (int.parse(controller.categoriesData
+                              //               .value.counsellingPrice) *
+                              //           100)
+                              //       .toString(),
+                              //   onSuccess: () {
+                              //     print(" Payment Successful");
+                              //     ScaffoldMessenger.of(context).showSnackBar(
+                              //       const SnackBar(
+                              //           content: Text("Payment successful!")),
+                              //     );
+                              //   },
+                              //   onError: (message) {
+                              //     print(" Payment Failed: $message");
+                              //     ScaffoldMessenger.of(context).showSnackBar(
+                              //       SnackBar(content: Text(message)),
+                              //     );
+                              //   },
+                              //   onCancel: () {
+                              //     print(" Payment Cancelled");
+                              //     ScaffoldMessenger.of(context).showSnackBar(
+                              //       const SnackBar(
+                              //           content: Text("Payment cancelled")),
+                              //     );
+                              //   },
+                              // );
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -231,13 +238,13 @@ class MentorScreen extends GetView<MentorController> {
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(12)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
+                                        child: const Padding(
+                                          padding: EdgeInsets.symmetric(
                                               horizontal: 0.0, vertical: 12),
                                           child: Text(
                                             // "Skip & Book Counselling / ₹${controller.categoriesData.value.counsellingPrice} only",
                                             "Skip & Book Counselling",
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 color: ColorResource.white,
                                                 fontSize: 15),
@@ -276,7 +283,277 @@ class MentorScreen extends GetView<MentorController> {
   }
 }
 
-void showBookingConfirmationDialog(
+void showBeforeBookingConfirmationDialog(BuildContext context,
+    {Data? mentorData,
+    MentorController? controller,
+    String? slotId,
+    String? time,
+    DateTime? date}) {
+  showDialog(
+      context: context,
+      builder: (_) => WillPopScope(
+          child: customAlertDialog(
+              context, mentorData, controller, slotId, time, date),
+          onWillPop: () async => false));
+}
+
+Widget customAlertDialog(
+  BuildContext context,
+  Data? mentorData,
+  MentorController? controller,
+  String? slotId,
+  String? time,
+  DateTime? date,
+) {
+  return Dialog(
+    backgroundColor: ColorResource.white,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                    child: Text(
+                  "Review and confirm your counselling",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
+                )),
+                Icon(
+                  Icons.close,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(color: ColorResource.lineGrey2Color, width: 1),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                            text: TextSpan(
+                          children: [
+                            const TextSpan(
+                                text: "📂 Category : ",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600)),
+                            TextSpan(
+                                text: controller?.mentorTitle ?? "NA",
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 12)),
+                          ],
+                        )),
+                        // Text("📂 Category:",style: TextStyle(fontSize: 12),),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        RichText(
+                            text: TextSpan(
+                          children: [
+                            const TextSpan(
+                                text: "👨‍🏫 Mentor : ",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600)),
+                            TextSpan(
+                                text:
+                                    mentorData?.mentor.name ?? "To be assigned",
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 12)),
+                          ],
+                        )),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        RichText(
+                            text: TextSpan(
+                          children: [
+                            const TextSpan(
+                                text: "🕒 Selected Slot : ",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600)),
+                            TextSpan(
+                                text: time != null
+                                    ? DateFormat('hh:mm a, dd MMM, yyyy')
+                                        .format(DateTime.parse(time))
+                                    : 'To be scheduled',
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 12)),
+                          ],
+                        )),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    print("slotId $slotId");
+                    Navigator.pop(context);
+                    initiateCounsellingPayment(
+                      onPaymentCallBack: (response, orderId) async {
+                        try {
+                          await controller?.verifyPayment(
+                            response,
+                            orderId,
+                            (data) {
+                              print("Payment verification success: $data");
+                              showBookingConfirmedDialog(
+                                successMessage: data?.message,
+                                Get.context!,
+                                isSuccess: true,
+                                onConfirm: () => Navigator.pop(context),
+                              );
+                              controller.confettiController.play();
+                            },
+                            (error) {
+                              print("Payment verification failed: $error");
+                              showBookingConfirmedDialog(
+                                Get.context!,
+                                isSuccess: false,
+                                onConfirm: () => Navigator.pop(context),
+                              );
+                            },
+                          );
+                        } catch (e, stack) {
+                          print("🚨 Exception in payment verification: $e");
+                          print(stack);
+
+                          showDialog(
+                            context: Get.context!,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Payment Verification Error"),
+                              content: const Text(
+                                  "An unexpected error occurred while verifying payment. Please contact support."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            ),
+                          );
+                        } finally {}
+                      },
+                      controller!,
+                      slotId: slotId.toString() ?? '',
+                      categoryId: controller.categoryId,
+                      amount: (int.parse(controller
+                                  .categoriesData.value.counsellingPrice) *
+                              100)
+                          .toString(),
+                      onSuccess: () {
+                        print(" Payment Successful");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Payment successful!")),
+                        );
+                      },
+                      onError: (message) {
+                        print(" Payment Failed: $message");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message)),
+                        );
+                      },
+                      onCancel: () {
+                        print(" Payment Cancelled");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Payment cancelled")),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: ColorResource.lineGrey2Color.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Container(
+                          constraints: BoxConstraints(
+                            minWidth: MediaQuery.of(context).size.width * 0.5,
+                          ),
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  ColorResource.mateRedColor,
+                                  ColorResource.orangeColor,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0.0, vertical: 8),
+                            child: Text(
+                              // "Skip & Book Counselling / ₹${controller.categoriesData.value.counsellingPrice} only",
+                              mentorData?.counsellingPrice == null
+                                  ? 'Skip and pay'
+                                  : "Confirm & Pay ${mentorData?.counsellingPrice}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: ColorResource.white,
+                                  fontSize: 12),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "You'll receive a confirmation via Whatsapp after booking",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 10, color: ColorResource.grey),
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+void showBookingConfirmedDialog(
   BuildContext context, {
   String? successMessage,
   String? failureMessage,
@@ -380,7 +657,7 @@ void showBookingConfirmationDialog(
 
 // Usage examples:
 void showSuccessDialog(BuildContext context) {
-  showBookingConfirmationDialog(
+  showBookingConfirmedDialog(
     context,
     isSuccess: true,
     successMessage: "Booking Confirmed!",
@@ -392,7 +669,7 @@ void showSuccessDialog(BuildContext context) {
 }
 
 void showFailureDialog(BuildContext context) {
-  showBookingConfirmationDialog(
+  showBookingConfirmedDialog(
     context,
     isSuccess: false,
     failureMessage: "Payment Failed!",
@@ -475,7 +752,7 @@ Future<void> initiateCounsellingPayment(
   MentorController controller, {
   String? slotId,
   required String amount,
-      int? categoryId,
+  int? categoryId,
   required VoidCallback onSuccess,
   required void Function(
           PaymentSuccessResponse response, String razorpayOrderId)
@@ -486,7 +763,7 @@ Future<void> initiateCounsellingPayment(
   controller.onBuyCounselling(
     slotId,
     amount,
-      categoryId,
+    categoryId,
     onPaymentSuccess: (paymentSuccessResponse, razorpayOrderId) {
       onPaymentCallBack(paymentSuccessResponse, razorpayOrderId);
     },
@@ -550,7 +827,7 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
   List<DateTime> getWeekDates() {
     DateTime normalizedDate =
         DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
-    print("cdkcdlcmdl $normalizedDate");
+    print("normalizedDate $normalizedDate");
 
     DateTime lastDayOfMonth = DateTime(
       normalizedDate.month == 12
@@ -565,7 +842,7 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
 
     while (!currentDate.isAfter(lastDayOfMonth)) {
       dateList.add(currentDate);
-      currentDate = currentDate.add(Duration(days: 1));
+      currentDate = currentDate.add(const Duration(days: 1));
     }
 
     return dateList;
@@ -738,81 +1015,28 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
             const SizedBox(height: 24),
             GestureDetector(
               onTap: () {
-                if (_selectedSlot != null && _selectedDate != null) {
-                  print("slotId $slotId");
-                  Navigator.pop(context);
-                  initiateCounsellingPayment(
-                    onPaymentCallBack: (response, orderId) async {
-                      try {
-                        await widget.controller.verifyPayment(
-                          response,
-                          orderId,
-                          (data) {
-                            print("Payment verification success: $data");
-                            showBookingConfirmationDialog(
-                              successMessage: data?.message,
-                              Get.context!,
-                              isSuccess: true,
-                              onConfirm: () => Navigator.pop(context),
-                            );
-                            widget.controller.confettiController.play();
-                          },
-                          (error) {
-                            print("Payment verification failed: $error");
-                            showBookingConfirmationDialog(
-                              Get.context!,
-                              isSuccess: false,
-                              onConfirm: () => Navigator.pop(context),
-                            );
-                          },
-                        );
-                      } catch (e, stack) {
-                        print("🚨 Exception in payment verification: $e");
-                        print(stack);
-
-                        showDialog(
-                          context: Get.context!,
-                          builder: (context) => AlertDialog(
-                            title: const Text("Payment Verification Error"),
-                            content: const Text(
-                                "An unexpected error occurred while verifying payment. Please contact support."),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text("OK"),
-                              ),
-                            ],
-                          ),
-                        );
-                      } finally {}
-                    },
-                    widget.controller,
-                    slotId: slotId.toString() ?? '',
-                    categoryId:widget.controller.categoryId,
-                    amount: (int.parse(widget.controller.categoriesData.value
-                                .counsellingPrice) *
-                            100)
-                        .toString(),
-                    onSuccess: () {
-                      print(" Payment Successful");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Payment successful!")),
-                      );
-                    },
-                    onError: (message) {
-                      print(" Payment Failed: $message");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(message)),
-                      );
-                    },
-                    onCancel: () {
-                      print(" Payment Cancelled");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Payment cancelled")),
-                      );
-                    },
+                if (Get.find<AuthService>().isGuestUser.value) {
+                  ProgressDialog().showFlipDialog(
+                    isForPro: false,
+                    name: CommonEnum.mentorScreen.name,
+                    data: widget.controller.categoryId,
                   );
+                  return;
                 }
+                Navigator.of(context).pop();
+
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  if (_selectedSlot != null && _selectedDate != null) {
+                    showBeforeBookingConfirmationDialog(
+                      Get.context!,
+                      mentorData: widget.data,
+                      controller: widget.controller,
+                      slotId: slotId.toString(),
+                      time: _selectedSlot,
+                      date: _selectedDate,
+                    );
+                  }
+                });
               },
               child: SizedBox(
                 width: double.infinity,
@@ -864,13 +1088,12 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
       a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
-Widget categoryList(controller, List<Mentors> mentors) {
+Widget categoryList(MentorController controller, List<Mentors> mentors) {
   return Container(
     margin: const EdgeInsets.only(bottom: 80),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         ListView.builder(
           itemCount: mentors.length,
           shrinkWrap: true,
@@ -990,7 +1213,7 @@ Widget categoryList(controller, List<Mentors> mentors) {
                                     ),
                                     Text(
                                       mentorData.certification,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         color: Colors.black,
                                         fontWeight: FontWeight.w500,
@@ -1011,7 +1234,7 @@ Widget categoryList(controller, List<Mentors> mentors) {
                                       color: ColorResource.grey,
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     'PnL Verified',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -1025,8 +1248,8 @@ Widget categoryList(controller, List<Mentors> mentors) {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4.0),
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 4.0),
                                     child: Icon(
                                       FontAwesomeIcons.graduationCap,
                                       size: 12,
@@ -1038,7 +1261,7 @@ Widget categoryList(controller, List<Mentors> mentors) {
                                     mentorData.experience == 1
                                         ? '${mentorData.experience} Year Experience'
                                         : '${mentorData.experience} Years Experience',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.black,
@@ -1049,8 +1272,8 @@ Widget categoryList(controller, List<Mentors> mentors) {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 4.0),
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 4.0),
                                     child: Icon(
                                         size: 14,
                                         Icons.videocam_outlined,
@@ -1059,7 +1282,7 @@ Widget categoryList(controller, List<Mentors> mentors) {
                                   const SizedBox(width: 4),
                                   Text(
                                     '${mentorData.liveClasses}+ SP Live Classes',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
                                       color: Colors.black,
@@ -1103,20 +1326,11 @@ Widget categoryList(controller, List<Mentors> mentors) {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // showBookingConfirmationDialog(
-                      //   context,
-                      //   isSuccess: true,
-                      //   onConfirm: () => Navigator.pop(context),
-                      // );
-                      // controller.confettiController?.play();
-
-                      // Get.offAllNamed(Routes.rootView);
-                      // Get.find<RootViewController>().onRedirectHome(0);
-                      // Get.back(result: 'payment');
-                      //
-
                       if (Get.find<AuthService>().isGuestUser.value) {
-                        ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorScreen.name,data:controller.categoryId);
+                        ProgressDialog().showFlipDialog(
+                            isForPro: false,
+                            name: CommonEnum.mentorScreen.name,
+                            data: controller.categoryId);
                         return;
                       }
                       MentorSlotModel? response =
@@ -1141,10 +1355,9 @@ Widget categoryList(controller, List<Mentors> mentors) {
                       if (isLoading) {
                         return Container(
                           width: MediaQuery.of(context).size.width * 0.5,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             // color: ColorResource.primaryDark,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
@@ -1162,10 +1375,9 @@ Widget categoryList(controller, List<Mentors> mentors) {
                         );
                       } else {
                         return Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: ColorResource.primaryDark,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(50)),
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: const Padding(
@@ -1195,7 +1407,7 @@ Widget categoryList(controller, List<Mentors> mentors) {
                       }
                     }),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                 ],
               ),
             );

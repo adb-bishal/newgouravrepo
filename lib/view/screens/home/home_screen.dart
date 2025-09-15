@@ -82,7 +82,7 @@ class HomeScreen extends GetView<HomeNewController> {
                 body: RefreshIndicator(
                     onRefresh: controller.onRefresh,
                     child: CustomScrollView(
-                        controller: controller.scrollController,
+                  controller: controller.scrollController,
                         slivers: [
                           SliverAppBar(
                             expandedHeight: screenWidth < 600 ? 250 : 280,
@@ -1889,7 +1889,7 @@ Widget categoryListWithShimmer(
                           //if want multiple selection , disable right now
                           controller.itemClick(data.id, true);
                           Future.delayed(const Duration(milliseconds: 3), () {
-                            Get.toNamed(Routes.mentorScreen, arguments: data.id)
+                            Get.toNamed(Routes.mentorScreen, arguments: [data.id,data.title])
                                 ?.then((value) {
                               if (value == 'payment') {
                                 controller.onRefresh();

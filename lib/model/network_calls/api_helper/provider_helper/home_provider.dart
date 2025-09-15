@@ -16,14 +16,14 @@ class HomeProvider {
         .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
   }
 
-  Future getCounselling(
-      {required Function(String? message, Map<String, dynamic>? errorMap)
-      onError,
-        required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
-    ApiResponse apiResponse = await homeRepo.getCounselling();
-    CheckApiResponse.instance
-        .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
-  }
+  // Future getCounselling(
+  //     {required Function(String? message, Map<String, dynamic>? errorMap)
+  //     onError,
+  //       required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
+  //   ApiResponse apiResponse = await homeRepo.getCounselling();
+  //   CheckApiResponse.instance
+  //       .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
+  // }
 
 
 

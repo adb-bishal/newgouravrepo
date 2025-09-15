@@ -150,7 +150,7 @@ class Expertise {
 
 class CounsellingCategory {
   final int id;
-  final String title;
+   String title;
   final String description;
   final String imageUrl;
   final int index;
