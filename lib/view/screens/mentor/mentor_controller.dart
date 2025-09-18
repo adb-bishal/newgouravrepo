@@ -126,9 +126,14 @@ class MentorController extends GetxController {
     confettiController = ConfettiController(duration: const Duration(seconds: 3));
     // confettiController.play();
     final arguments = Get.arguments;
-    categoryId = arguments[0] ?? 0;
-    mentorTitle = arguments[1];
 
+    if (arguments is List && arguments.length >= 2) {
+      categoryId = arguments[0] ?? 0;
+      mentorTitle = arguments[1] ?? '';
+    } else {
+      categoryId = 0;
+      mentorTitle = '';
+    }
     logPrint("mentorId $categoryId");
     logPrint("mentorTitle $mentorTitle");
     getCategories(categoryId);
@@ -267,12 +272,6 @@ class MentorController extends GetxController {
     }
   }
 
-  // Future<void> getCounsellor () async {
-  //   await homeProvider.getCounselling(categoryId,,onError: ((onError,map){}), onSuccess: (onSuccess,map){
-  //
-  //   });
-  // }
-
   Future<void> createOrderId(
       String amount,
       String ordRefNum,
@@ -332,10 +331,10 @@ class MentorController extends GetxController {
       isLoading(true);
 
       final response = await getCounsellingMentors(categoryId);
-
       if (response['success'] == true && response['data'] != null) {
         print('Total mentors: ${categoriesData.value.totalMentors}');
         print('Mentors count: ${categoriesData.value.mentors.length}');
+        // print('MentorsColors: ${categoriesData.value.ui?.counsellingButtonGradientEndColor}');
       } else {
         toastShow(message: response['message'] ?? 'Failed to fetch data');
       }
@@ -396,7 +395,7 @@ class MentorController extends GetxController {
 
     final String url =
         '${AppConstants.instance.baseUrl}${AppConstants.instance.mentorSlots}?mentor_id=$mentorId';
-        // 'https://dev2.stockpathshala.com/api/v1/counselling/mentor-app-slots?mentor_id=148609';
+        // 'https://dev2.stockpathshala.com/api/v1/counselling/mentor-app-slots?mentor_id=$mentorId';
 
     try {
       final response = await ApiService.get(url);

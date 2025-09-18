@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 // import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
+import '../../../main.dart';
 import '../../../model/network_calls/api_helper/provider_helper/auth_provider.dart';
 import '../../../model/network_calls/dio_client/get_it_instance.dart';
 import '../../../model/services/auth_service.dart';
@@ -79,7 +80,7 @@ class SignUpController extends GetxController {
   final intRegex = RegExp(r'\d+', multiLine: true);
 
   _startListeningSms() async {
-   /* logPrint(
+    /* logPrint(
         "-------------------------------_startListeningSms started --------------------------");
 
     // Start listening for SMS
@@ -145,7 +146,6 @@ class SignUpController extends GetxController {
     isSignUp.value ? onSignUp() : logInTap();
     otpController.value.clear();
     Future.delayed(const Duration(milliseconds: 50), () {
-
       isResend.value = false;
     });
   }
@@ -249,7 +249,7 @@ class SignUpController extends GetxController {
             toastShow(message: message ?? "Please try again", error: true);
           },
           onSuccess: (message, data) async {
-            logPrint("otp bhai aa jaa: onSuccess ");
+            logPrint("otp bhai aa jaa: onSuccess $data ");
             if (data != null) {
               logPrint("otp bhai aa jaa: onSuccess if ");
               isOtpLoading.value = false;
@@ -273,6 +273,19 @@ class SignUpController extends GetxController {
                   .saveTrainingTooltips('registerFirstFreeClass');
               await Get.find<AuthService>()
                   .saveTrainingTooltips('classRecordings');
+
+              final accessToken = Get.find<AuthService>().getUserToken();
+
+              try {
+                socketService.connect(
+                  accessToken: accessToken,
+                  userData: data['data'],
+                  pathName: Get.currentRoute,
+                );
+              } catch (e) {
+                print(e);
+              }
+
               Get.offAllNamed(Routes.rootView, arguments: true);
               // }
             }

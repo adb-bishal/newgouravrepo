@@ -1,7 +1,7 @@
 name: stockpathshala_beta
 description: Stock Pathshala is the first app that you MUST install if you are even thinking of investing in the Stock Market.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 2.1.2+272
+version: 2.1.2+273
 environment:
   sdk: ">=2.18.0 <3.0.0"
 dependencies:
@@ -96,6 +96,8 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   font_awesome_flutter: ^10.9.1
   sensors_plus: ^6.1.2
+  web_socket_channel: ^2.4.0
+  socket_io_client: ^3.1.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

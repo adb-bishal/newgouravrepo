@@ -10,13 +10,6 @@ class MentorSlotModel {
       data: Data.fromJson(json['data'] ?? {}),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'success': success,
-      'data': data.toJson(),
-    };
-  }
 }
 
 class Data {
@@ -53,19 +46,6 @@ class Data {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> slotsJson = {};
-    slots.forEach((date, slotList) {
-      slotsJson[date] = slotList.map((slot) => slot.toJson()).toList();
-    });
-
-    return {
-      'counselling_price': counsellingPrice,
-      'mentor': mentor.toJson(),
-      'slots': slotsJson,
-      'ui': ui.toJson(),
-    };
-  }
 }
 
 class Mentor {
@@ -105,14 +85,15 @@ class Mentor {
 }
 
 class Slot {
-  final int id;
+  final int? id;
   final int mentorId;
   final String slotStart;
   final String slotEnd;
   final dynamic bookedBy;
   final dynamic bookedAt;
-  final String createdAt;
-  final String updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
+  final bool? isDummy;
 
   Slot({
     required this.id,
@@ -121,34 +102,23 @@ class Slot {
     required this.slotEnd,
     this.bookedBy,
     this.bookedAt,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
+    this.isDummy,
   });
 
   factory Slot.fromJson(Map<String, dynamic> json) {
     return Slot(
-      id: json['id'] ?? 0,
-      mentorId: json['mentor_id'] ?? 0,
-      slotStart: json['slot_start'] ?? '',
-      slotEnd: json['slot_end'] ?? '',
+      id: json['id'],
+      mentorId: json['mentor_id'],
+      slotStart: json['slot_start'],
+      slotEnd: json['slot_end'],
       bookedBy: json['booked_by'],
       bookedAt: json['booked_at'],
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
+      isDummy: json['is_dummy'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'mentor_id': mentorId,
-      'slot_start': slotStart,
-      'slot_end': slotEnd,
-      'booked_by': bookedBy,
-      'booked_at': bookedAt,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-    };
   }
 }
 

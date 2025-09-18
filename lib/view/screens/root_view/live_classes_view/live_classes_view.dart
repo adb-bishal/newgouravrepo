@@ -1098,7 +1098,7 @@ Widget liveClassesView(
                                         ]),
                                   ),
                                 ),
-                                if (teacher != 'null')
+                                teacher != 'null' ?
                                   Container(
                                     height: 115.0,
                                     width: 115.0,
@@ -1147,7 +1147,56 @@ Widget liveClassesView(
                                                 ui.certificationTextColor),
                                           )),
                                     ),
+                                  ):
+                                Container(
+                                  height: 115.0,
+                                  width: 115.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    // image: DecorationImage(
+                                    //   image: NetworkImage(
+                                    //     '',
+                                    //   ),
+                                    //   fit: BoxFit.contain,
+                                    // ),
+                                    // image: DecorationImage(
+                                    //   image: NetworkImage(
+                                    //     '',
+                                    //   ),
+                                    //   fit: BoxFit.contain,
+                                    // ),
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          hexToColor(ui.certificationBgColor),
+                                          hexToColor(ui.certificationBgColor),
+                                        ],
+                                        stops: [
+                                          0.0,
+                                          0.7,
+                                          0.3,
+                                          1.0
+                                        ]),
                                   ),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    alignment: Alignment.bottomCenter,
+                                    child: Text('PnL \nVerified',
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                          color: hexToColor(
+                                              ui.certificationTextColor),
+                                        )),
+                                  ),
+                                ),
                               ],
                             ),
                           ))

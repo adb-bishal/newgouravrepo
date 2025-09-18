@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_avif/flutter_avif.dart';
@@ -43,7 +44,9 @@ import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/video_course_detail_controller/video_course_detail_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/widget_controllers/ask_for_rating_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:win32/winsock2.dart';
 import '../../../enum/enum.dart';
+import '../../../main.dart';
 import '../../../mentroship/controller/mentorship_controller.dart';
 import '../../../model/models/course_models/course_by_id_model.dart';
 import '../../../model/models/drawer_model/drawer_item_model.dart';
@@ -162,6 +165,7 @@ class RootViewController extends GetxController {
     final categoryId = int.tryParse(
             box.read(CommonEnum.mentorScreen.name)?.toString() ?? '0') ??
         0;
+    final categoryName = box.read('categoryName')?.toString() ?? '';
     final mentorShipDetailId = int.tryParse(
             box.read(CommonEnum.mentorshipDetailScreen.name)?.toString() ??
                 '0') ??
@@ -198,7 +202,13 @@ class RootViewController extends GetxController {
 
     if (categoryId != 0 && !isGuestUser) {
       selectedTab.value = 0;
-      Get.toNamed(Routes.mentorScreen, arguments: categoryId);
+      Get.toNamed(
+        Routes.mentorScreen,
+        arguments: [
+          categoryId,
+          categoryName,
+        ],
+      );
       box.write(CommonEnum.mentorScreen.name, 0);
       return;
     }
@@ -254,6 +264,29 @@ class RootViewController extends GetxController {
       postUserActivity();
       getServiceData();
     }
+
+    try {
+      if (!Get.find<AuthService>().isGuestUser.value) {
+        final accessToken = Get.find<AuthService>().getUserToken();
+        var data = Get.find<AuthService>().user.toJson();
+        if (kDebugMode) {
+          print("data $data");
+          print("accessToken $accessToken");
+        }
+        socketService.connect(
+          accessToken: accessToken,
+          userData: data,
+          pathName: Get.currentRoute,
+        );
+        // socketService.on('get_class_feedback', (eventData) {
+        //   print('Class feedback received on login page: $eventData');
+        //
+        // });
+      }
+    } catch (e) {
+      print('socket error $e');
+    }
+
     try {
       FirebaseMessaging.instance.getInitialMessage().then((value) {
         if (value?.data.isNotEmpty ?? false) {
@@ -276,26 +309,28 @@ class RootViewController extends GetxController {
     });
     // showTooltipForPro();
 
-    final args = Get.arguments as Map<String, dynamic>?;
-    if (args != null && args['selectedTab'] != null) {
-      // selectedTab.value = args['selectedTab'];
-    } else {
-      // selectedTab.value = 2;
-    }
-    if (args?['resetHome'] == true && args?['selectedTab'] == 0) {
-      // Initialize home controller after navigation
-      Future.microtask(() {
-        if (Get.isRegistered<HomeNewController>()) {
-          Get.delete<HomeNewController>();
-        }
-        Get.put(HomeNewController());
-
-        final homeController = Get.find<HomeNewController>();
-        homeController.expansion.value = 1.0;
-        homeController.isTitleVisible.value = false;
-      });
-    }
+    // final args = Get.arguments as Map<String, dynamic>?;
+    // if (args != null && args['selectedTab'] != null) {
+    //   // selectedTab.value = args['selectedTab'];
+    // } else {
+    //   // selectedTab.value = 2;
+    // }
+    // if (args?['resetHome'] == true && args?['selectedTab'] == 0) {
+    //   // Initialize home controller after navigation
+    //   Future.microtask(() {
+    //     if (Get.isRegistered<HomeNewController>()) {
+    //       Get.delete<HomeNewController>();
+    //     }
+    //     Get.put(HomeNewController());
+    //
+    //     final homeController = Get.find<HomeNewController>();
+    //     homeController.expansion.value = 1.0;
+    //     homeController.isTitleVisible.value = false;
+    //   });
+    // }
   }
+
+  void addEventToBuffer(Map<String, dynamic> classData) {}
 
   List<Widget> widgetOptions = <Widget>[
     const ComingSoonScreen(),

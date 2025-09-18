@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:stockpathshala_beta/model/utils/dimensions_resource.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
@@ -215,8 +216,8 @@ class HomeScreen extends GetView<HomeNewController> {
                                       ],
                                     ),
                                   ),
-                                  controller.bannerData.value.data != null
-                                      ? Positioned(
+
+                                  Positioned(
                                           bottom: 0,
                                           left: 0,
                                           right: 0,
@@ -257,11 +258,21 @@ class HomeScreen extends GetView<HomeNewController> {
                                                   fit: StackFit.expand,
                                                   children: [
                                                     Obx(() {
-                                                      return controller
-                                                                  .isLoading
-                                                                  .value !=
-                                                              true
-                                                          ? CarouselSlider
+                                                      return controller.isLoading.value == true?
+                                                      Padding(
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: screenWidth <
+                                                                500
+                                                                ? DimensionResource
+                                                                .marginSizeDefault
+                                                                : DimensionResource
+                                                                .marginSizeLarge),
+                                                        child: ShimmerEffect
+                                                            .instance
+                                                            .imageLoader(
+                                                            color: ColorResource
+                                                                .white),
+                                                      ): CarouselSlider
                                                               .builder(
                                                               options:
                                                                   CarouselOptions(
@@ -714,20 +725,6 @@ class HomeScreen extends GetView<HomeNewController> {
                                                                       )),
                                                                 );
                                                               },
-                                                            )
-                                                          : Padding(
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: screenWidth <
-                                                                          500
-                                                                      ? DimensionResource
-                                                                          .marginSizeDefault
-                                                                      : DimensionResource
-                                                                          .marginSizeLarge),
-                                                              child: ShimmerEffect
-                                                                  .instance
-                                                                  .imageLoader(
-                                                                      color: ColorResource
-                                                                          .white),
                                                             );
                                                     }),
                                                     // Align(
@@ -793,7 +790,7 @@ class HomeScreen extends GetView<HomeNewController> {
                                             ],
                                           ),
                                         )
-                                      : const SizedBox.shrink(),
+                                      // : const SizedBox.shrink(),
                                 ],
                               ),
                             ),
@@ -1702,148 +1699,7 @@ Widget categoryList(
     },
   ));
 }*/
-Widget categoryList1(
-    HomeNewController controller, CounsellingData counsellingData) {
-  return Obx(() => controller.isDataLoading.value
-      ? MediaQuery.of(Get.context!).size.width < 600
-          ? ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForMobile()
-          : ShimmerEffect.instance.upcomingLiveWebinarClassLoaderForTab()
-      : counsellingData.categories.isEmpty
-          ? const Center(
-              child: Padding(
-                padding: EdgeInsets.all(24.0),
-                child: Text("No category found"),
-              ),
-            )
-          : ListView.builder(
-              // controller: controller.scrollController,
-              itemCount: counsellingData.categories.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                var data = counsellingData.categories[index];
-                return GestureDetector(
-                  onTap: () {
-                    Get.toNamed(Routes.mentorScreen,
-                            arguments: counsellingData.categories[index].id)
-                        ?.then((value) {
-                      if (value == 'payment') {
-                        controller.onRefresh();
-                      }
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 12, top: 0, right: 12, bottom: 12),
-                    child: Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height * 0.15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade200),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: IntrinsicHeight(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Image
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                color: Colors.white,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    data.imageUrl,
-                                    height: 90.0,
-                                    width: 90.0,
-                                    fit: BoxFit.contain,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            Container(
-                                      height: 90.0,
-                                      width: 90.0,
-                                      color: Colors.grey.shade200,
-                                      child: const Icon(
-                                        Icons.person,
-                                        color: Colors.grey,
-                                        size: 40,
-                                      ),
-                                    ),
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                                        height: 90.0,
-                                        width: 90.0,
-                                        alignment: Alignment.center,
-                                        child: const CircularProgressIndicator(
-                                            strokeWidth: 2),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
 
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      data.title,
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          color:
-                                              ColorResource.lightSecondaryColor,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Expanded(
-                                      child: Text(
-                                        data.description,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.grey.shade700),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Wrap(
-                                      children: _buildInfoChip(tags: data.tags),
-                                    ),
-                                    const Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Icon(Icons.arrow_forward_rounded,
-                                          size: 18, color: Color(0xFF4854FE)),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ));
-}
 
 Widget categoryListWithShimmer(
     HomeNewController controller, CounsellingData counsellingData) {
@@ -1886,7 +1742,7 @@ Widget categoryListWithShimmer(
                         onTap: () {
                           controller.itemSelected.value = index;
 
-                          //if want multiple selection , disable right now
+                          //if want multiple selection use this but ,right now it is disable
                           controller.itemClick(data.id, true);
                           Future.delayed(const Duration(milliseconds: 3), () {
                             Get.toNamed(Routes.mentorScreen, arguments: [data.id,data.title])
@@ -1944,26 +1800,26 @@ Widget categoryListWithShimmer(
                                           child: Image.network(
                                             data.imageUrl,
                                             fit: BoxFit.contain,
-                                            errorBuilder:
-                                                (context, error, stackTrace) =>
-                                                    Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey.shade200,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  crossAxisCount == 2
-                                                      ? 10.0
-                                                      : 8.0,
-                                                ),
-                                              ),
-                                              child: Icon(
-                                                Icons.person,
-                                                color: Colors.grey,
-                                                size: crossAxisCount == 2
-                                                    ? 48
-                                                    : 40,
-                                              ),
-                                            ),
+                                            // errorBuilder:
+                                            //     (context, error, stackTrace) =>
+                                            //         Container(
+                                            //   decoration: BoxDecoration(
+                                            //     color: Colors.grey.shade200,
+                                            //     borderRadius:
+                                            //         BorderRadius.circular(
+                                            //       crossAxisCount == 2
+                                            //           ? 10.0
+                                            //           : 8.0,
+                                            //     ),
+                                            //   ),
+                                            //   child: Icon(
+                                            //     Icons.person,
+                                            //     color: Colors.grey,
+                                            //     size: crossAxisCount == 2
+                                            //         ? 48
+                                            //         : 40,
+                                            //   ),
+                                            // ),
                                             loadingBuilder: (context, child,
                                                 loadingProgress) {
                                               if (loadingProgress == null) {

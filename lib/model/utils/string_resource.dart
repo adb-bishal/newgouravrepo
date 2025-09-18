@@ -268,6 +268,17 @@ class StringResource {
   /// quizes
   static String allQuizzes = "List of Quizzes".tr;
 
+  ///mentor screen
+  static String chooseYourMentor = "Choose Your Mentor".tr;
+  static String skipAndBookCounselling = "Skip & Book Counselling".tr;
+  static String reviewAndConfirmCounselling = "Review and confirm your counselling".tr;
+  static String skipAndPay = "Skip and pay".tr;
+  static String confirmAndPay = "Confirm & Pay".tr;
+  static String whatsappConfirmationNote = "You'll receive a confirmation via Whatsapp after booking".tr;
+  static String chooseCounsellingSlots = "Select your preferred date for counselling".tr;
+  static String bookCounselling = "Book Counselling".tr;
+  static String pnlVerified = "PnL Verified".tr;
+  static String chooseSlot = "Choose Slot".tr;
   /// rating
   static String noRatingFound = "No Rating Available".tr;
   static String seeAllReview = "SEE ALL REVIEWS".tr;

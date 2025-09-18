@@ -140,6 +140,7 @@ class HomeNewController extends GetxController {
   /// the logic is in the view of bell button.
   RxBool isShow = true.obs;
   RxBool isLoading = true.obs;
+  RxBool isCarousalLoading = true.obs;
   String? token = Get.find<AuthService>().getUserToken();
   List<String> placeholders = [];
   List<String> textParts = [];
@@ -196,6 +197,8 @@ class HomeNewController extends GetxController {
   }
 
   Future<void> getBanner() async {
+    isCarousalLoading.value = true;
+
     await getHomeData();
   }
 
@@ -221,6 +224,7 @@ class HomeNewController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    isCarousalLoading.value = true;
     resetScrollState();
     resetScrollStateImmediate();
     print("recallll");
@@ -251,14 +255,14 @@ class HomeNewController extends GetxController {
         levelId: selectedLevel.value.id.toString(),
         onError: (message, errorMap) {
           toastShow(message: message);
-          isLoading.value = false;
+          // isLoading.value = false;
 
           logPrint("error in home");
         },
         onSuccess: (message, json) async {
           homeData.value = HomeDataModel.fromJson(json ?? {});
           print("homeData ${homeDataModelToJson(homeData.value)}");
-
+          isCarousalLoading.value = false;
           for (HomeDataModelDatum homeDataModelDatum
               in homeData.value.data ?? []) {
             if (homeDataModelDatum.key == 'banner_carousel' &&
@@ -1038,12 +1042,17 @@ class HomeNewController extends GetxController {
     HelperUtil.checkForUpdate();
   }
 
+
   Future<void> onRefresh() async {
+    isCarousalLoading.value = true;
     await Future.delayed(const Duration(seconds: 1));
     clickedItemId.clear();
     await getCategories();
+
     await getHomeData();
-    Get.find<RootViewController>().getProfile();
+    if (!Get.find<AuthService>().isGuestUser.value) {
+      Get.find<RootViewController>().getProfile();
+    }
   }
 
   Future<void> onJoinLiveClass(

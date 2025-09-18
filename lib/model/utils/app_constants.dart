@@ -66,6 +66,7 @@ class AppConstants {
   String get counselling => "counselling/mentors";
   // String get mentorList => "counselling/mentorsList";
   String get mentorList => "counselling/all-mentor";
+  String get questionList => "question-lists";
   String get mentorSlots => "counselling/mentor-slots";
   String get verifyPayment => "counselling-purchase-verify";
   String get socialLoginNumber => "firebase-login";

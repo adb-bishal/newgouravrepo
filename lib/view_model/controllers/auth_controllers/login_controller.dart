@@ -22,6 +22,7 @@ import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/sign
 import 'package:stockpathshala_beta/view_model/controllers/profile_controller/profile_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
 // import 'package:truecaller_sdk/truecaller_sdk.dart';
+import '../../../main.dart';
 import '../../../model/models/popup_model/pop_up_model.dart';
 import '../../../model/network_calls/api_helper/provider_helper/auth_provider.dart';
 import '../../../model/network_calls/api_helper/provider_helper/root_provider.dart';
@@ -130,6 +131,7 @@ class LoginController extends GetxController {
         }, onSuccess: (message, data) async {
           Get.find<AuthService>().removeToken();
           if (data != null) {
+
             isLoading.value = false;
             Get.toNamed(Routes.otpScreen, arguments: emailController.text)?.then((onValue){
               emailController.clear();

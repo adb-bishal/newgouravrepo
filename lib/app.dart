@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import 'main.dart';
 import 'model/language/language_manager.dart';
 import 'model/utils/color_resource.dart';
 import 'model/utils/font_resource.dart';
@@ -22,6 +23,7 @@ class MyAppSP extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      navigatorKey: navigatorKey ,
       debugShowCheckedModeBanner: false,
       title: StringResource.instance.appName,
       builder: kDebugMode

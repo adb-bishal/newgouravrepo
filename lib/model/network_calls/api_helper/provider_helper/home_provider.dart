@@ -16,16 +16,24 @@ class HomeProvider {
         .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
   }
 
-  // Future getCounselling(
-  //     {required Function(String? message, Map<String, dynamic>? errorMap)
-  //     onError,
-  //       required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
-  //   ApiResponse apiResponse = await homeRepo.getCounselling();
-  //   CheckApiResponse.instance
-  //       .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
-  // }
+  Future getCounselling(int? categoryId, String isAvailable,
+      {required Function(String? message, Map<String, dynamic>? errorMap)
+      onError,
+        required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
+    ApiResponse apiResponse = await homeRepo.getCounselling(categoryId,isAvailable);
+    CheckApiResponse.instance
+        .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
+  }
 
 
+  Future getQuestionsForFeedback(
+      {required Function(String? message, Map<String, dynamic>? errorMap)
+      onError,
+        required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
+    ApiResponse apiResponse = await homeRepo.getQuestions();
+    CheckApiResponse.instance
+        .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
+  }
 
   Future getContinueLearning(
       {required Function(String? message, Map<String, dynamic>? errorMap)

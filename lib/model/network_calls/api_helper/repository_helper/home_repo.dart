@@ -20,12 +20,19 @@ class HomeRepo {
     return dioClient.getResponse(url: url, dioClient: dioClient);
   }
 //
-//   Future<ApiResponse> getCounselling(dynamic categoryId,
-// dynamic isAvailable,) async {
-//     String url =  '${AppConstants.instance.baseUrl}${AppConstants.instance.mentorList}?category_ids=$categoryId&is_mentor_slot_available=$isAvailable';
-//     print('swefsef $url');
-//     return dioClient.getResponse(url: url, dioClient: dioClient);
-//   }
+  Future<ApiResponse> getCounselling(dynamic categoryId,
+dynamic isAvailable,) async {
+    String url =  '${AppConstants.instance.baseUrl}${AppConstants.instance.mentorList}?category_ids=$categoryId&is_mentor_slot_available=$isAvailable';
+    print('swefsef $url');
+    return dioClient.getResponse(url: url, dioClient: dioClient);
+  }
+
+  Future<ApiResponse> getQuestions() async {
+    String url =  '${AppConstants.instance.baseUrl}${AppConstants.instance.questionList}';
+    print('swefsef $url');
+    return dioClient.getResponse(url: url, dioClient: dioClient);
+  }
+
 
 
   Future<ApiResponse> getContinueLearning() async {

@@ -251,6 +251,7 @@ class ProgressDialog {
                             Get.toNamed(Routes.subscriptionView);
                           }
                         } else {
+                          print("showFlipDialog");
                           final box = GetStorage();
                           box.write('$name',data);
                           Get.put(LoginController());
@@ -278,6 +279,103 @@ class ProgressDialog {
         dismissible: false,
         isFlip: true);
   }
+
+  Future<void> showFlipDialogForMentor(
+      {bool isForPro = true,
+        String? title,
+        String? actionTitle,
+        bool showCancel = true,
+        VoidCallback? onTap,
+        dynamic? data, String? name, required String? categoryName}) async {
+    return showAnimatedDialog(
+        Get.context!,
+        MyDialog(
+          title: "Permission Request",
+          image: ImageResource.instance.permissionSettingsIcon,
+          description:
+          "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
+          isFailed: false,
+          yesText: "Continue",
+          noText: "Cancel",
+          onPress: () async {},
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title ??
+                      (isForPro
+                          ? Platform.isIOS
+                          ? ""
+                          : StringResource.proRequireText
+                          : StringResource.signInRequireText),
+                  style: StyleResource.instance.styleSemiBold(),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: DimensionResource.marginSizeSmall,
+                ),
+                if (isForPro && Platform.isIOS)
+                  Lottie.asset(ImageResource.instance.comingSoonImage,
+                      height: 150, fit: BoxFit.contain, width: double.infinity),
+                if (isForPro && Platform.isAndroid)
+                  Image.asset(
+                    isForPro
+                        ? ImageResource.instance.hello
+                        : ImageResource.instance.caution,
+                    height: 130,
+                  ),
+                SizedBox(
+                  height:
+                  (isForPro ? DimensionResource.marginSizeExtraSmall : 0) +
+                      DimensionResource.marginSizeSmall,
+                ),
+                CommonButton(
+                  text: actionTitle ??
+                      (isForPro
+                          ? Platform.isIOS
+                          ? "Okay"
+                          : StringResource.buyNowAgain
+                          : StringResource.signIn),
+                  //text: isForPro ? "Okay" :StringResource.signIn,
+                  onPressed: onTap ??
+                          () {
+                        if (isForPro) {
+                          Get.back();
+                          if (Platform.isAndroid) {
+                            Get.toNamed(Routes.subscriptionView);
+                          }
+                        } else {
+                          final box = GetStorage();
+                          print("showFlipDialogForMentor $categoryName");
+                          box.write('$name',data);
+                          box.write("categoryName", categoryName);
+                          Get.put(LoginController());
+                          Get.find<LoginController>().emailController.text =
+                          "Enter phone number";
+                          Get.offAllNamed(Routes.loginScreen);
+                        }
+                      },
+                  loading: false,
+                ),
+                if (Platform.isAndroid && showCancel)
+                  TextButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Text(
+                        StringResource.cancel,
+                        style: StyleResource.instance
+                            .styleSemiBold(color: ColorResource.primaryColor),
+                      ))
+              ],
+            ),
+          ),
+        ),
+        dismissible: false,
+        isFlip: true);
+  }
+
 
   Future<void> showConfirmFlipDialog(
       {String? title,

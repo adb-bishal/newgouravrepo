@@ -86,6 +86,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:stockpathshala_beta/feedback/web_socket_service.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 
 import 'firebase_options.dart';
@@ -99,6 +100,7 @@ import 'view/widgets/log_print/log_print_condition.dart';
 // 🔔 Notification Plugin
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
+final socketService = SocketService();
 
 // 🔙 Background Message Handler
 Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
@@ -108,6 +110,7 @@ Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
   // Uncomment if you want background notifications to show
   // MyNotification.showNotification(message);
 }
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -132,8 +135,11 @@ Future<void> main() async {
   //     statusBarIconBrightness: Brightness.dark,
   //   ),
   // );
+
+
   // 🚀 Launch App
   runApp(const MyAppSP());
+
 }
 
 // ❌ Disable screenshots and data leakage
@@ -159,6 +165,8 @@ Future<void> initServices() async {
 
     // 🔑 Auth service
     await Get.putAsync(() => AuthService().init());
+
+    //websocket
 
     // 🔔 Notification
     MyNotification.initialize(flutterLocalNotificationsPlugin);
