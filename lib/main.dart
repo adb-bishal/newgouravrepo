@@ -102,7 +102,7 @@ import 'view/widgets/log_print/log_print_condition.dart';
 // 🔔 Notification Plugin
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
-final socketService = SocketService();
+// final socketService = SocketService();
 
 // 🔙 Background Message Handler
 Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
@@ -170,7 +170,7 @@ Future<void> initServices() async {
 
     // 🔑 Auth service
     await Get.putAsync(() => AuthService().init());
-
+    Get.put<SocketService>(SocketService());
     //websocket
 
     // 🔔 Notification

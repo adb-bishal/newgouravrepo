@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:stockpathshala_beta/feedback/QuestionModel.dart';
+import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_helper/home_provider.dart';
 
 import '../model/network_calls/api_helper/provider_helper/account_provider.dart';
 import '../model/network_calls/dio_client/get_it_instance.dart';
@@ -32,7 +33,20 @@ class GlobalSocketPopup extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () async {
+                  try {
+                    Navigator.pop(context);
+                    await feedbackCloseApi(
+                      userId: userData?['id'],
+                    );
+                  } catch (e) {
+                    Get.snackbar("Error", " $e",
+                        dismissDirection: DismissDirection.down,
+                        colorText: Colors.black,
+                        backgroundColor: Colors.white,
+                        snackPosition: SnackPosition.BOTTOM);
+                  }
+                },
                 child: const Icon(Icons.close, color: Colors.black),
               ),
             ),
@@ -129,6 +143,29 @@ class GlobalSocketPopup extends StatelessWidget {
     );
   }
 
+  Future<void> feedbackCloseApi({
+    required int userId,
+  }) async {
+    HomeProvider homeProvider = getIt();
+
+    await homeProvider.feedbackCloseApi(userId,
+        onError: (String? message, Map<String, dynamic>? errorMap) {
+      print("feedbackSkipApi OnError $errorMap");
+      Get.snackbar('', errorMap?['message']);
+    }, onSuccess: (String? message, Map<String, dynamic>? map) {
+      print("feedbackSkipApi OnSuccess $map");
+
+      // if (map != null && map['status'] == true) {
+      //   // final data = LiveClassRatingModel.fromJson(map);
+      //   Get.snackbar('Success', map['message'] ?? '',
+      //       snackPosition: SnackPosition.BOTTOM,
+      //       backgroundColor: Colors.black,
+      //       colorText: Colors.white,
+      //       animationDuration: Duration(milliseconds: 200));
+      // }
+    });
+  }
+
   Future<void> submitLiveClassRating({
     required int liveClassId,
     required int userId,
@@ -148,30 +185,19 @@ class GlobalSocketPopup extends StatelessWidget {
 
     await accountProvider.getLiveClassRating(payload,
         onError: (String? message, Map<String, dynamic>? errorMap) {
+      print("OnError $errorMap");
       Get.snackbar('', errorMap?['message']);
     }, onSuccess: (String? message, Map<String, dynamic>? map) {
+      print("OnSuccess $map");
+
       if (map != null && map['status'] == true) {
-        final data = LiveClassRatingModel.fromJson(map);
-        Get.snackbar('', data.message ?? '');
+        // final data = LiveClassRatingModel.fromJson(map);
+        Get.snackbar('Success', map['message'] ?? '',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.black,
+            colorText: Colors.white,
+            animationDuration: Duration(milliseconds: 200));
       }
     });
-    //
-    //
-    //
-    //
-    //
-    // try {
-    //   final response = await dio.post(url, data: payload);
-    //
-    //   if (response.statusCode == 200 && response.data['status'] == true) {
-    //     print('✅ Rating submitted: ${response.data}');
-    //     Get.snackbar('', response.data['message']);
-    //   } else {
-    //     print('⚠️ Failed to submit rating: ${response.data}');
-    //     Get.snackbar('Failed to submit rating', response.data['message']);
-    //   }
-    // } catch (e) {
-    //   print('❌ Error submitting rating: $e');
-    // }
   }
 }

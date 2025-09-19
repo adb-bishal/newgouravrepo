@@ -22,17 +22,15 @@ class SocketService {
   HomeProvider homeProvider = getIt();
   IO.Socket? socket;
 
-  String? accessToken;
   Map<String, dynamic>? userData;
-  String? currentPath;
 
-  void connect(
-      {String? accessToken, Map<String, dynamic>? userData, String? pathName}) {
-    if (socket != null) return;
-
-    accessToken = accessToken;
-    userData = userData;
-    currentPath = pathName;
+  void connect({Map<String, dynamic>? userData}) {
+    if (socket != null) {
+      socket!.disconnect();
+      socket!.destroy();
+      socket = null;
+      print("🔌 Previous socket disconnected and destroyed");
+    }
 
     socket = IO.io('https://ws.stockpathshala.in', <String, dynamic>{
       'transports': ['websocket'],
@@ -42,34 +40,30 @@ class SocketService {
     socket!.connect();
 
     socket?.on('connect', (_) {
-      if (accessToken != null && userData?['id'] != null) {
-        if (kDebugMode) {
-          print('connected from socket $accessToken ${userData?['id']}');
-          // questionApi();
-        }
+      if (userData?['id'] != null) {
+        print('Connected to socket as user: ${userData?['id']}');
         socket?.emit('user_online', userData!['id']);
       }
     });
 
     socket?.on('get_class_feedback', (data) {
+      print("📩 get_class_feedback received: $data");
       final classDetails = data['class_details'];
       if (classDetails != null) {
-        // addEventToBuffer({
-        //   'eventName': 'get_live_class_feedback',
-        //   'class_details': classDetails,
-        //   'userId': userData?['id'],
-        //   'userName': userData?['name'],
-        // });
-        questionApi(userData: userData,classDetails: classDetails);
+        questionApi(userData: userData, classDetails: classDetails);
       }
     });
 
     socket!.on('disconnect', (_) {
-      print('Disconnected from socket server');
+      print('⚠️ Disconnected from socket server');
     });
 
     socket!.on('error', (error) {
-      print('Socket error: $error');
+      print('❌ Socket error: $error');
+    });
+
+    socket!.on('connect_error', (error) {
+      print('❗ Socket connect error: $error');
     });
   }
 
@@ -86,10 +80,6 @@ class SocketService {
     accessToken = accessToken;
   }
 
-  void updateCurrentPath(String? pathName) {
-    currentPath = pathName;
-  }
-
   void on(String event, Function(dynamic) handler) {
     socket?.on(event, handler);
   }
@@ -103,19 +93,24 @@ class SocketService {
     socket = null;
   }
 
-  void _showPopup(List<QuestionData>? questions, Map<String, dynamic>? userData, classDetails) {
+  void _showPopup(List<QuestionData>? questions, Map<String, dynamic>? userData,
+      classDetails) {
     if (navigatorKey.currentState == null) return;
 
     final context = navigatorKey.currentState!.overlay!.context;
 
     showDialog(
+      barrierDismissible: false,
         context: context,
         builder: (_) => Dialog(
-          insetPadding: const EdgeInsets.all(14),
+              insetPadding: const EdgeInsets.all(14),
               backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5)),
-              child: GlobalSocketPopup(questionList: questions,userData:userData,classDetails:classDetails),
+              child: GlobalSocketPopup(
+                  questionList: questions,
+                  userData: userData,
+                  classDetails: classDetails),
             ));
   }
 
@@ -127,21 +122,21 @@ class SocketService {
       await homeProvider.getQuestionsForFeedback(onError: (onError, json) {
         print("questions List $onError");
       }, onSuccess: (onSuccess, json) {
-          if (json != null) {
-            var dataList = json['data'] as List<dynamic>?;
+        if (json != null) {
+          var dataList = json['data'] as List<dynamic>?;
 
-            if (dataList != null) {
-              List<QuestionData> questions = dataList
-                  .map((item) =>
-                      QuestionData.fromJson(item as Map<String, dynamic>))
-                  .toList();
+          if (dataList != null) {
+            List<QuestionData> questions = dataList
+                .map((item) =>
+                    QuestionData.fromJson(item as Map<String, dynamic>))
+                .toList();
 
-              if (kDebugMode) {
-                print('questions List: $questions');
-              }
-              _showPopup(questions,userData,classDetails);
+            if (kDebugMode) {
+              print('questions List: $questions');
             }
+            _showPopup(questions, userData, classDetails);
           }
+        }
       });
     } catch (e) {
       print(e);

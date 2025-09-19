@@ -18,6 +18,7 @@ import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/logi
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
 import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
 
+import '../../../feedback/web_socket_service.dart';
 import '../../../model/models/explore_all_category/all_category_model.dart'
     as category;
 import '../../../model/network_calls/api_helper/provider_helper/courses_provider.dart';
@@ -99,11 +100,11 @@ class ProfileController extends GetxController {
   onConfirmLogOut() async {
     Get.back();
     isLogOutLoading.value = true;
-
     await accountProvider.logOut(onError: (val, errorMap) {
       toastShow(message: val);
       isLogOutLoading.value = false;
     }, onSuccess: (message, json) async {
+      Get.find<SocketService>().disconnect();
       PageManager pageManager = getIt<PageManager>();
       await pageManager.stop();
       await pageManager.removeAll();

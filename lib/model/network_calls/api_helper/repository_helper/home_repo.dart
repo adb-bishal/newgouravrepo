@@ -26,6 +26,11 @@ dynamic isAvailable,) async {
     print('swefsef $url');
     return dioClient.getResponse(url: url, dioClient: dioClient);
   }
+  Future<ApiResponse> getFeedbackClose(dynamic userId) async {
+    String url =  '${AppConstants.instance.baseUrl}${AppConstants.instance.skipApi}?user_id=$userId';
+    print('swefsef $url');
+    return dioClient.getResponse(url: url, dioClient: dioClient);
+  }
 
   Future<ApiResponse> getQuestions() async {
     String url =  '${AppConstants.instance.baseUrl}${AppConstants.instance.questionList}';

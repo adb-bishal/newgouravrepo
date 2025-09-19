@@ -46,6 +46,7 @@ import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/
 import 'package:url_launcher/url_launcher.dart';
 import 'package:win32/winsock2.dart';
 import '../../../enum/enum.dart';
+import '../../../feedback/web_socket_service.dart';
 import '../../../main.dart';
 import '../../../mentroship/controller/mentorship_controller.dart';
 import '../../../model/models/course_models/course_by_id_model.dart';
@@ -232,6 +233,23 @@ class RootViewController extends GetxController {
     Get.put(HomeNewController());
     Get.put(MentorshipController());
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+
+    try {
+      if (!Get.find<AuthService>().isGuestUser.value) {
+        var data = Get.find<AuthService>().user.toJson();
+        if (kDebugMode) {
+          print("socketServicedata $data");
+        }
+        Get.find<SocketService>().connect(
+          userData: data,
+        );
+
+      }else{
+        print("socketServicedata user not login");
+      }
+    } catch (e) {
+      print('socket error $e');
+    }
     checkTime();
     logPrint("hi ${Get.find<AuthService>().isPro.value}");
     if (Get.find<AuthService>().user.value.name == null &&
@@ -265,27 +283,6 @@ class RootViewController extends GetxController {
       getServiceData();
     }
 
-    try {
-      if (!Get.find<AuthService>().isGuestUser.value) {
-        final accessToken = Get.find<AuthService>().getUserToken();
-        var data = Get.find<AuthService>().user.toJson();
-        if (kDebugMode) {
-          print("data $data");
-          print("accessToken $accessToken");
-        }
-        socketService.connect(
-          accessToken: accessToken,
-          userData: data,
-          pathName: Get.currentRoute,
-        );
-        // socketService.on('get_class_feedback', (eventData) {
-        //   print('Class feedback received on login page: $eventData');
-        //
-        // });
-      }
-    } catch (e) {
-      print('socket error $e');
-    }
 
     try {
       FirebaseMessaging.instance.getInitialMessage().then((value) {

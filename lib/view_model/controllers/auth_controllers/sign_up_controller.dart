@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 // import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
+import '../../../feedback/web_socket_service.dart';
 import '../../../main.dart';
 import '../../../model/network_calls/api_helper/provider_helper/auth_provider.dart';
 import '../../../model/network_calls/dio_client/get_it_instance.dart';
@@ -274,17 +275,16 @@ class SignUpController extends GetxController {
               await Get.find<AuthService>()
                   .saveTrainingTooltips('classRecordings');
 
-              final accessToken = Get.find<AuthService>().getUserToken();
+              // final accessToken = Get.find<AuthService>().getUserToken();
 
-              try {
-                socketService.connect(
-                  accessToken: accessToken,
-                  userData: data['data'],
-                  pathName: Get.currentRoute,
-                );
-              } catch (e) {
-                print(e);
-              }
+              // try {
+              //   print("SocketService from sign up ");
+              //   Get.find<SocketService>().connect(
+              //     userData: data['data'],
+              //   );
+              // } catch (e) {
+              //   print(e);
+              // }
 
               Get.offAllNamed(Routes.rootView, arguments: true);
               // }

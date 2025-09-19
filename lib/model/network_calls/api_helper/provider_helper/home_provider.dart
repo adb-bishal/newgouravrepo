@@ -25,6 +25,15 @@ class HomeProvider {
         .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
   }
 
+  Future feedbackCloseApi(dynamic userId,
+      {required Function(String? message, Map<String, dynamic>? errorMap)
+      onError,
+        required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
+    ApiResponse apiResponse = await homeRepo.getFeedbackClose(userId);
+    CheckApiResponse.instance
+        .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
+  }
+
 
   Future getQuestionsForFeedback(
       {required Function(String? message, Map<String, dynamic>? errorMap)
