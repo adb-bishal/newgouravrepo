@@ -51,17 +51,18 @@ class SocketService {
       }
     });
 
-    // socket?.on('get_class_feedback', (data) {
-    //   final classDetails = data['class_details'];
-    //   if (classDetails != null) {
-    //     addEventToBuffer({
-    //       'eventName': 'get_live_class_feedback',
-    //       'class_details': classDetails,
-    //       'userId': userData?['id'],
-    //       'userName': userData?['name'],
-    //     });
-    //   }
-    // });
+    socket?.on('get_class_feedback', (data) {
+      final classDetails = data['class_details'];
+      if (classDetails != null) {
+        // addEventToBuffer({
+        //   'eventName': 'get_live_class_feedback',
+        //   'class_details': classDetails,
+        //   'userId': userData?['id'],
+        //   'userName': userData?['name'],
+        // });
+        questionApi(userData: userData,classDetails: classDetails);
+      }
+    });
 
     socket!.on('disconnect', (_) {
       print('Disconnected from socket server');
@@ -102,7 +103,7 @@ class SocketService {
     socket = null;
   }
 
-  void _showPopup(List<QuestionData>? questions) {
+  void _showPopup(List<QuestionData>? questions, Map<String, dynamic>? userData, classDetails) {
     if (navigatorKey.currentState == null) return;
 
     final context = navigatorKey.currentState!.overlay!.context;
@@ -110,16 +111,18 @@ class SocketService {
     showDialog(
         context: context,
         builder: (_) => Dialog(
+          insetPadding: const EdgeInsets.all(14),
               backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5)),
-              child: GlobalSocketPopup(questions),
+              child: GlobalSocketPopup(questionList: questions,userData:userData,classDetails:classDetails),
             ));
   }
 
   bool get isConnected => socket?.connected ?? false;
 
-  Future<List<QuestionData>?> questionApi() async {
+  Future<List<QuestionData>?> questionApi(
+      {Map<String, dynamic>? userData, classDetails}) async {
     try {
       await homeProvider.getQuestionsForFeedback(onError: (onError, json) {
         print("questions List $onError");
@@ -136,7 +139,7 @@ class SocketService {
               if (kDebugMode) {
                 print('questions List: $questions');
               }
-              _showPopup(questions);
+              _showPopup(questions,userData,classDetails);
             }
           }
       });

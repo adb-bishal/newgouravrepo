@@ -275,7 +275,7 @@ class StringResource {
   static String skipAndPay = "Skip and pay".tr;
   static String confirmAndPay = "Confirm & Pay".tr;
   static String whatsappConfirmationNote = "You'll receive a confirmation via Whatsapp after booking".tr;
-  static String chooseCounsellingSlots = "Select your preferred date for counselling".tr;
+  static String selectYourPreferredDateForCounselling = "Select your preferred date for counselling".tr;
   static String bookCounselling = "Book Counselling".tr;
   static String pnlVerified = "PnL Verified".tr;
   static String chooseSlot = "Choose Slot".tr;

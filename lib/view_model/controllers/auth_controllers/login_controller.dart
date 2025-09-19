@@ -1,28 +1,21 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-import 'package:account_picker/account_picker.dart';
+
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_html/flutter_html.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mobile_number/mobile_number.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:stockpathshala_beta/model/models/auth_models/login_page_data_model.dart';
 import 'package:stockpathshala_beta/model/utils/helper_util.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
-import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/sign_up_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/profile_controller/profile_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-// import 'package:truecaller_sdk/truecaller_sdk.dart';
-import '../../../main.dart';
+
 import '../../../model/models/popup_model/pop_up_model.dart';
 import '../../../model/network_calls/api_helper/provider_helper/auth_provider.dart';
 import '../../../model/network_calls/api_helper/provider_helper/root_provider.dart';

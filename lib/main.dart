@@ -77,6 +77,7 @@
 //
 //   Get.log('All services started...');
 // }
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -88,6 +89,7 @@ import 'package:screen_protector/screen_protector.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:stockpathshala_beta/feedback/web_socket_service.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'firebase_options.dart';
 import 'app.dart';
@@ -114,9 +116,12 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await WakelockPlus.enable();
   // 🛡️ Protect screen recording & screenshot
-  // await disableScreenCapture();
+
+  if (kReleaseMode) {
+    await disableScreenCapture();
+  }
 
   // 🌐 Your initial setups
   await getInit();

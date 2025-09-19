@@ -18,6 +18,14 @@ class AccountProvider {
     CheckApiResponse.instance
         .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
   }
+  Future getLiveClassRating(Map<String, dynamic> payload,
+      {required Function(String? message, Map<String, dynamic>? errorMap)
+      onError,
+        required Function(String? message, Map<String, dynamic>? map) onSuccess}) async {
+    ApiResponse apiResponse = await accountRepo.getLiveClassRating(payload);
+    CheckApiResponse.instance
+        .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
+  }
 
 
   Future getCategories(

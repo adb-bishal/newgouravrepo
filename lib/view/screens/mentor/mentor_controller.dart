@@ -5,6 +5,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_helper/account_provider.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../../model/network_calls/dio_client/get_it_instance.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -123,6 +124,8 @@ class MentorController extends GetxController {
   void onInit() {
     super.onInit();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    WakelockPlus.enable();
+
     confettiController = ConfettiController(duration: const Duration(seconds: 3));
     // confettiController.play();
     final arguments = Get.arguments;

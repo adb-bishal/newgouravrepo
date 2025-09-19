@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_storage/get_storage.dart' hide Data;
 import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
@@ -13,6 +14,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/home_view/mentor_mode
 import 'package:stockpathshala_beta/view/widgets/shimmer_widget/shimmer_widget.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/view_helpers/progress_dialog.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import '../../../../model/services/auth_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -431,7 +433,8 @@ Widget customAlertDialog(
                       initiateCounsellingPayment(
                         onPaymentCallBack: (response, orderId) async {
                           try {
-                            await controller?.verifyPayment(
+                            // controller.isBuyLoading.value = true;
+                            await controller.verifyPayment(
                               response,
                               orderId,
                               (data) {
@@ -472,7 +475,10 @@ Widget customAlertDialog(
                                 ],
                               ),
                             );
-                          } finally {}
+                          } finally {
+                            // controller.isBuyLoading.value = false;
+
+                          }
                         },
                         controller!,
                         slotId: slotId.toString() ?? '',
@@ -496,6 +502,7 @@ Widget customAlertDialog(
                         },
                         onCancel: () {
                           print(" Payment Cancelled");
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Payment cancelled")),
                           );
@@ -951,7 +958,7 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(StringResource.chooseCounsellingSlots,
+            Text(StringResource.selectYourPreferredDateForCounselling,
                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
             const SizedBox(height: 16),
             SizedBox(
@@ -1080,18 +1087,22 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
             const SizedBox(height: 24),
             GestureDetector(
               onTap: () {
-                if (Get.find<AuthService>().isGuestUser.value) {
-                  ProgressDialog().showFlipDialog(
-                    isForPro: false,
-                    name: CommonEnum.mentorScreen.name,
-                    data: widget.controller.categoryId,
-                  );
-                  return;
-                }
-                Navigator.of(context).pop();
+                if (_selectedSlot != null && _selectedDate != null) {
+                  if (Get
+                      .find<AuthService>()
+                      .isGuestUser
+                      .value) {
+                    ProgressDialog().showFlipDialog(
+                      isForPro: false,
+                      name: CommonEnum.mentorScreen.name,
+                      data: widget.controller.categoryId,
+                    );
+                    return;
+                  }
 
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  if (_selectedSlot != null && _selectedDate != null) {
+                  Navigator.of(context).pop();
+
+                  Future.delayed(const Duration(milliseconds: 300), () {
                     showBeforeBookingConfirmationDialog(
                       Get.context!,
                       mentorData: widget.data,
@@ -1100,8 +1111,8 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
                       time: _selectedSlot,
                       date: _selectedDate,
                     );
-                  }
-                });
+                  });
+                }
               },
               child: SizedBox(
                 width: double.infinity,

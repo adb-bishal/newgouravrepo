@@ -1,9 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
 import 'package:stockpathshala_beta/feedback/QuestionModel.dart';
 
+import '../model/network_calls/api_helper/provider_helper/account_provider.dart';
+import '../model/network_calls/dio_client/get_it_instance.dart';
+import 'live_class_rating_model.dart';
+
 class GlobalSocketPopup extends StatelessWidget {
-  const GlobalSocketPopup(List<QuestionData>? questions, {super.key});
+  final List<QuestionData>? questionList;
+  final Map<String, dynamic>? userData;
+  final dynamic? classDetails;
+  final List<Map<String, dynamic>> selectedRatings = [];
+
+  GlobalSocketPopup(
+      {super.key, this.questionList, this.userData, this.classDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -11,10 +23,9 @@ class GlobalSocketPopup extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
-
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -32,9 +43,9 @@ class GlobalSocketPopup extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Sector Rotation Strategy for Swing Trading",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            Text(
+              classDetails?['title'] ?? "NA",
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -44,47 +55,123 @@ class GlobalSocketPopup extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            buildRatingRow("test1"),
-            buildRatingRow("test2"),
-            buildRatingRow("test3"),
+            ...?questionList?.map((item) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: buildRatingRow(item),
+              );
+            }),
+            const SizedBox(
+              height: 8,
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget buildRatingRow(String label) {
+  Widget buildRatingRow(QuestionData questionData) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Flexible(
+          Expanded(
               child: Text(
-            label,
-            style: const TextStyle(fontSize: 12),
+            questionData.title.toString(),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
           )),
-          const SizedBox(width: 12),
-          Flexible(
+          Expanded(
             child: RatingBar(
-              itemSize: 20,
+              itemSize: 30,
               initialRating: 0,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
               ratingWidget: RatingWidget(
-                full: const Icon(Icons.star, color: Colors.amber),
-                half: const Icon(Icons.star_half, color: Colors.amber),
-                empty: const Icon(Icons.star_border, color: Colors.amber),
+                full: const Icon(Icons.star_rounded, color: Colors.amber),
+                half: const Icon(Icons.star_half_rounded, color: Colors.amber),
+                empty:
+                    const Icon(Icons.star_border_rounded, color: Colors.grey),
               ),
-              onRatingUpdate: (rating) {
-                print('$label rating: $rating');
+              onRatingUpdate: (rating) async {
+                if (kDebugMode) {
+                  print('${questionData.title} rating: $rating');
+                }
+                final existingRating = selectedRatings.indexWhere(
+                    (item) => item['question_list_id'] == questionData.id);
+
+                if (existingRating != -1) {
+                  selectedRatings[existingRating]['rating'] = rating.toInt();
+                } else {
+                  selectedRatings.add({
+                    'question_list_id': questionData.id,
+                    'rating': rating.toInt(),
+                  });
+                }
+                try {
+                  await submitLiveClassRating(
+                    liveClassId: classDetails?['id'],
+                    userId: userData?['id'],
+                    ratings: selectedRatings,
+                  );
+                } catch (e) {
+                  Get.snackbar("Error", " $e",
+                      dismissDirection: DismissDirection.down,
+                      colorText: Colors.black,
+                      backgroundColor: Colors.white,
+                      snackPosition: SnackPosition.BOTTOM);
+                }
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> submitLiveClassRating({
+    required int liveClassId,
+    required int userId,
+    required List<Map<String, dynamic>> ratings,
+  }) async {
+    AccountProvider accountProvider = getIt();
+
+    final payload = {
+      "live_class_id": liveClassId,
+      "user_id": userId,
+      "ratings": ratings,
+    };
+
+    if (kDebugMode) {
+      print('payload $payload');
+    }
+
+    await accountProvider.getLiveClassRating(payload,
+        onError: (String? message, Map<String, dynamic>? errorMap) {
+      Get.snackbar('', errorMap?['message']);
+    }, onSuccess: (String? message, Map<String, dynamic>? map) {
+      if (map != null && map['status'] == true) {
+        final data = LiveClassRatingModel.fromJson(map);
+        Get.snackbar('', data.message ?? '');
+      }
+    });
+    //
+    //
+    //
+    //
+    //
+    // try {
+    //   final response = await dio.post(url, data: payload);
+    //
+    //   if (response.statusCode == 200 && response.data['status'] == true) {
+    //     print('✅ Rating submitted: ${response.data}');
+    //     Get.snackbar('', response.data['message']);
+    //   } else {
+    //     print('⚠️ Failed to submit rating: ${response.data}');
+    //     Get.snackbar('Failed to submit rating', response.data['message']);
+    //   }
+    // } catch (e) {
+    //   print('❌ Error submitting rating: $e');
+    // }
   }
 }

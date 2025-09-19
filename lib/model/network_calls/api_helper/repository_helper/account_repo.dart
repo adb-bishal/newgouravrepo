@@ -42,6 +42,15 @@ class AccountRepo {
     });
   }
 
+  Future<ApiResponse> getLiveClassRating(Map<String, dynamic?> body) async {
+    String url = AppConstants.instance.liveClassRating;
+    return dioClient.postResponse(url: url, dioClient: dioClient, data: {
+      ...body,
+      "device_token": get_package.Get.find<AuthService>().getUserFcmToken(),
+      "device_type": Platform.isIOS ? "ios" : "android"
+    });
+  }
+
   Future<ApiResponse> deleteAccount() async {
     String url = AppConstants.instance.deleteAccount;
     return dioClient.postResponse(url: url, dioClient: dioClient, data: {
