@@ -133,7 +133,7 @@ class LoginController extends GetxController {
             //   );
             // } catch (e) {
             //   print(e);
-            // }
+            // }a
             isLoading.value = false;
             Get.toNamed(Routes.otpScreen, arguments: emailController.text)?.then((onValue){
               emailController.clear();

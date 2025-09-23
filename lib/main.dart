@@ -89,6 +89,7 @@ import 'package:screen_protector/screen_protector.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:stockpathshala_beta/feedback/web_socket_service.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
+import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/live_classes_controller/live_class_detail/AutoRotateService.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'firebase_options.dart';
@@ -130,7 +131,7 @@ Future<void> main() async {
   await initServices();
 
   // // 📱 Edge-to-edge UI support for Android 10+
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   //
   // SystemChrome.setSystemUIOverlayStyle(
   //   const SystemUiOverlayStyle(
@@ -141,7 +142,9 @@ Future<void> main() async {
   //   ),
   // );
 
-
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   // 🚀 Launch App
   runApp(const MyAppSP());
 
@@ -170,6 +173,9 @@ Future<void> initServices() async {
 
     // 🔑 Auth service
     await Get.putAsync(() => AuthService().init());
+    Get.put<AutoRotateService>(AutoRotateService(), permanent: true);
+
+    // Register controller
     Get.put<SocketService>(SocketService());
     //websocket
 

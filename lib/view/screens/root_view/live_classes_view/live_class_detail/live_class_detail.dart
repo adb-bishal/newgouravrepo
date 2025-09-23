@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:stockpathshala_beta/enum/enum.dart';
@@ -95,19 +96,24 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
               ? FileVideoWidget(
                   showQualityPicker: false,
                   url: localVideoPath!,
+                  thumbnail: controller.liveClassDetail.value.data?.preview,
                   eventCallBack: (progress, totalDuration) {},
                 )
               : (controller.liveClassDetail.value.data?.fileUrl == null ||
                       controller.liveClassDetail.value.data?.fileUrl == "")
                   ? SizedBox(
                       width: double.infinity,
-                      child: cachedNetworkImage(
+                      child: controller.liveClassDetail.value.data == null
+                          ? ShimmerEffect.instance
+                          .imageLoader(color: Colors.white, radius: BorderRadius.zero)
+                          : cachedNetworkImage(
                         controller.liveClassDetail.value.data?.image ?? "",
                       ),
                     )
                   : FileVideoWidget(
                       showQualityPicker: !controller.isPast.value,
                       url: controller.liveClassDetail.value.data?.fileUrl ?? "",
+                      thumbnail: controller.liveClassDetail.value.data?.preview,
                       eventCallBack: (progress, totalDuration) {},
                     );
         } else {
@@ -334,99 +340,6 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                 ],
               ),
       ),
-      // Expanded(
-      //   child: Obx(
-      //         () => controller.isDownloading.value
-      //         ? Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: [
-      //         LoaderButtonLayout(
-      //           onTap: () {},
-      //           iconSize: 16,
-      //           allPadding: 4,
-      //           iconColor: ColorResource.primaryColor,
-      //         ),
-      //         SizedBox(height: 4),
-      //         Text(
-      //           "${(controller.downloadProgress.value * 100).toStringAsFixed(1)}%",
-      //           style: TextStyle(
-      //             color: ColorResource.primaryColor,
-      //             fontSize: 12,
-      //             fontWeight: FontWeight.bold,
-      //           ),
-      //         ),
-      //       ],
-      //     )
-      //          FunctionalityRowBuild(
-      //       isPaid: false,
-      //       isDone: false,
-      //       bgColor: ColorResource.primaryColor,
-      //       icon: ImageResource.instance.downloadIcon,
-      //       title: StringResource.download,
-      //       onTap: () {
-      //         controller.downloadVideo(
-      //           controller.liveClassDetail.value.data!.fileUrl.toString(),
-      //           controller.liveClassDetail.value.data!.title.toString(),
-      //         );
-      //       },
-      //     ),
-
-      // ),
-      // Expanded(
-      //   child: Obx(
-      //         () => controller.isDownloading.value
-      //         ? Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       children: [
-      //         CircularProgressIndicator(
-      //           value: controller.downloadProgress.value,
-      //           strokeWidth: 3,
-      //           color: ColorResource.primaryColor,
-      //           backgroundColor: Colors.grey.shade300,
-      //         ),
-      //         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-      //         Text(
-      //           "${(controller.downloadProgress.value * 100).toStringAsFixed(1)}%",
-      //           style: TextStyle(
-      //             color: ColorResource.primaryColor,
-      //             fontSize: MediaQuery.of(context).size.width * 0.035,
-      //             fontWeight: FontWeight.w600,
-      //           ),
-      //         ),
-      //         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-      //         Text(
-      //           "Downloading...",
-      //           style: TextStyle(
-      //             color: Colors.grey.shade600,
-      //             fontSize: MediaQuery.of(context).size.width * 0.04,
-      //           ),
-      //         ),
-      //       ],
-      //     )
-      //         : FunctionalityRowBuild(
-      //       isPaid: false,
-      //       isDone: false,
-      //       bgColor: ColorResource.primaryColor,
-      //       icon: ImageResource.instance.downloadIcon,
-      //       title: StringResource.download,
-      //       onTap: () {
-      //         controller.downloadVideo(
-      //           controller.liveClassDetail.value.data!.fileUrl.toString(),
-      //           controller.liveClassDetail.value.data!.title.toString(),
-      //         );
-      //       },
-      //     ),
-      //   ),
-      // ),
-
-      // InkWell(
-      //     onTap: (){
-      //       controller.
-      //     },
-      //     child: Text('delete')),
-
-      // Text('sdcsdcsdc'),
       Obx(() {
         print(
             "descrptions ${controller.liveClassDetail.value.data?.shortDescription ?? ""}");
@@ -852,19 +765,27 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Profile Image
+                    // Profile Image with proper null handling
                     Container(
                       width: (screenWidth > 500 ? 60 : 50) * 2,
                       height: (screenWidth > 500 ? 70 : 50) * 2,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            teacher?.profileImage ?? "", // Placeholder image
-                          ),
-                          fit: BoxFit.cover,
-                        ),
+                        color: Colors.grey[300], // Fallback color
+                        image: (teacher?.profileImage != null &&
+                                teacher!.profileImage!.isNotEmpty)
+                            ? DecorationImage(
+                                image: NetworkImage(teacher.profileImage!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
+                      child: (teacher?.profileImage == null ||
+                              teacher!.profileImage!.isEmpty)
+                          ? Icon(Icons.person,
+                              size: screenWidth > 500 ? 40 : 30,
+                              color: Colors.grey[600])
+                          : null,
                     ),
                     SizedBox(width: screenWidth < 500 ? 10 : 20),
                     Expanded(
@@ -1012,6 +933,18 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
   }
 }
 
+// class AutoRotateChecker {
+//     static const platform = MethodChannel("system_settings_channel");
+//     static Future<bool?> checkAutoRotateStatus() async {
+//         try{
+//           final bool result = await platform.invokeMethod('checkAutoRotateToggle');
+//           return result;
+//         } on PlatformException catch (e) {
+//           print("Failed to get auto-rotate status: '${e.message}'");
+//           return null;
+//         }
+//     }
+// }
 class CourseBoxWithDate extends StatelessWidget {
   final String courseName;
   final String courseImage;

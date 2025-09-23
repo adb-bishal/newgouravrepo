@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:stockpathshala_beta/model/models/auth_models/sign_in.dart';
 import 'package:stockpathshala_beta/model/models/batch_models/all_batch_model.dart';
@@ -79,6 +80,8 @@ class PastClassesController extends GetxController {
 
   @override
   void onInit() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
     dataPagingController = PagingScrollController<CommonDatum>(
         onLoadMore: (int page, int totalItemsCount) async {
           // Only load more if we have more data available

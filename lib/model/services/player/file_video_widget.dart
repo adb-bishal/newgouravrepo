@@ -1,225 +1,25 @@
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:better_player/better_player.dart' as better;
-// import 'package:better_player/src/video_player/video_player_platform_interface.dart' as video_event;
-// import 'package:screen_protector/screen_protector.dart';
-// import 'package:video_player/video_player.dart';
-// import 'package:visibility_detector/visibility_detector.dart';
-// import 'package:wakelock_plus/wakelock_plus.dart';
-//
-// import '../../../service/page_manager.dart';
-// import '../../network_calls/dio_client/get_it_instance.dart';
-// import '../../utils/color_resource.dart';
-// import 'package:stockpathshala_beta/model/services/player/widgets/custom_controls_widget.dart';
-// import 'package:stockpathshala_beta/service/video_hls_player/video_view.dart';
-//
-// class FileVideoWidget extends StatefulWidget {
-//   final String url;
-//   final String? thumbnail;
-//   final void Function(bool)? onPlayButton;
-//   final Function(int, int) eventCallBack;
-//   final bool isScalp;
-//   final bool isOrientation;
-//   final bool orientation;
-//   final bool isVideo;
-//   final bool autoPlay;
-//   final bool showQualityPicker;
-//
-//   const FileVideoWidget({
-//     super.key,
-//     required this.url,
-//     this.thumbnail,
-//     this.onPlayButton,
-//     required this.eventCallBack,
-//     this.isScalp = false,
-//     this.isOrientation = true,
-//     this.orientation = true,
-//     this.isVideo = true,
-//     this.autoPlay = true,
-//     this.showQualityPicker = true,
-//   });
-//
-//   @override
-//   State<FileVideoWidget> createState() => _FileVideoWidgetState();
-// }
-//
-// class _FileVideoWidgetState extends State<FileVideoWidget> {
-//   bool isBetterPlayer = false;
-//   better.BetterPlayerDataSource? dataSource;
-//   better.BetterPlayerController? betterPlayerController;
-//   final pageManager = getIt<PageManager>();
-//   bool isRecording = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     // Maintain orientation if specified
-//     if (!widget.orientation) {
-//       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-//     }
-//
-//     // Detect screen recording, but do not block playback
-//     checkScreenRecording();
-//
-//     // Use BetterPlayer for non-m3u8 URLs
-//     isBetterPlayer = !widget.url.contains('.m3u8');
-//     if (isBetterPlayer) {
-//       dataSource = widget.isVideo
-//           ? better.BetterPlayerDataSource.network(widget.url)
-//           : better.BetterPlayerDataSource.file(widget.url);
-//
-//       Future.delayed(const Duration(milliseconds: 200), () {
-//         betterPlayerController = better.BetterPlayerController(
-//           better.BetterPlayerConfiguration(
-//             autoPlay: widget.autoPlay,
-//             looping: true,
-//             autoDispose: true,
-//             allowedScreenSleep: false,
-//             handleLifecycle: true,
-//             aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//             fit: BoxFit.contain,
-//             deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-//             deviceOrientationsOnFullScreen: [DeviceOrientation.landscapeRight],
-//             controlsConfiguration: better.BetterPlayerControlsConfiguration(
-//               playerTheme: better.BetterPlayerTheme.custom,
-//               customControlsBuilder: (controller, visibilityFn) =>
-//                   CustomControlsWidget(
-//                     isScalp: widget.isScalp,
-//                     isOrientation: widget.isOrientation,
-//                     orientation: widget.orientation,
-//                     controller: controller,
-//                     onControlsVisibilityChanged: visibilityFn,
-//                   ),
-//             ),
-//           ),
-//         );
-//
-//         betterPlayerController!
-//           ..setupDataSource(dataSource!)
-//           ..addEventsListener(_handleEvent);
-//         setState(() {}); // Refresh to show player
-//       });
-//     }
-//   }
-//
-//   Future<void> checkScreenRecording() async {
-//     final rec = await ScreenProtector.isRecording();
-//     if (rec != isRecording) {
-//       setState(() => isRecording = rec);
-//       if (rec) {
-//         showDialog(
-//           context: context,
-//           useRootNavigator: false,
-//           builder: (_) => AlertDialog(
-//             title: const Text('Screen Recording Detected'),
-//             content: const Text('Please stop screen recording to continue.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () => Navigator.of(context).pop(),
-//                 child: const Text('OK'),
-//               ),
-//             ],
-//           ),
-//         );
-//       }
-//     }
-//     Future.delayed(const Duration(seconds: 2), checkScreenRecording);
-//   }
-//
-//   Future<void> _handleEvent(better.BetterPlayerEvent event) async {
-//     if (event.betterPlayerEventType == better.BetterPlayerEventType.progress) {
-//       widget.eventCallBack(
-//         event.parameters?['progress']?.inSeconds ?? 0,
-//         event.parameters?['duration']?.inSeconds ?? 0,
-//       );
-//     }
-//     if (event.betterPlayerEventType == better.BetterPlayerEventType.play) {
-//       WakelockPlus.enable();
-//     } else if (event.betterPlayerEventType == better.BetterPlayerEventType.pause) {
-//       WakelockPlus.disable();
-//     }
-//     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-//       await betterPlayerController?.pause();
-//     }
-//   }
-//
-//   @override
-//   void dispose() {
-//     WakelockPlus.disable();
-//     betterPlayerController?.dispose();
-//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: VisibilityDetector(
-//         key: Key(widget.url),
-//         onVisibilityChanged: (info) async {
-//           final vis = info.visibleFraction * 100;
-//           if (widget.autoPlay) {
-//             if (vis > 80) {
-//               await betterPlayerController?.play();
-//               WakelockPlus.enable();
-//             } else {
-//               await betterPlayerController?.pause();
-//               WakelockPlus.disable();
-//             }
-//           }
-//         },
-//         child: isBetterPlayer
-//             ? (betterPlayerController == null
-//             ? const Center(child: CircularProgressIndicator())
-//             : better.BetterPlayer(controller: betterPlayerController!))
-//             : HlsVideoPlayer(
-//           thumbnail: widget.thumbnail,
-//           m3u8Show: widget.showQualityPicker,
-//           showControllers: !widget.isScalp,
-//           aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//           videoUrl: widget.url,
-//           onVideoPosition: widget.eventCallBack,
-//           onVideoInitCompleted: (controller) async {
-//             await controller.setLooping(true);
-//             if (widget.autoPlay) {
-//               WakelockPlus.enable();
-//             } else {
-//               await controller.pause();
-//               WakelockPlus.disable();
-//             }
-//           },
-//           onPlayButtonTap: (val) {
-//             widget.onPlayButton?.call(val);
-//             val ? WakelockPlus.enable() : WakelockPlus.disable();
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'dart:async';
 import 'dart:io';
+
 import 'package:better_player/better_player.dart' as better;
 import 'package:better_player/src/video_player/video_player_platform_interface.dart'
     as video_event;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:stockpathshala_beta/model/services/player/widgets/custom_controls_widget.dart';
 import 'package:stockpathshala_beta/service/video_hls_player/video_view.dart';
 import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
-import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
+import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/live_classes_controller/live_class_detail/live_class_detail_controller.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
 import '../../../service/page_manager.dart';
 import '../../network_calls/dio_client/get_it_instance.dart';
 import '../../utils/color_resource.dart';
-
-
 
 class FileVideoWidget extends StatefulWidget {
   final String url;
@@ -252,12 +52,17 @@ class FileVideoWidget extends StatefulWidget {
 }
 
 class FileVideoWidgetState extends State<FileVideoWidget> {
-  late VideoPlayerController videoPlayerController;
+  VideoPlayerController? videoPlayerController;
   bool isBetterPlayer = false;
   bool isRecording = false;
   bool manualFullScreen = false;
   bool isFullscreenNow = false;
+  bool _showThumbnail = true;
   StreamSubscription<AccelerometerEvent>? accelerometerSubscription;
+
+  // Create unique keys for this widget instance
+  late final String _uniqueVisibilityKey;
+  late final GlobalKey _betterPlayerKey;
 
   late better.BetterPlayerController betterPlayerController;
   late better.BetterPlayerDataSource dataSource;
@@ -269,21 +74,18 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   @override
   void initState() {
     super.initState();
+
+    _uniqueVisibilityKey =
+        '${widget.url}_${DateTime.now().millisecondsSinceEpoch}_$hashCode';
+    _betterPlayerKey = GlobalKey();
+
     manualFullScreen = false;
     isFullscreenNow = false;
+    _showThumbnail = true;
 
     ScreenProtector.protectDataLeakageOn();
     checkScreenRecording();
     changeOrient();
-
-    // Initially show system UI and enable edgeToEdge mode
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [
-        SystemUiOverlay.top, // Status bar
-        SystemUiOverlay.bottom, // Navigation bar
-      ],
-    );
 
     if (!widget.url.contains(".m3u8")) {
       isBetterPlayer = true;
@@ -320,6 +122,12 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
           deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
           controlsConfiguration: better.BetterPlayerControlsConfiguration(
             playerTheme: playerTheme,
+            showControls: true,
+            showControlsOnInitialize: false,
+            enableSkips: false,
+            enablePlaybackSpeed: false,
+            enableMute: true,
+            enableFullscreen: !widget.isScalp,
             customControlsBuilder: (controller, onControlsVisibilityChanged) =>
                 CustomControlsWidget(
               isScalp: widget.isScalp,
@@ -345,9 +153,19 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   void startOrientationListener() {
     accelerometerSubscription = accelerometerEvents.listen((event) {
       if (!manualFullScreen) {
-        if (event.x.abs() < 3 && event.y.abs() > 7 && isFullscreenNow) {
+        final isAutoRotateAllowed =
+            Get.find<LiveClassDetailController>().isAutoRotateEnabled ?? false;
+
+        if (!isAutoRotateAllowed) {
+          return;
+        }
+
+        final x = event.x;
+        final y = event.y;
+
+        if (x.abs() < 3 && y.abs() > 7 && isFullscreenNow) {
           exitFullscreen(autoRotated: true);
-        } else if (event.y.abs() < 3 && event.x > 7 && !isFullscreenNow) {
+        } else if (y.abs() < 3 && (x > 7 || x < -7) && !isFullscreenNow) {
           enterFullscreen(autoRotated: true);
         }
       }
@@ -358,16 +176,16 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     accelerometerSubscription?.cancel();
   }
 
-  void enterFullscreen({bool autoRotated = false}) {
+  Future<void> enterFullscreen({bool autoRotated = false}) async {
     if (!isFullscreenNow) {
       isFullscreenNow = true;
       betterPlayerController.enterFullScreen();
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
       ]);
-
       if (!autoRotated) {
         manualFullScreen = true;
         stopOrientationListener();
@@ -375,18 +193,15 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     }
   }
 
-  void exitFullscreen({bool autoRotated = false}) {
+  Future<void> exitFullscreen({bool autoRotated = false}) async {
     if (isFullscreenNow) {
       isFullscreenNow = false;
       betterPlayerController.exitFullScreen();
 
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
-        SystemUiOverlay.top,
-        SystemUiOverlay.bottom,
-      ]);
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
       if (!autoRotated) {
         manualFullScreen = false;
@@ -403,82 +218,25 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     }
   }
 
-  // void _toggleFullScreen() {
-  //   if (betterPlayerController.isFullScreen) {
-  //     betterPlayerController.exitFullScreen();
-  //
-  //     // Show system UI overlays and allow portrait orientation
-  //     SystemChrome.setEnabledSystemUIMode(
-  //       SystemUiMode.manual,
-  //       overlays: [
-  //         SystemUiOverlay.top, // Status bar
-  //         SystemUiOverlay.bottom, // Navigation bar
-  //       ],
-  //     );
-  //     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  //   } else {
-  //     betterPlayerController.enterFullScreen();
-  //
-  //     // Show system UI overlays and allow landscape orientations
-  //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
-  //       SystemUiOverlay.top,
-  //       SystemUiOverlay.bottom,
-  //     ]);
-  //     SystemChrome.setPreferredOrientations([
-  //       DeviceOrientation.landscapeLeft,
-  //       // DeviceOrientation.landscapeRight,
-  //     ]);
-  //   }
-  // }
-
-  // void manualToggleFullScreen() {
-  //   setState(() {
-  //     manualFullScreen = true;
-  //   });
-  //   if (betterPlayerController.isFullScreen) {
-  //     setState(() {
-  //       manualFullScreen = false;
-  //     });
-  //     betterPlayerController.exitFullScreen();
-  //
-  //     // Show system UI overlays and allow portrait orientation
-  //     SystemChrome.setEnabledSystemUIMode(
-  //       SystemUiMode.manual,
-  //       overlays: [
-  //         SystemUiOverlay.top,    // Status bar
-  //         SystemUiOverlay.bottom, // Navigation bar
-  //       ],
-  //     );
-  //     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  //   } else {
-  //     setState(() {
-  //       manualFullScreen = true;
-  //     });
-  //     betterPlayerController.enterFullScreen();
-  //
-  //     // Show system UI overlays and allow landscape orientations
-  //     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [
-  //       SystemUiOverlay.top,
-  //       SystemUiOverlay.bottom,
-  //     ]);
-  //     SystemChrome.setPreferredOrientations([
-  //       DeviceOrientation.landscapeLeft,
-  //       DeviceOrientation.landscapeRight,
-  //     ]);
-  //   }
-  // }
   Future<void> checkScreenRecording() async {
+    if (!mounted) return;
+
     bool recording = await ScreenProtector.isRecording();
-    if (recording != isRecording) {
+    if (recording != isRecording && mounted) {
       setState(() {
         isRecording = recording;
       });
       if (isRecording) showRecordingDetectedAlert();
     }
-    Future.delayed(const Duration(seconds: 2), checkScreenRecording);
+
+    if (mounted) {
+      Future.delayed(const Duration(seconds: 2), checkScreenRecording);
+    }
   }
 
   void showRecordingDetectedAlert() {
+    if (!mounted) return;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -502,6 +260,8 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   }
 
   Future<void> _handleEvent(better.BetterPlayerEvent event) async {
+    if (!mounted) return;
+
     events.insert(0, event);
 
     if (event.betterPlayerEventType == better.BetterPlayerEventType.progress) {
@@ -509,6 +269,16 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
         event.parameters?['progress']?.inSeconds ?? 0,
         event.parameters?['duration']?.inSeconds ?? 0,
       );
+    }
+
+    if (event.betterPlayerEventType ==
+            better.BetterPlayerEventType.initialized ||
+        event.betterPlayerEventType == better.BetterPlayerEventType.play) {
+      if (_showThumbnail && mounted) {
+        setState(() {
+          _showThumbnail = false;
+        });
+      }
     }
 
     if (event.betterPlayerEventType == better.BetterPlayerEventType.play) {
@@ -533,23 +303,19 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
   void dispose() {
     super.dispose();
     accelerometerSubscription?.cancel();
-    betterPlayerController.dispose();
+    if (isBetterPlayer) {
+      betterPlayerController.dispose();
+    }
     _disposePlayer();
   }
 
   Future<void> _pauseAndResetOrientation() async {
     if (!isBetterPlayer) {
-      await videoPlayerController.pause();
+      await videoPlayerController?.pause();
     } else {
       await betterPlayerController.pause();
     }
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [
-        SystemUiOverlay.top, // Status bar
-        SystemUiOverlay.bottom, // Navigation bar
-      ],
-    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WakelockPlus.disable();
   }
@@ -558,15 +324,9 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     ScreenProtector.protectDataLeakageOff();
     WakelockPlus.disable();
     if (!isBetterPlayer) {
-      await videoPlayerController.dispose();
+      await videoPlayerController?.dispose();
     }
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [
-        SystemUiOverlay.top, // Status bar
-        SystemUiOverlay.bottom, // Navigation bar
-      ],
-    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
@@ -579,8 +339,10 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
             Padding(
               padding: const EdgeInsets.only(top: 0),
               child: VisibilityDetector(
-                key: Key(widget.url.toString()),
+                key: Key(_uniqueVisibilityKey),
                 onVisibilityChanged: (visibilityInfo) async {
+                  if (!mounted) return;
+
                   double visiblePercentage =
                       visibilityInfo.visibleFraction * 100;
                   if (widget.autoPlay) {
@@ -588,14 +350,14 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                       if (isBetterPlayer) {
                         await betterPlayerController.play();
                       } else {
-                        await videoPlayerController.play();
+                        await videoPlayerController?.play();
                       }
                       WakelockPlus.enable();
                     } else {
                       if (isBetterPlayer && widget.isScalp) {
                         await betterPlayerController.pause();
-                      } else {
-                        await videoPlayerController.pause();
+                      } else if (!isBetterPlayer) {
+                        await videoPlayerController?.pause();
                       }
                       WakelockPlus.disable();
                     }
@@ -604,69 +366,84 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                 child: isBetterPlayer
                     ? SafeArea(
                         child: Stack(
-                          fit: StackFit.expand,
-                          children: [
+                        fit: StackFit.expand,
+                        children: [
+                          better.BetterPlayer(
+                            key: _betterPlayerKey,
+                            controller: betterPlayerController,
+                          ),
+                          if (!_showThumbnail && widget.isScalp)
                             GestureDetector(
-                              onTap: widget.isScalp
-                                  ? () async {
-                                      if (await betterPlayerController
-                                              .isPlaying() ??
-                                          false) {
-                                        await betterPlayerController.pause();
-                                        WakelockPlus.disable();
-                                      } else {
-                                        await betterPlayerController.play();
-                                        WakelockPlus.enable();
-                                      }
-                                      bool isPlaying =
-                                          await betterPlayerController
-                                                  .isPlaying() ??
-                                              false;
-                                      widget.onPlayButton?.call(isPlaying);
-                                    }
-                                  : null,
-                              child: better.BetterPlayer(
-                                controller: betterPlayerController,
-                              ),
+                              onTap: () async {
+                                bool isPlaying =
+                                    betterPlayerController.isPlaying() ?? false;
+                                if (isPlaying) {
+                                  await betterPlayerController.pause();
+                                  WakelockPlus.disable();
+                                } else {
+                                  await betterPlayerController.play();
+                                  WakelockPlus.enable();
+                                }
+                                widget.onPlayButton?.call(!isPlaying);
+                              },
+                              child: Container(color: Colors.transparent),
                             ),
+                          if (_showThumbnail)
+                            Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              color: ColorResource.secondaryColor,
+                              child: widget.thumbnail == null ||
+                                      widget.thumbnail!.isEmpty
+                                  ? const Center(
+                                      child: SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: CircularProgressIndicator(
+                                          color: ColorResource.white,
+                                          strokeWidth: 1,
+                                        ),
+                                      ),
+                                    )
+                                  : Center(
+                                      child: cachedNetworkImage(
+                                        widget.thumbnail!,
+                                        imageLoader: false,
+                                      ),
+                                    ),
+                            ),
+                          if (!_showThumbnail)
                             StreamBuilder(
                               stream: betterPlayerController
                                   .videoPlayerController
                                   ?.videoEventStreamController
                                   .stream,
                               builder: (context, snapshot) {
-                                return Visibility(
-                                  visible: snapshot.data?.eventType == null ||
-                                      snapshot.data?.eventType ==
-                                          video_event
-                                              .VideoEventType.bufferingStart,
-                                  child: widget.thumbnail == null ||
-                                          widget.thumbnail == ""
-                                      ? Container(
-                                          color: ColorResource.secondaryColor,
-                                          child: const Center(
-                                            child: SizedBox(
-                                              height: 70,
-                                              width: 70,
-                                              child: CircularProgressIndicator(
-                                                color: ColorResource.white,
-                                                strokeWidth: 1,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : Center(
-                                          child: cachedNetworkImage(
-                                            widget.thumbnail ?? "",
-                                            imageLoader: false,
-                                          ),
+                                final event = snapshot.data;
+                                final isBuffering = event?.eventType ==
+                                    video_event.VideoEventType.bufferingStart;
+
+                                if (isBuffering) {
+                                  return Container(
+                                    color: ColorResource.secondaryColor
+                                        .withOpacity(0.8),
+                                    child: const Center(
+                                      child: SizedBox(
+                                        height: 70,
+                                        width: 70,
+                                        child: CircularProgressIndicator(
+                                          color: ColorResource.white,
+                                          strokeWidth: 1,
                                         ),
-                                );
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
                               },
                             ),
-                          ],
-                        ),
-                      )
+                        ],
+                      ))
                     : SafeArea(
                         child: HlsVideoPlayer(
                           thumbnail: widget.thumbnail,
@@ -717,1248 +494,3 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
     );
   }
 }
-
-/*class FileVideoWidget extends StatefulWidget {
-  final String url;
-  final String? thumbnail;
-  final void Function(bool)? onPlayButton;
-  final Function(int, int) eventCallBack;
-  final bool isScalp;
-  final bool isOrientation;
-  final bool orientation;
-  final bool isVideo;
-  final bool autoPlay;
-  final bool showQualityPicker;
-
-  const FileVideoWidget({
-    super.key,
-    required this.url,
-    this.isScalp = false,
-    this.isOrientation = true,
-    this.orientation = true,
-    this.autoPlay = true,
-    this.isVideo = true,
-    this.showQualityPicker = true,
-    required this.eventCallBack,
-    this.thumbnail,
-    this.onPlayButton,
-  });
-
-  @override
-  FileVideoWidgetState createState() => FileVideoWidgetState();
-}
-
-class FileVideoWidgetState extends State<FileVideoWidget> {
-  late VideoPlayerController videoPlayerController;
-  bool fullscreen = false;
-  bool isBetterPlayer = false;
-  bool isRecording = false;
-  late better.BetterPlayerController betterPlayerController;
-  late better.BetterPlayerDataSource dataSource;
-  better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
-
-  List<better.BetterPlayerEvent> events = [];
-  final pageManager = getIt<PageManager>();
-
-  @override
-  void initState() {
-    super.initState();
-    ScreenProtector.protectDataLeakageOn();
-    checkScreenRecording();
-    changeOrient();
-
-    if (!widget.url.contains(".m3u8")) {
-      isBetterPlayer = true;
-
-      if (!widget.isScalp) {
-        if (!widget.isVideo) {
-          try {
-            File file = File(widget.url);
-            List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-            dataSource = better.BetterPlayerDataSource.memory(
-              bytes,
-              videoExtension: "mp4",
-            );
-          } catch (e) {
-            dataSource = better.BetterPlayerDataSource.file(widget.url);
-          }
-        } else {
-          dataSource = better.BetterPlayerDataSource.network(widget.url);
-        }
-      } else {
-        dataSource = better.BetterPlayerDataSource.network(widget.url);
-      }
-
-      betterPlayerController = better.BetterPlayerController(
-        better.BetterPlayerConfiguration(
-          autoPlay: widget.autoPlay,
-          looping: true,
-          autoDispose: true,
-          allowedScreenSleep: false,
-          deviceOrientationsOnFullScreen: [
-            DeviceOrientation.landscapeLeft,
-            DeviceOrientation.landscapeRight,
-          ],
-          deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-          controlsConfiguration: better.BetterPlayerControlsConfiguration(
-            playerTheme: playerTheme,
-            customControlsBuilder: (controller, onControlsVisibilityChanged) =>
-                CustomControlsWidget(
-                  isScalp: widget.isScalp,
-                  isOrientation: widget.isOrientation,
-                  orientation: widget.orientation,
-                  controller: controller,
-                  onControlsVisibilityChanged: onControlsVisibilityChanged,
-                  onFullScreenTap: () {
-                    if (betterPlayerController.isFullScreen) {
-                      betterPlayerController.exitFullScreen();
-                    } else {
-                      betterPlayerController.enterFullScreen();
-                    }
-                  },
-                ),
-          ),
-          aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-          fit: BoxFit.contain,
-        ),
-      );
-
-      betterPlayerController.setupDataSource(dataSource);
-      betterPlayerController.addEventsListener(_handleEvent);
-    }
-  }
-
-  Future<void> checkScreenRecording() async {
-    bool recording = await ScreenProtector.isRecording();
-    if (recording != isRecording) {
-      setState(() {
-        isRecording = recording;
-      });
-      if (isRecording) showRecordingDetectedAlert();
-    }
-    Future.delayed(const Duration(seconds: 2), checkScreenRecording);
-  }
-
-  void showRecordingDetectedAlert() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Screen Recording Detected'),
-        content: const Text('Please stop screen recording to continue using the app.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void changeOrient() {
-    if (!widget.orientation) {
-      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-    }
-  }
-
-  Future<void> _handleEvent(better.BetterPlayerEvent event) async {
-    events.insert(0, event);
-    if (event.betterPlayerEventType == better.BetterPlayerEventType.progress) {
-      widget.eventCallBack(
-        event.parameters?['progress']?.inSeconds ?? 0,
-        event.parameters?['duration']?.inSeconds ?? 0,
-      );
-    }
-
-    if (event.betterPlayerEventType == better.BetterPlayerEventType.play) {
-      WakelockPlus.enable();
-    } else if (event.betterPlayerEventType == better.BetterPlayerEventType.pause) {
-      WakelockPlus.disable();
-    }
-
-    if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-      await betterPlayerController.pause();
-    }
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    _pauseAndResetOrientation();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _disposePlayer();
-  }
-
-  Future<void> _pauseAndResetOrientation() async {
-    if (!isBetterPlayer) {
-      await videoPlayerController.pause();
-    } else {
-      await betterPlayerController.pause();
-    }
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    WakelockPlus.disable();
-  }
-
-  Future<void> _disposePlayer() async {
-    ScreenProtector.protectDataLeakageOff();
-    WakelockPlus.disable();
-    if (!isBetterPlayer) {
-      await videoPlayerController.dispose();
-    }
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 0),
-            child: VisibilityDetector(
-              key: Key(widget.url.toString()),
-              onVisibilityChanged: (visibilityInfo) async {
-                double visiblePercentage = visibilityInfo.visibleFraction * 100;
-                if (widget.autoPlay) {
-                  if (visiblePercentage > 80) {
-                    if (isBetterPlayer) {
-                      await betterPlayerController.play();
-                    } else {
-                      await videoPlayerController.play();
-                    }
-                    WakelockPlus.enable();
-                  } else {
-                    if (isBetterPlayer && widget.isScalp) {
-                      await betterPlayerController.pause();
-                    } else {
-                      await videoPlayerController.pause();
-                    }
-                    WakelockPlus.disable();
-                  }
-                }
-              },
-              child: isBetterPlayer
-                  ? Stack(
-                fit: StackFit.expand,
-                children: [
-                  GestureDetector(
-                    onTap: widget.isScalp
-                        ? () async {
-                      if (await betterPlayerController.isPlaying() ?? false) {
-                        await betterPlayerController.pause();
-                        WakelockPlus.disable();
-                      } else {
-                        await betterPlayerController.play();
-                        WakelockPlus.enable();
-                      }
-
-                      bool isPlaying =
-                          await betterPlayerController.isPlaying() ?? false;
-                      widget.onPlayButton?.call(isPlaying);
-                    }
-                        : null,
-                    child: better.BetterPlayer(
-                      controller: betterPlayerController,
-                    ),
-                  ),
-                  StreamBuilder(
-                    stream: betterPlayerController
-                        .videoPlayerController?.videoEventStreamController.stream,
-                    builder: (context, snapshot) {
-                      return Visibility(
-                        visible: snapshot.data?.eventType == null ||
-                            snapshot.data?.eventType ==
-                                video_event.VideoEventType.bufferingStart,
-                        child: widget.thumbnail == null || widget.thumbnail == ""
-                            ? Container(
-                          color: ColorResource.secondaryColor,
-                          child: const Center(
-                            child: SizedBox(
-                              height: 70,
-                              width: 70,
-                              child: CircularProgressIndicator(
-                                color: ColorResource.white,
-                                strokeWidth: 1,
-                              ),
-                            ),
-                          ),
-                        )
-                            : Center(
-                          child: cachedNetworkImage(
-                            widget.thumbnail ?? "",
-                            imageLoader: false,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              )
-                  : HlsVideoPlayer(
-                thumbnail: widget.thumbnail,
-                m3u8Show: widget.showQualityPicker,
-                showControllers: !widget.isScalp,
-                aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-                videoUrl: widget.url,
-                onVideoPosition: (position, duration) {
-                  widget.eventCallBack(position, duration);
-                },
-                onVideoInitCompleted: (cont) async {
-                  videoPlayerController = cont;
-                  await cont.setLooping(true);
-                  if (!widget.autoPlay) {
-                    await cont.pause();
-                    WakelockPlus.disable();
-                  } else {
-                    WakelockPlus.enable();
-                  }
-                },
-                onPlayButtonTap: (val) {
-                  widget.onPlayButton?.call(val);
-                  if (val) {
-                    WakelockPlus.enable();
-                  } else {
-                    WakelockPlus.disable();
-                  }
-                },
-              ),
-            ),
-          ),
-          if (isRecording)
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.grey,
-              child: const Center(
-                child: Text(
-                  "please off screen recording",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}*/
-
-//corrected code below
-// import 'dart:async';
-// import 'dart:io';
-// import 'package:better_player/better_player.dart' as better;
-// import 'package:better_player/src/video_player/video_player_platform_interface.dart' as video_event;
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:screen_protector/screen_protector.dart';
-// import 'package:stockpathshala_beta/model/services/player/widgets/custom_controls_widget.dart';
-// import 'package:stockpathshala_beta/service/video_hls_player/video_view.dart';
-// import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
-// import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
-// import 'package:video_player/video_player.dart';
-// import 'package:visibility_detector/visibility_detector.dart';
-// import 'package:wakelock_plus/wakelock_plus.dart';
-// import '../../../service/page_manager.dart';
-// import '../../network_calls/dio_client/get_it_instance.dart';
-// import '../../utils/color_resource.dart';
-//
-// class FileVideoWidget extends StatefulWidget {
-//   final String url;
-//   final String? thumbnail;
-//   final void Function(bool)? onPlayButton;
-//   final Function(int, int) eventCallBack;
-//   final bool isScalp;
-//   final bool isOrientation;
-//   final bool orientation;
-//   final bool isVideo;
-//   final bool autoPlay;
-//   final bool showQualityPicker;
-//
-//   const FileVideoWidget({
-//     super.key,
-//     required this.url,
-//     this.isScalp = false,
-//     this.isOrientation = true,
-//     this.orientation = true,
-//     this.autoPlay = true,
-//     this.isVideo = true,
-//     this.showQualityPicker = true,
-//     required this.eventCallBack,
-//     this.thumbnail,
-//     this.onPlayButton,
-//   });
-//
-//   @override
-//   FileVideoWidgetState createState() => FileVideoWidgetState();
-// }
-//
-// class FileVideoWidgetState extends State<FileVideoWidget> {
-//   late VideoPlayerController videoPlayerController;
-//   bool fullscreen = false;
-//   bool isBetterPlayer = false;
-//   bool isRecording = false;
-//   late better.BetterPlayerController betterPlayerController;
-//   late better.BetterPlayerDataSource dataSource;
-//   better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
-//
-//   List<better.BetterPlayerEvent> events = [];
-//   final pageManager = getIt<PageManager>();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     logPrint("i am in FileVideoWidget");
-//     logPrint("widget.url:: ${widget.url}");
-//     ScreenProtector.protectDataLeakageOn();
-//     checkScreenRecording();
-//     changeOrient();
-//
-//     if (!widget.url.contains(".m3u8")) {
-//       isBetterPlayer = true;
-//       if (!widget.isScalp) {
-//         if (!widget.isVideo) {
-//           try {
-//             File file = File(widget.url);
-//             List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-//             dataSource = better.BetterPlayerDataSource.memory(
-//               bytes,
-//               videoExtension: "mp4",
-//             );
-//           } catch (e) {
-//             if (e is PathNotFoundException) {
-//               logPrint("message ${e.message}");
-//             }
-//             dataSource = better.BetterPlayerDataSource.file(widget.url);
-//           }
-//         } else {
-//           dataSource = better.BetterPlayerDataSource.network(widget.url);
-//         }
-//       } else {
-//         dataSource = better.BetterPlayerDataSource.network(widget.url);
-//       }
-//
-//       betterPlayerController = better.BetterPlayerController(
-//         better.BetterPlayerConfiguration(
-//           autoPlay: widget.autoPlay,
-//           looping: true,
-//           autoDispose: true,
-//           allowedScreenSleep: false,
-//           deviceOrientationsOnFullScreen: [
-//             DeviceOrientation.landscapeLeft,
-//             DeviceOrientation.landscapeRight,
-//           ],
-//           deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-//           //deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-//           // deviceOrientationsOnFullScreen: [DeviceOrientation.landscapeRight],
-//           controlsConfiguration: better.BetterPlayerControlsConfiguration(
-//             playerTheme: playerTheme,
-//             customControlsBuilder: (controller, onControlsVisibilityChanged) =>
-//                 CustomControlsWidget(
-//                   isScalp: widget.isScalp,
-//                   isOrientation: widget.isOrientation,
-//                   orientation: widget.orientation,
-//                   controller: controller,
-//                   onControlsVisibilityChanged: onControlsVisibilityChanged,
-//                 ),
-//           ),
-//           aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//           fit: BoxFit.contain,
-//         ),
-//       );
-//
-//       betterPlayerController.setupDataSource(dataSource);
-//       betterPlayerController.addEventsListener(_handleEvent);
-//     }
-//   }
-//
-//   Future<void> checkScreenRecording() async {
-//     bool recording = await ScreenProtector.isRecording();
-//     if (recording != isRecording) {
-//       setState(() {
-//         isRecording = recording;
-//       });
-//       if (isRecording) showRecordingDetectedAlert();
-//     }
-//     Future.delayed(const Duration(seconds: 2), checkScreenRecording);
-//   }
-//
-//   void showRecordingDetectedAlert() {
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: const Text('Screen Recording Detected', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//         content: const Text('Please stop screen recording to continue using the app.', style: TextStyle(fontSize: 14)),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.of(context).pop(),
-//             child: const Text('OK'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void changeOrient() {
-//     if (!widget.orientation) {
-//       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-//     }
-//   }
-//
-//   Future<void> _handleEvent(better.BetterPlayerEvent event) async {
-//     events.insert(0, event);
-//     if (event.betterPlayerEventType == better.BetterPlayerEventType.progress) {
-//       widget.eventCallBack(
-//         event.parameters?['progress']?.inSeconds ?? 0,
-//         event.parameters?['duration']?.inSeconds ?? 0,
-//       );
-//     }
-//
-//     if (event.betterPlayerEventType == better.BetterPlayerEventType.play) {
-//       WakelockPlus.enable();
-//     } else if (event.betterPlayerEventType == better.BetterPlayerEventType.pause) {
-//       WakelockPlus.disable();
-//     }
-//
-//     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-//       await betterPlayerController.pause();
-//     }
-//   }
-//
-//   @override
-//   Future<void> deactivate() async {
-//     if (!isBetterPlayer) {
-//       await videoPlayerController.pause();
-//     } else {
-//       await betterPlayerController.pause();
-//     }
-//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//     WakelockPlus.disable();
-//     super.deactivate();
-//   }
-//
-//   @override
-//   void dispose() async {
-//     ScreenProtector.protectDataLeakageOff();
-//     WakelockPlus.disable();
-//     if (!isBetterPlayer) {
-//       await videoPlayerController.dispose();
-//     }
-//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.only(top: 0),
-//             child: VisibilityDetector(
-//               key: Key(widget.url.toString()),
-//               onVisibilityChanged: (visibilityInfo) async {
-//                 double visiblePercentage = visibilityInfo.visibleFraction * 100;
-//                 if (widget.autoPlay) {
-//                   if (visiblePercentage > 80) {
-//                     if (isBetterPlayer) {
-//                       await betterPlayerController.play();
-//                     } else {
-//                       await videoPlayerController.play();
-//                     }
-//                     WakelockPlus.enable();
-//                   } else {
-//                     if (isBetterPlayer && widget.isScalp) {
-//                       await betterPlayerController.pause();
-//                     } else {
-//                       await videoPlayerController.pause();
-//                     }
-//                     WakelockPlus.disable();
-//                   }
-//                 }
-//               },
-//               child: isBetterPlayer
-//                   ? Stack(
-//                 fit: StackFit.expand,
-//                 children: [
-//                   GestureDetector(
-//                     onTap: widget.isScalp
-//                         ? () async {
-//                       if (betterPlayerController.isPlaying() ?? false) {
-//                         await betterPlayerController.pause();
-//                         WakelockPlus.disable();
-//                       } else {
-//                         await betterPlayerController.play();
-//                         WakelockPlus.enable();
-//                       }
-//                       widget.onPlayButton?.call(betterPlayerController.isPlaying() ?? false);
-//                     }
-//                         : null,
-//                     child: better.BetterPlayer(
-//                       controller: betterPlayerController,
-//                     ),
-//                   ),
-//
-//                   /// ✅ Fullscreen button on wide screens
-//                   if (screenWidth > 600)
-//                     Positioned(
-//                       top: 16,
-//                       right: 16,
-//                       child: IconButton(
-//                         icon: Icon(Icons.fullscreen, color: Colors.white),
-//                         onPressed: () {
-//                           betterPlayerController.enterFullScreen();
-//                         },
-//                       ),
-//                     ),
-//
-//                   StreamBuilder(
-//                     stream: betterPlayerController.videoPlayerController?.videoEventStreamController.stream,
-//                     builder: (context, snapshot) {
-//                       return Visibility(
-//                         visible: snapshot.data?.eventType == null ||
-//                             snapshot.data?.eventType == video_event.VideoEventType.bufferingStart,
-//                         child: widget.thumbnail == null || widget.thumbnail == ""
-//                             ? Container(
-//                           color: ColorResource.secondaryColor,
-//                           child: const Center(
-//                             child: SizedBox(
-//                               height: 70,
-//                               width: 70,
-//                               child: CircularProgressIndicator(color: ColorResource.white, strokeWidth: 1),
-//                             ),
-//                           ),
-//                         )
-//                             : Center(
-//                           child: cachedNetworkImage(
-//                             widget.thumbnail ?? "",
-//                             imageLoader: false,
-//                           ),
-//                         ),
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               )
-//                   : HlsVideoPlayer(
-//                 thumbnail: widget.thumbnail,
-//                 m3u8Show: widget.showQualityPicker,
-//                 showControllers: !widget.isScalp,
-//                 aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//                 videoUrl: widget.url,
-//                 onVideoPosition: (position, duration) {
-//                   widget.eventCallBack(position, duration);
-//                 },
-//                 onVideoInitCompleted: (cont) async {
-//                   videoPlayerController = cont;
-//                   await cont.setLooping(true);
-//                   if (!widget.autoPlay) {
-//                     await cont.pause();
-//                     WakelockPlus.disable();
-//                   } else {
-//                     WakelockPlus.enable();
-//                   }
-//                 },
-//                 onPlayButtonTap: (val) {
-//                   widget.onPlayButton?.call(val);
-//                   if (val) {
-//                     WakelockPlus.enable();
-//                   } else {
-//                     WakelockPlus.disable();
-//                   }
-//                 },
-//               ),
-//             ),
-//           ),
-//
-//           if (isRecording)
-//             Container(
-//               width: double.infinity,
-//               height: double.infinity,
-//               color: Colors.grey,
-//               child: const Center(
-//                 child: Text(
-//                   "please off screen recording",
-//                   style: TextStyle(color: Colors.white),
-//                 ),
-//               ),
-//             ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// import 'dart:async';
-// import 'dart:io';
-//
-// import 'package:better_player/better_player.dart' as better;
-// import 'package:better_player/src/video_player/video_player_platform_interface.dart'
-// as video_event;
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:screen_protector/screen_protector.dart';
-// import 'package:wakelock/wakelock.dart';
-//
-// import 'package:stockpathshala_beta/model/services/player/widgets/custom_controls_widget.dart';
-// import 'package:stockpathshala_beta/service/video_hls_player/video_view.dart';
-// import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
-// import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
-// import 'package:video_player/video_player.dart';
-// import 'package:visibility_detector/visibility_detector.dart';
-//
-// import '../../../service/page_manager.dart';
-// import '../../network_calls/dio_client/get_it_instance.dart';
-// import '../../utils/color_resource.dart';
-//
-// class FileVideoWidget extends StatefulWidget {
-//   final String url;
-//   final String? thumbnail;
-//   final void Function(bool)? onPlayButton;
-//   final Function(int, int) eventCallBack;
-//   final bool isScalp;
-//   final bool isOrientation;
-//   final bool orientation;
-//   final bool isVideo;
-//   final bool autoPlay;
-//   final bool showQualityPicker;
-//
-//   const FileVideoWidget({
-//     super.key,
-//     required this.url,
-//     this.isScalp = false,
-//     this.isOrientation = true,
-//     this.orientation = true,
-//     this.autoPlay = true,
-//     this.isVideo = true,
-//     this.showQualityPicker = true,
-//     required this.eventCallBack,
-//     this.thumbnail,
-//     this.onPlayButton,
-//   });
-//
-//   @override
-//   FileVideoWidgetState createState() => FileVideoWidgetState();
-// }
-//
-// class FileVideoWidgetState extends State<FileVideoWidget> {
-//   late VideoPlayerController videoPlayerController;
-//   bool fullscreen = false;
-//   bool isBetterPlayer = false;
-//   bool isRecording = false;
-//   late better.BetterPlayerController betterPlayerController;
-//   late better.BetterPlayerDataSource dataSource;
-//   better.BetterPlayerTheme playerTheme = better.BetterPlayerTheme.custom;
-//
-//   List<better.BetterPlayerEvent> events = [];
-//
-//   final pageManager = getIt<PageManager>();
-//
-//   void _protectDataLeakageWithBlur() async =>
-//       await ScreenProtector.protectDataLeakageWithBlur();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     logPrint("i am in FileVideoWidget");
-//     logPrint("widget.url:: ${widget.url}");
-//
-//     ScreenProtector.protectDataLeakageOn();
-//     _protectDataLeakageWithBlur();
-//     checkScreenRecording();
-//     changeOrient();
-//
-//     // 🔐 Prevent screen from sleeping
-//     Wakelock.enable();
-//
-//     if (!widget.url.contains(".m3u8")) {
-//       isBetterPlayer = true;
-//
-//       if (!widget.isScalp) {
-//         if (!widget.isVideo) {
-//           try {
-//             File file = File(widget.url);
-//             List<int> bytes = file.readAsBytesSync().buffer.asUint8List();
-//             dataSource = better.BetterPlayerDataSource.memory(
-//               bytes,
-//               videoExtension: "mp4",
-//             );
-//           } catch (e) {
-//             if (e is PathNotFoundException) {
-//               logPrint("message ${e.message}");
-//             }
-//             dataSource = better.BetterPlayerDataSource.file(widget.url);
-//           }
-//         } else {
-//           dataSource = better.BetterPlayerDataSource.network(widget.url);
-//         }
-//       } else {
-//         dataSource = better.BetterPlayerDataSource.network(widget.url);
-//       }
-//
-//       betterPlayerController = better.BetterPlayerController(
-//         better.BetterPlayerConfiguration(
-//           autoPlay: widget.autoPlay,
-//           looping: true,
-//           autoDispose: true,
-//           allowedScreenSleep: false,
-//           deviceOrientationsAfterFullScreen: [DeviceOrientation.portraitUp],
-//           deviceOrientationsOnFullScreen: [DeviceOrientation.landscapeRight],
-//           controlsConfiguration: better.BetterPlayerControlsConfiguration(
-//             playerTheme: playerTheme,
-//             customControlsBuilder: (controller, onControlsVisibilityChanged) =>
-//                 CustomControlsWidget(
-//                   isScalp: widget.isScalp,
-//                   isOrientation: widget.isOrientation,
-//                   orientation: widget.orientation,
-//                   controller: controller,
-//                   onControlsVisibilityChanged: onControlsVisibilityChanged,
-//                 ),
-//           ),
-//           aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//           fit: BoxFit.contain,
-//         ),
-//       );
-//       betterPlayerController.setupDataSource(dataSource);
-//       betterPlayerController.addEventsListener(_handleEvent);
-//     }
-//   }
-//
-//   Future<void> checkScreenRecording() async {
-//     bool recording = await ScreenProtector.isRecording();
-//     if (recording != isRecording) {
-//       setState(() {
-//         isRecording = recording;
-//       });
-//       print('Is screen recording happening? $isRecording');
-//       if (isRecording) {
-//         showRecordingDetectedAlert();
-//       }
-//     }
-//     Future.delayed(const Duration(seconds: 2), checkScreenRecording);
-//   }
-//
-//   void showRecordingDetectedAlert() {
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: const Text('Screen Recording Detected',
-//             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//         content: const Text(
-//           'Please stop screen recording to continue using the app.',
-//           style: TextStyle(fontSize: 14),
-//         ),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.of(context).pop(),
-//             child: const Text('OK'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void changeOrient() {
-//     if (!widget.orientation) {
-//       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-//     }
-//   }
-//
-//   Future<void> _handleEvent(better.BetterPlayerEvent event) async {
-//     events.insert(0, event);
-//     if (event.betterPlayerEventType == better.BetterPlayerEventType.progress) {
-//       widget.eventCallBack(
-//         event.parameters?['progress'].inSeconds,
-//         event.parameters?['duration']?.inSeconds ?? 0,
-//       );
-//     }
-//     if (pageManager.playButtonNotifier.value == ButtonState.playing) {
-//       await betterPlayerController.pause();
-//     }
-//   }
-//
-//   @override
-//   Future<void> deactivate() async {
-//     if (!isBetterPlayer) {
-//       await videoPlayerController.pause();
-//     } else {
-//       await betterPlayerController.pause();
-//     }
-//
-//     logPrint("deactivate file");
-//
-//     // 🔓 Allow screen to sleep again
-//     Wakelock.disable();
-//
-//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//     super.deactivate();
-//   }
-//
-//   @override
-//   void dispose() {
-//     ScreenProtector.protectDataLeakageOff();
-//
-//     if (!isBetterPlayer) {
-//       videoPlayerController.removeListener(() async {
-//         await videoPlayerController.dispose();
-//       });
-//     }
-//
-//     logPrint("dispose file");
-//
-//     // 🔓 Allow screen sleep again
-//     Wakelock.disable();
-//
-//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.only(top: 0),
-//             child: VisibilityDetector(
-//               key: Key(widget.url.toString()),
-//               onVisibilityChanged: (visibilityInfo) async {
-//                 double visiblePercentage =
-//                     visibilityInfo.visibleFraction * 100;
-//                 logPrint("visiblePercentage $visiblePercentage");
-//
-//                 if (widget.autoPlay) {
-//                   if (visiblePercentage > 80) {
-//                     if (isBetterPlayer) {
-//                       await betterPlayerController.play();
-//                     } else {
-//                       await videoPlayerController.play();
-//                     }
-//                   } else {
-//                     if (isBetterPlayer && widget.isScalp) {
-//                       await betterPlayerController.pause();
-//                     } else {
-//                       await videoPlayerController.pause();
-//                     }
-//                   }
-//                 }
-//               },
-//               child: isBetterPlayer
-//                   ? Stack(
-//                 fit: StackFit.expand,
-//                 children: [
-//                   GestureDetector(
-//                     onTap: widget.isScalp
-//                         ? () async {
-//                       if (betterPlayerController.isPlaying() ??
-//                           false) {
-//                         await betterPlayerController.pause();
-//                       } else {
-//                         await betterPlayerController.play();
-//                       }
-//                       if (widget.onPlayButton != null) {
-//                         widget.onPlayButton!(
-//                             betterPlayerController.isPlaying() ??
-//                                 false);
-//                       }
-//                     }
-//                         : null,
-//                     child: better.BetterPlayer(
-//                       controller: betterPlayerController,
-//                     ),
-//                   ),
-//                   StreamBuilder(
-//                     stream: betterPlayerController
-//                         .videoPlayerController
-//                         ?.videoEventStreamController
-//                         .stream,
-//                     builder: (context, snapshot) {
-//                       return Visibility(
-//                         visible: snapshot.data?.eventType == null ||
-//                             snapshot.data?.eventType ==
-//                                 video_event.VideoEventType
-//                                     .bufferingStart,
-//                         child: widget.thumbnail == null ||
-//                             widget.thumbnail == ""
-//                             ? Container(
-//                           color: ColorResource.secondaryColor,
-//                           child: const Center(
-//                             child: SizedBox(
-//                               height: 70,
-//                               width: 70,
-//                               child: CircularProgressIndicator(
-//                                 color: ColorResource.white,
-//                                 strokeWidth: 1,
-//                               ),
-//                             ),
-//                           ),
-//                         )
-//                             : Center(
-//                           child: cachedNetworkImage(
-//                               widget.thumbnail ?? "",
-//                               imageLoader: false),
-//                         ),
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               )
-//                   : HlsVideoPlayer(
-//                 thumbnail: widget.thumbnail,
-//                 m3u8Show: widget.showQualityPicker,
-//                 showControllers: !widget.isScalp,
-//                 aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//                 videoUrl: widget.url,
-//                 onVideoPosition: (position, duration) {
-//                   widget.eventCallBack(position, duration);
-//                 },
-//                 onVideoInitCompleted: (cont) async {
-//                   videoPlayerController = cont;
-//                   if (!widget.autoPlay) {
-//                     await videoPlayerController.pause();
-//                   }
-//                   if (pageManager.playButtonNotifier.value ==
-//                       ButtonState.playing) {
-//                     await videoPlayerController.pause();
-//                   }
-//                   await cont.setLooping(true);
-//                 },
-//                 onPlayButtonTap: (val) {
-//                   if (widget.onPlayButton != null) {
-//                     widget.onPlayButton!(val);
-//                   }
-//                 },
-//               ),
-//             ),
-//           ),
-//           if (isRecording)
-//             Center(
-//               child: Container(
-//                 height: MediaQuery.of(context).size.height,
-//                 width: MediaQuery.of(context).size.width,
-//                 color: Colors.grey,
-//                 child: const Center(
-//                   child: Text(
-//                     "please off screen recording",
-//                     style: TextStyle(color: Colors.white),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-// ----------------------------
-
-// import 'dart:async';
-// import 'dart:io';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:video_player/video_player.dart';
-// import 'package:screen_protector/screen_protector.dart';
-// import 'package:visibility_detector/visibility_detector.dart';
-// import 'package:wakelock_plus/wakelock_plus.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
-//
-// class FileVideoWidget extends StatefulWidget {
-//   final String url;
-//   final String? thumbnail;
-//   final void Function(bool)? onPlayButton;
-//   final Function(int, int) eventCallBack;
-//   final bool isScalp;
-//   final bool isOrientation;
-//   final bool orientation;
-//   final bool isVideo;
-//   final bool autoPlay;
-//   final bool showQualityPicker;
-//
-//   const FileVideoWidget({
-//     super.key,
-//     required this.url,
-//     this.isScalp = false,
-//     this.isOrientation = true,
-//     this.orientation = true,
-//     this.autoPlay = true,
-//     this.isVideo = true,
-//     this.showQualityPicker = true,
-//     required this.eventCallBack,
-//     this.thumbnail,
-//     this.onPlayButton,
-//   });
-//
-//   @override
-//   State<FileVideoWidget> createState() => _FileVideoWidgetState();
-// }
-//
-// class _FileVideoWidgetState extends State<FileVideoWidget> {
-//   late VideoPlayerController _controller;
-//   bool isRecording = false;
-//   bool isInitialized = false;
-//   bool isPlaying = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initPlayer();
-//     ScreenProtector.protectDataLeakageOn();
-//     _protectDataLeakageWithBlur();
-//     _checkScreenRecording();
-//     _changeOrientation();
-//   }
-//
-//   void _changeOrientation() {
-//     if (!widget.orientation) {
-//       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-//     }
-//   }
-//
-//   void _protectDataLeakageWithBlur() async {
-//     await ScreenProtector.protectDataLeakageWithBlur();
-//   }
-//
-//   void _initPlayer() async {
-//     if (widget.url.contains('.m3u8')) {
-//       _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url));
-//     } else {
-//       _controller = widget.url.startsWith("http")
-//           ? VideoPlayerController.networkUrl(Uri.parse(widget.url))
-//           : VideoPlayerController.file(File(widget.url));
-//     }
-//
-//     await _controller.initialize();
-//     await _controller.setLooping(true);
-//
-//     if (widget.autoPlay) {
-//       await _controller.play();
-//       isPlaying = true;
-//       WakelockPlus.enable();
-//     }
-//
-//     _controller.addListener(() {
-//       if (_controller.value.isInitialized) {
-//         final position = _controller.value.position.inSeconds;
-//         final duration = _controller.value.duration.inSeconds;
-//         widget.eventCallBack(position, duration);
-//         if (isPlaying != _controller.value.isPlaying) {
-//           setState(() => isPlaying = _controller.value.isPlaying);
-//         }
-//       }
-//     });
-//
-//     setState(() => isInitialized = true);
-//   }
-//
-//   void _checkScreenRecording() async {
-//     bool recording = await ScreenProtector.isRecording();
-//     if (recording != isRecording) {
-//       setState(() => isRecording = recording);
-//       if (isRecording) _showRecordingDetectedAlert();
-//     }
-//     Future.delayed(const Duration(seconds: 2), _checkScreenRecording);
-//   }
-//
-//   void _showRecordingDetectedAlert() {
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: const Text('Screen Recording Detected'),
-//         content: const Text('Please stop screen recording to continue using the app.'),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.pop(context),
-//             child: const Text('OK'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void _togglePlay() {
-//     if (_controller.value.isPlaying) {
-//       _controller.pause();
-//       WakelockPlus.disable();
-//     } else {
-//       _controller.play();
-//       WakelockPlus.enable();
-//     }
-//     widget.onPlayButton?.call(_controller.value.isPlaying);
-//     setState(() {});
-//   }
-//
-//   @override
-//   void dispose() {
-//     ScreenProtector.protectDataLeakageOff();
-//     _controller.dispose();
-//     WakelockPlus.disable();
-//     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           VisibilityDetector(
-//             key: Key(widget.url),
-//             onVisibilityChanged: (info) {
-//               final visible = info.visibleFraction * 100;
-//               if (visible > 80 && widget.autoPlay) {
-//                 _controller.play();
-//                 WakelockPlus.enable();
-//               } else {
-//                 _controller.pause();
-//                 WakelockPlus.disable();
-//               }
-//             },
-//             child: Center(
-//               child: AspectRatio(
-//                 aspectRatio: widget.isScalp ? 9 / 16 : 16 / 9,
-//                 child: isInitialized
-//                     ? Stack(
-//                   children: [
-//                     VideoPlayer(_controller),
-//                     if (!_controller.value.isPlaying)
-//                       Positioned.fill(
-//                         child: widget.thumbnail != null
-//                             ? CachedNetworkImage(imageUrl: widget.thumbnail!)
-//                             : const ColoredBox(
-//                           color: Colors.black,
-//                           child: Center(child: CircularProgressIndicator()),
-//                         ),
-//                       ),
-//                     GestureDetector(
-//                       onTap: _togglePlay,
-//                       child: Center(
-//                         child: Icon(
-//                           _controller.value.isPlaying ? Icons.pause_circle : Icons.play_circle,
-//                           color: Colors.white,
-//                           size: 60,
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 )
-//                     : const Center(child: CircularProgressIndicator()),
-//               ),
-//             ),
-//           ),
-//           if (isRecording)
-//             Container(
-//               color: Colors.black54,
-//               child: const Center(
-//                 child: Text("Please stop screen recording", style: TextStyle(color: Colors.white, fontSize: 16)),
-//               ),
-//             ),
-//         ],
-//       ),
-//     );
-//   }
-// }

@@ -402,470 +402,337 @@ Widget _pastLiveClassesView(BuildContext context, int index,
   logPrint("is trial contro ${pastClassesController.liveData.toString()}");
 
   return InkWell(
-    onTap: () {
-      bool trialStatus = pastClassesController.isTrialList[index].value;
-      logPrint("trailStatus is : ${trialStatus}");
-      AppConstants.instance.liveId.value = (data.id.toString());
-      Get.toNamed(Routes.liveClassDetail(id: data.id.toString()),
-          arguments: [isPast, data.id.toString(), trialStatus]);
-      if (onItemTap != null) {
-        onItemTap(data);
-      }
-    },
-    child: Container(
-      margin: const EdgeInsets.only(top: 5),
-      decoration: BoxDecoration(
-        color: hexToColor(ui.cardBgColor),
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3), // Subtle shadow color
-            blurRadius: 8, // Slight blur for the shadow
-            offset:
-                const Offset(2, 2), // Slight offset to make the shadow visible
-          ),
-        ],
-      ),
-      child: Stack(
-        alignment: Alignment.bottomLeft,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              // Align text left and button right
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: hexToColor(ui.dateTimeChipBgColor),
-                        shape: BoxShape.rectangle,
-                        borderRadius:
-                            BorderRadius.circular(25), // Rounded corners
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.calendar_month_rounded,
-                            color: Colors.white,
-                            size: 12,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          Text(
-                            formattedDate,
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: hexToColor(ui.dateTimeChipTextColor),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: hexToColor(ui.dateTimeChipBgColor),
-                        shape: BoxShape.rectangle,
-                        borderRadius:
-                            BorderRadius.circular(25), // Rounded corners
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.access_time_rounded,
-                            color: Colors.white,
-                            size: 12,
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          Text(
-                            "${data.duration.toString() + " mins"}",
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: hexToColor(ui.dateTimeChipTextColor),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    !isTrial.value && Get.find<AuthService>().isTrial.value
-                        ? SizedBox(
-                            width: 100,
-                            child: InkWell(
-                              onTap: () {
-                                Get.find<RootViewController>().getPopUpData2();
-                              },
-                              child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 6),
-                                  decoration: BoxDecoration(
-                                      color: hexToColor(ui.unlockButtonColor),
-                                      border: Border.all(
-                                          color: Colors.white, width: 1),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        "assets/svg/Lock.svg",
-                                        width: 13,
-                                        height: 13,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        ui.unlockButtonText.toString(),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          )
-                        : SizedBox(
-                            width: 100,
-                            child: (Get.find<AuthService>().isFreshUser.value ||
-                                    Get.find<AuthService>().isGuestUser.value ||
-                                    Get.find<AuthService>()
-                                        .isTrialExpired
-                                        .value ||
-                                    Get.find<AuthService>().isProExpired.value)
-                                ? InkWell(
-                                    onTap: () {
-                                      Get.find<RootViewController>()
-                                          .getPopUpData2(
-                                              title: expiredPopup?.title,
-                                              subtitle: expiredPopup?.subtitle,
-                                              imageUrl: expiredPopup?.imageUrl,
-                                              buttonTitle:
-                                                  expiredPopup?.buttonTitle);
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6),
-                                        decoration: BoxDecoration(
-                                            color: hexToColor(
-                                                ui.unlockButtonColor),
-                                            border: Border.all(
-                                                color: Colors.white, width: 1),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              "assets/svg/Lock.svg",
-                                              width: 13,
-                                              height: 13,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              ui.unlockButtonText.toString(),
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                  )
-                                : InkWell(
-                                    onTap: () {
-                                      print(
-                                          'sdffsdfc ${data.fileUrl.toString()}');
-                                      Get.to(FileVideoWidget(
-                                        url: data.fileUrl.toString(),
-                                        isOrientation: false,
-                                        orientation: false,
-                                        eventCallBack:
-                                            (progress, totalDuration) {},
-                                      ));
-                                    },
-                                    child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6),
-                                        decoration: BoxDecoration(
-                                            color:
-                                                hexToColor(ui.playButtonColor),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              "assets/svg/LiveVideo.svg",
-                                              width: 12,
-                                              height: 12,
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              '${ui.playButtonText}',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color: hexToColor(
-                                                    ui.playButtonTextColor),
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                  ),
-                          ),
-                    // SizedBox(width: 8,),
-                    //
-                    // Container(
-                    //   height: 30,width: 30,
-                    //   child: data.fileUrl.toString() != null &&
-                    //       data.fileUrl.toString() != ""
-                    //       ? Flexible(
-                    //     flex: 2,
-                    //     child: Container(
-                    //       // padding: const EdgeInsets.symmetric(
-                    //       //     horizontal: DimensionResource.marginSizeDefault,
-                    //       //     vertical: DimensionResource.marginSizeSmall),
-                    //       child: Obx(() {
-                    //
-                    //         String videoUrl = data.fileUrl.toString();
-                    //         // String videoUrl = controller.liveClassDetail.value.data!.title.toString();
-                    //
-                    //         bool isDownloaded = liveClassDetailController.downloadedVideos
-                    //             .any((video) => video.title == data.title);
-                    //
-                    //         // Check if the current video is being downloaded or is already downloaded
-                    //         bool isDownloading = liveClassDetailController
-                    //             .isDownloadingMap[videoUrl] ??
-                    //             false;
-                    //         // bool isDownloaded = liveClassDetailController.isDownloadedMap[videoUrl] ?? false;
-                    //         double progress = liveClassDetailController
-                    //             .downloadProgressMap[videoUrl] ??
-                    //             0.0;
-                    //         String status = liveClassDetailController
-                    //             .downloadStatusMap[videoUrl] ??
-                    //             "";
-                    //
-                    //         return isDownloading
-                    //             ? Stack(
-                    //               alignment: Alignment.center,
-                    //               children: [
-                    //                 // CircularProgressIndicator
-                    //                 CircularProgressIndicator(
-                    //                   value: progress,
-                    //                   strokeWidth: 3,
-                    //                   color: ColorResource.primaryColor,
-                    //                   backgroundColor:
-                    //                   Colors.grey.shade300,
-                    //                 ),
-                    //                 // Percentage text in the center of the progress indicator
-                    //                 Text(
-                    //                   "${(progress * 100).toStringAsFixed(0)}%",
-                    //                   style: TextStyle(
-                    //                     color:
-                    //                     ColorResource.primaryColor,
-                    //                     fontSize: MediaQuery.of(context)
-                    //                         .size
-                    //                         .width *
-                    //                         0.020,
-                    //                     fontWeight: FontWeight.w600,
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             )
-                    //             : isDownloaded
-                    //             ? Container(
-                    //           // padding: EdgeInsets.all(10),
-                    //           decoration: BoxDecoration(
-                    //               shape: BoxShape.circle,
-                    //               color:
-                    //               ColorResource.primaryColor),
-                    //           child: Icon(Icons.check_rounded,color: Colors.white,size: 18,)
-                    //         )
-                    //             : GestureDetector(
-                    //           onTap: () {
-                    //             final isTrialCourse = liveClassDetailController
-                    //                 .liveClassDetail
-                    //                 .value
-                    //                 .data
-                    //                 ?.isTrial ??
-                    //                 0;
-                    //             final isProUser =
-                    //                 Get.find<AuthService>()
-                    //                     .isPro
-                    //                     .value;
-                    //
-                    //             if (isTrialCourse == 1 ||
-                    //                 isProUser) {
-                    //               liveClassDetailController
-                    //                   .downloadVideo(
-                    //                 data.fileUrl.toString(),
-                    //                 data.title
-                    //                     .toString(),
-                    //                 data.preview
-                    //                     .toString(),
-                    //               );
-                    //             } else {
-                    //               ProgressDialog().showFlipDialog(
-                    //                 title:
-                    //                 "Download All Premium Stock Market Content as a Pro User. Continue?",
-                    //                 isForPro:
-                    //                 !Get.find<AuthService>()
-                    //                     .isGuestUser
-                    //                     .value,
-                    //               );
-                    //             }
-                    //           },
-                    //           child: Container(
-                    //             // padding: EdgeInsets.all(10),
-                    //             decoration: BoxDecoration(
-                    //                 shape: BoxShape.circle,
-                    //                 color:
-                    //                 ColorResource.primaryColor),
-                    //             child: Icon(Icons.download_rounded,color: Colors.white,size: 20,)
-                    //           ),
-                    //         );
-                    //       }),
-                    //     ),
-                    //   )
-                    //       : Container(),
-                    // ),
-                  ],
-                ),
-              ],
+      onTap: () {
+        bool trialStatus = pastClassesController.isTrialList[index].value;
+        logPrint("trailStatus is : ${trialStatus}");
+        AppConstants.instance.liveId.value = (data.id.toString());
+        Get.toNamed(Routes.liveClassDetail(id: data.id.toString()),
+            arguments: [isPast, data.id.toString(), trialStatus]);
+        if (onItemTap != null) {
+          onItemTap(data);
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 5),
+        decoration: BoxDecoration(
+          color: hexToColor(ui.cardBgColor),
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3), // Subtle shadow color
+              blurRadius: 8, // Slight blur for the shadow
+              offset: const Offset(
+                  2, 2), // Slight offset to make the shadow visible
             ),
-          ),
-          Positioned.fill(
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 50),
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      hexToColor(ui.cardColor1),
-                      hexToColor(ui.cardColor2),
-                      // hexToColor(ui.cardBgColor2)
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  // color: hexToColor(ui.cardBgColor2),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.circular(15)),
-              child: Column(
+          ],
+        ),
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                // Align text left and button right
                 children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 5,
-                          child: Text(
-                            data.title ?? '',
-                            style: TextStyle(
-                              decorationColor: Colors.white,
-                              decorationThickness: 1,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: hexToColor(ui.titleColor),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            // Prevents overflow
-                            maxLines: 3,
-                          ),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: hexToColor(ui.dateTimeChipBgColor),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              BorderRadius.circular(25), // Rounded corners
                         ),
-                        Expanded(
-                            flex: 3,
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    height: 115.0,
-                                    width: 115.0,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.calendar_month_rounded,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            Text(
+                              formattedDate,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: hexToColor(ui.dateTimeChipTextColor),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: hexToColor(ui.dateTimeChipBgColor),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              BorderRadius.circular(25), // Rounded corners
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.access_time_rounded,
+                              color: Colors.white,
+                              size: 12,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            Text(
+                              "${data.duration.toString() + " mins"}",
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: hexToColor(ui.dateTimeChipTextColor),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      !isTrial.value && Get.find<AuthService>().isTrial.value
+                          ? SizedBox(
+                              width: 100,
+                              child: InkWell(
+                                onTap: () {
+                                  Get.find<RootViewController>()
+                                      .getPopUpData2();
+                                },
+                                child: Container(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 6),
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          data.preview ?? data.image ?? "",
+                                        color: hexToColor(ui.unlockButtonColor),
+                                        border: Border.all(
+                                            color: Colors.white, width: 1),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          "assets/svg/Lock.svg",
+                                          width: 13,
+                                          height: 13,
                                         ),
-                                        fit: BoxFit.contain,
-                                      ),
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            hexToColor("FF01053A"),
-                                            hexToColor("FF01053A"),
-                                            hexToColor(ui.certificationBgColor),
-                                            hexToColor(ui.certificationBgColor),
-                                          ],
-                                          stops: [
-                                            0.0,
-                                            0.6,
-                                            0.3,
-                                            1.0
-                                          ]),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          ui.unlockButtonText.toString(),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 100,
+                              child: (Get.find<
+                                              AuthService>()
+                                          .isFreshUser
+                                          .value ||
+                                      Get.find<AuthService>()
+                                          .isGuestUser
+                                          .value ||
+                                      Get.find<AuthService>()
+                                          .isTrialExpired
+                                          .value ||
+                                      Get.find<AuthService>()
+                                          .isProExpired
+                                          .value)
+                                  ? InkWell(
+                                      onTap: () {
+                                        Get.find<RootViewController>()
+                                            .getPopUpData2(
+                                                title: expiredPopup?.title,
+                                                subtitle:
+                                                    expiredPopup?.subtitle,
+                                                imageUrl:
+                                                    expiredPopup?.imageUrl,
+                                                buttonTitle:
+                                                    expiredPopup?.buttonTitle);
+                                      },
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6),
+                                          decoration: BoxDecoration(
+                                              color: hexToColor(
+                                                  ui.unlockButtonColor),
+                                              border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 1),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                "assets/svg/Lock.svg",
+                                                width: 13,
+                                                height: 13,
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                ui.unlockButtonText.toString(),
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        print(
+                                            'sdffsdfc ${data.fileUrl.toString()}');
+                                        Get.to(FileVideoWidget(
+                                          url: data.fileUrl.toString(),
+                                          isOrientation: false,
+                                          orientation: false,
+                                          eventCallBack:
+                                              (progress, totalDuration) {},
+                                        ));
+                                      },
+                                      child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6),
+                                          decoration: BoxDecoration(
+                                              color: hexToColor(
+                                                  ui.playButtonColor),
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                "assets/svg/LiveVideo.svg",
+                                                width: 12,
+                                                height: 12,
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(
+                                                '${ui.playButtonText}',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: hexToColor(
+                                                      ui.playButtonTextColor),
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          )),
                                     ),
-                                  ),
-                                  if (teacher != 'null')
+                            ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 50),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        hexToColor(ui.cardColor1),
+                        hexToColor(ui.cardColor2),
+                        // hexToColor(ui.cardBgColor2)
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    // color: hexToColor(ui.cardBgColor2),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: Text(
+                              data.title ?? '',
+                              style: TextStyle(
+                                decorationColor: Colors.white,
+                                decorationThickness: 1,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: hexToColor(ui.titleColor),
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              // Prevents overflow
+                              maxLines: 3,
+                            ),
+                          ),
+                          Expanded(
+                              flex: 3,
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Stack(
+                                  children: [
                                     Container(
                                       height: 115.0,
                                       width: 115.0,
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.white),
-                                        // image: DecorationImage(
-                                        //   image: NetworkImage(
-                                        //     '',
-                                        //   ),
-                                        //   fit: BoxFit.contain,
-                                        // ),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                            data.preview ?? data.image ?? "",
+                                          ),
+                                          fit: BoxFit.contain,
+                                        ),
                                         shape: BoxShape.circle,
                                         gradient: LinearGradient(
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
                                             colors: [
-                                              Colors.transparent,
-                                              Colors.transparent,
+                                              hexToColor("FF01053A"),
+                                              hexToColor("FF01053A"),
                                               hexToColor(
                                                   ui.certificationBgColor),
                                               hexToColor(
@@ -873,85 +740,117 @@ Widget _pastLiveClassesView(BuildContext context, int index,
                                             ],
                                             stops: [
                                               0.0,
-                                              0.7,
+                                              0.6,
                                               0.3,
                                               1.0
                                             ]),
                                       ),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 5),
-                                        alignment: Alignment.bottomCenter,
-                                        child: Text(teacher,
-                                            textAlign: TextAlign.center,
-                                            maxLines: 2,
-                                            style: TextStyle(
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.bold,
-                                              color: hexToColor(
-                                                  ui.certificationTextColor),
-                                            )),
-                                      ),
                                     ),
-                                ],
-                              ),
-                            ))
-                      ],
+                                    if (teacher != 'null')
+                                      Container(
+                                        height: 115.0,
+                                        width: 115.0,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.white),
+                                          // image: DecorationImage(
+                                          //   image: NetworkImage(
+                                          //     '',
+                                          //   ),
+                                          //   fit: BoxFit.contain,
+                                          // ),
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.transparent,
+                                                hexToColor(
+                                                    ui.certificationBgColor),
+                                                hexToColor(
+                                                    ui.certificationBgColor),
+                                              ],
+                                              stops: [
+                                                0.0,
+                                                0.7,
+                                                0.3,
+                                                1.0
+                                              ]),
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 5),
+                                          alignment: Alignment.bottomCenter,
+                                          child: Text(teacher,
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                                color: hexToColor(
+                                                    ui.certificationTextColor),
+                                              )),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ))
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Positioned(
-            top: 2, // Moves the date container out of the border
-            left: 6,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
-              decoration: BoxDecoration(
-                color: hexToColor(ui.bottomChipBgColor),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Text(
-                data.category!.title.toString(),
-                style: TextStyle(
-                    fontSize: 9,
-                    color: hexToColor(ui.bottomChipTextColor),
-                    fontWeight: FontWeight.w500),
+            Positioned(
+              top: 2, // Moves the date container out of the border
+              left: 6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+                decoration: BoxDecoration(
+                  color: hexToColor(ui.bottomChipBgColor),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  data.category!.title.toString(),
+                  style: TextStyle(
+                      fontSize: 9,
+                      color: hexToColor(ui.bottomChipTextColor),
+                      fontWeight: FontWeight.w500),
+                ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
+            Align(
               alignment: Alignment.topRight,
-              margin: const EdgeInsets.all(6),
-              child: userRole == "trial_user"
-                  // ||
-                  //     userRole == "trial_expired_user"
-                  ? Obx(
-                      () => isTrial.value
-                          ? Container()
-                          // FreeContainerButton(
-                          //     isCircle: true,
-                          //     isShow:
-                          //         isTrial) // Show FreeContainerButton if isTrial is true
-                          : const ProContainerButton(
-                              isCircle: true,
-                              isShow: true,
-                            ), // Show ProContainerButton if isTrial is false
-                    )
-                  : userRole != "pro_user"
-                      ? const ProContainerButton(
-                          isCircle: true,
-                          isShow: true,
-                        )
-                      : Container(),
+              child: Container(
+                alignment: Alignment.topRight,
+                margin: const EdgeInsets.all(6),
+                child: userRole == "trial_user"
+                    // ||
+                    //     userRole == "trial_expired_user"
+                    ? Obx(
+                        () => isTrial.value
+                            ? Container()
+                            // FreeContainerButton(
+                            //     isCircle: true,
+                            //     isShow:
+                            //         isTrial) // Show FreeContainerButton if isTrial is true
+                            : const ProContainerButton(
+                                isCircle: true,
+                                isShow: true,
+                              ), // Show ProContainerButton if isTrial is false
+                      )
+                    : userRole != "pro_user"
+                        ? const ProContainerButton(
+                            isCircle: true,
+                            isShow: true,
+                          )
+                        : Container(),
+              ),
             ),
-          ),
-        ],
-      ),
-    ),
-  );
+          ],
+        ),
+      ));
 }

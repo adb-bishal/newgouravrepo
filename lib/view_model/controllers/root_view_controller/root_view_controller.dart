@@ -232,7 +232,7 @@ class RootViewController extends GetxController {
     super.onInit();
     Get.put(HomeNewController());
     Get.put(MentorshipController());
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     try {
       if (!Get.find<AuthService>().isGuestUser.value) {

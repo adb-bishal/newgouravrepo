@@ -1,18 +1,3 @@
-//package com.codeclinic.stockpathshala
-//
-//import com.ryanheise.audioservice.AudioServiceActivity
-//import com.ryanheise.audioservice.AudioServicePlugin
-//
-//import io.flutter.plugins.GeneratedPluginRegistrant
-//
-//
-//class MainActivity: AudioServiceActivity() {
-//
-//    override fun onDestroy() {
-//        AudioServicePlugin.disposeFlutterEngine()
-//        super.onDestroy()
-//    }
-//}
 package com.codeclinic.stockpathshala
 
 import android.os.Bundle
@@ -21,7 +6,16 @@ import androidx.core.view.WindowCompat
 import com.ryanheise.audioservice.AudioServiceActivity
 import com.ryanheise.audioservice.AudioServicePlugin
 
+// Add these imports for auto-rotate detection
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
+import android.provider.Settings
+import android.content.ContentResolver
+
 class MainActivity : AudioServiceActivity() {
+
+    // Add method channel constant
+    private val CHANNEL = "system_settings_channel"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +25,41 @@ class MainActivity : AudioServiceActivity() {
 
         // ✅ Force immersiveSticky mode natively
         hideSystemUI()
+    }
+
+    // Add this method to configure Flutter engine with method channel
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "checkAutoRotateToggle" -> {
+                        checkAutoRotateStatus(result)
+                    }
+                    else -> {
+                        result.notImplemented()
+                    }
+                }
+            }
+    }
+
+    // Add method to check auto-rotate status
+    private fun checkAutoRotateStatus(result: MethodChannel.Result) {
+        try {
+            val contentResolver: ContentResolver = contentResolver
+            val autoRotateEnabled = Settings.System.getInt(
+                contentResolver,
+                Settings.System.ACCELEROMETER_ROTATION,
+                0
+            ) == 1
+
+            result.success(autoRotateEnabled)
+        } catch (e: Settings.SettingNotFoundException) {
+            result.error("SETTING_NOT_FOUND", "Auto-rotate setting not found", null)
+        } catch (e: Exception) {
+            result.error("ERROR", "Failed to check auto-rotate status: ${e.message}", null)
+        }
     }
 
     private fun hideSystemUI() {
@@ -55,4 +84,3 @@ class MainActivity : AudioServiceActivity() {
         super.onDestroy()
     }
 }
-

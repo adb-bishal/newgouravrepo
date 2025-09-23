@@ -7,12 +7,13 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import '../../../model/utils/image_resource.dart';
 import '../shimmer_widget/shimmer_widget.dart';
 
-CachedNetworkImage cachedNetworkImage(String url,
-    {BoxFit fit = BoxFit.cover,
-    Color? color,
-    bool imageLoader = false,
-    Alignment? alignment}) {
-  return CachedNetworkImage(
+Widget cachedNetworkImage(String url,
+    {BoxFit fit = BoxFit.fill,
+      Color? color,
+      bool imageLoader = false,
+      Alignment? alignment}) {
+  return SizedBox(
+    child: CachedNetworkImage(
       imageUrl: url,
       fit: fit,
       alignment: alignment ?? Alignment.center,
@@ -26,12 +27,14 @@ CachedNetworkImage cachedNetworkImage(String url,
         return imageLoader
             ? const CommonCircularIndicator()
             : Container(
-                color: color ?? ColorResource.imageBackground,
-                padding: const EdgeInsets.all(22.0),
-                child: Image.asset(
-                  ImageResource.instance.errorImage,
-                  fit: BoxFit.contain,
-                ),
-              );
-      });
+          color: color ?? ColorResource.imageBackground,
+          padding: const EdgeInsets.all(22.0),
+          child: Image.asset(
+            ImageResource.instance.errorImage,
+            fit: BoxFit.contain,
+          ),
+        );
+      },
+    ),
+  );
 }

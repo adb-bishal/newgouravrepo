@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
@@ -37,7 +38,9 @@ import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class LiveClassDetailController extends GetxController {
+import 'AutoRotateService.dart';
+
+class LiveClassDetailController extends GetxController with WidgetsBindingObserver{
   LiveProvider liveProvider = getIt();
   BatchProvider batchProvider = getIt();
 
@@ -109,6 +112,13 @@ class LiveClassDetailController extends GetxController {
     downloadedVideos.assignAll(videos);
   }
 
+  final AutoRotateService _autoRotateService = Get.find<AutoRotateService>();
+
+  bool? get isAutoRotateEnabled => _autoRotateService.isAutoRotateEnabled;
+  String get errorMessage => _autoRotateService.errorMessage;
+  bool get hasError => _autoRotateService.hasError;
+
+
   Future<void> fetchVideos() async {
     isLoading(true); // Set loading to true while fetching.
     final dbHelper = DatabaseHelper();
@@ -140,12 +150,14 @@ class LiveClassDetailController extends GetxController {
     await getLiveDataDetail();
     getDownloadState();
     Get.find<RootViewController>().getTrialData();
-
   }
+
   @override
   void onInit() async {
     fetchVideos();
     loadVideos();
+    WidgetsBinding.instance.addObserver(this);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     // if (currentFileUrl != null &&
     //     currentFileName != null &&
@@ -153,7 +165,6 @@ class LiveClassDetailController extends GetxController {
     //   // UI state will reflect the ongoing download
     //   isDownloading.value = true;
     // }
-
 
     super.onInit();
   }
@@ -185,48 +196,18 @@ class LiveClassDetailController extends GetxController {
     }
   }
 
-  // Future<void> getDownloadState() async {
-  //   try {
-  //     // Retrieve the list of downloaded videos from the database
-  //     List<Video> videos = await dbHelper.getVideos();
-  //     print('Retrieved videos: ${videos.map((video) => video.title).toList()}');
-  //
-  //     // Compare titles after trimming and converting to lowercase
-  //     bool isMatch = videos.any((video) =>
-  //     video.title.trim().toLowerCase() == title.trim().toLowerCase());
-  //
-  //     print('Does the title match: $isMatch');
-  //
-  //     videoAlreadyDownloaded.value = isMatch;
-  //
-  //     if (isMatch) {
-  //       // If the video is already downloaded, show a toast message
-  //       isDownloaded.value = true;
-  //
-  //       // Assuming you want to track by video title
-  //       isDownloadedMap[title.trim().toLowerCase()] = true;  // Mark the video as downloaded in the map
-  //
-  //       print('Video already downloaded: $isDownloaded');
-  //       toastShow(message: "Video is already downloaded.");
-  //     } else {
-  //       isDownloaded.value = false;
-  //       // Video is not downloaded yet, mark as false in the map
-  //       isDownloadedMap[title.trim().toLowerCase()] = false;
-  //       print('Video not downloaded yet.');
-  //     }
-  //   } catch (e) {
-  //     print('Error while checking download state: $e');
-  //   }
-  // }
 
   @override
   void onClose() async {
-    // unawaited(Get.find<LiveClassesController>().getLiveData(
-    //   pageNo: 1,
-    //   callFromRegister: batchId != null ? false : true,
-    // ));
+    WidgetsBinding.instance.removeObserver(this);
     update();
     super.onClose();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _autoRotateService.checkAutoRotateStatus();
+    }
   }
 
   void startTimer() {
@@ -490,27 +471,8 @@ class LiveClassDetailController extends GetxController {
                     json['data']['participant_link'].toString();
               }
 
-
               Get.find<LiveClassesController>().update();
-              // Get.find<LiveClassesController>()
-              //     .dataPagingController
-              //     .value
-              //     .list
-              //     .clear();
-
-              // lastPage =
-              //     Get.find<LiveClassesController>().lastVisitedPage.value;
-
-              // print("sdkjbnkjwebrjbwe lastPage is : ${lastPage}");
-              // for (int page = 1; page <= lastPage; page++) {
-              //   print("sdkjbnkjwebrjbwe lastPagee is : ${page}");
-              //   // Infinite loop, will break when no more data
               Get.find<LiveClassesController>().getLiveData(pageNo: 1);
-              // Get.find<LiveClassesController>().onRefresh();
-              // }
-
-              // unawaited(Get.find<LiveClassesController>()
-              //     .getLiveData(pageNo: 1, callFromRegister: true));
 
               isRegistered.value = true;
             }
@@ -561,27 +523,4 @@ class LiveClassDetailController extends GetxController {
     });
   }
 
-//
-// void onRegister() {
-//   if (!isRegistered.value) {
-//     postVideoJoinStatus(true);
-//     Get.find<RootViewController>().getProfile();
-//   }
-// }
-//
-// void onJoinNow() async {
-//   postVideoJoinStatus(false, onSuccess: (json) {
-//     if (json?['data']['participant_link'] != null) {
-//       Navigator.push(
-//         Get.context!,
-//         MaterialPageRoute(
-//           builder: (context) => LiveClassLaunch(
-//             title: liveClassDetail.value.data?.title ?? "",
-//             url: json?['data']['participant_link'],
-//           ),
-//         ),
-//       );
-//     }
-//   });
-// }
 }
