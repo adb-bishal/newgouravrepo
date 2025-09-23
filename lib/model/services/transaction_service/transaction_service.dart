@@ -19,6 +19,7 @@ class TransactionService {
 
   /// Called on successful payment
   Function()? onSuccess;
+  Function(String msg)? onError;
 
   /// Called with payment response if set
   Function(PaymentSuccessResponse response)? _onPaymentSuccess;
@@ -41,21 +42,6 @@ class TransactionService {
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-  /// Init event for mentor-specific payments
-  Future<void> initServiceEventForMentor({
-    required Function({required String message, required bool status})
-    onPaymentEvent,
-    Function(PaymentSuccessResponse response)? onPaymentSuccess,
-  }) async {
-    razorpay = Razorpay();
-    _onMessageReceiveFunction = onPaymentEvent;
-    _onPaymentSuccess = onPaymentSuccess;
-
-    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-  }
-
   void openRazorPay({
     required Map<String, dynamic> optionData,
     required Function(dynamic error) onError,
@@ -63,6 +49,7 @@ class TransactionService {
     Function(PaymentSuccessResponse response)? onPaymentSuccess,
   }) {
     this.onSuccess = onSuccess;
+    this.onError = onError;
     _onPaymentSuccess = onPaymentSuccess;
 
     final authService = Get.find<AuthService>();
@@ -111,7 +98,7 @@ class TransactionService {
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.top],
     );
-
+    onError?.call("Payment failed");
     logPrint("Payment Error: ${response.message}");
     _onMessageReceiveFunction(
         message: response.message ?? "Payment failed", status: false);

@@ -142,7 +142,6 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
           fit: BoxFit.contain,
         ),
       );
-
       betterPlayerController.setupDataSource(dataSource);
       betterPlayerController.addEventsListener(_handleEvent);
     }
@@ -412,7 +411,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
                                       ),
                                     ),
                             ),
-                          if (!_showThumbnail)
+                          if (_showThumbnail)
                             StreamBuilder(
                               stream: betterPlayerController
                                   .videoPlayerController

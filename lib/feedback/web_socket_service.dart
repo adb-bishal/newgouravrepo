@@ -43,6 +43,7 @@ class SocketService {
       if (userData?['id'] != null) {
         print('Connected to socket as user: ${userData?['id']}');
         socket?.emit('user_online', userData!['id']);
+        // questionApi();
       }
     });
 
@@ -115,6 +116,45 @@ class SocketService {
   }
 
   bool get isConnected => socket?.connected ?? false;
+  void showFeedbackSubmittedDialog(BuildContext context) {
+    showGeneralDialog(
+      barrierDismissible: false,
+      barrierLabel: '',
+      context: context,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (ctx, anim1, anim2) {
+        return Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'Feedback submitted successfully',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (ctx, anim1, anim2, child) {
+        return FadeTransition(
+          opacity: anim1,
+          child: ScaleTransition(
+            scale: anim1,
+            child: child,
+          ),
+        );
+      },
+    );
+
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.of(context).pop(); // dismiss dialog after 3 seconds
+    });
+  }
 
   Future<List<QuestionData>?> questionApi(
       {Map<String, dynamic>? userData, classDetails}) async {

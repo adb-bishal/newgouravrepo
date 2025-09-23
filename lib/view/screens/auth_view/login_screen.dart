@@ -19,6 +19,7 @@ import '../../../view_model/controllers/auth_controllers/login_controller.dart';
 import '../../../view_model/routes/app_pages.dart';
 import '../../widgets/button_view/common_button.dart';
 import '../../widgets/text_field_view/common_textfield.dart';
+import '../../widgets/text_field_view/common_textfield_login.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -123,7 +124,7 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           Container(
                             height: 1.3,
-                            width: Get.width * 0.27,
+                            width: Get.width * 0.20,
                             decoration: BoxDecoration(
                               color:
                                   ColorResource.borderColor.withOpacity(0.25),
@@ -164,7 +165,7 @@ class LoginScreen extends StatelessWidget {
                               },
                               isLogin: !controller.isEmailKeyboard.value,
                               isSpace: true,
-                              label: "Phone Number",
+                              label: "Enter Phone Number",
                               isHint: controller.isHint.value,
                               readOnly: controller.isLoading.value,
                               controller: controller.emailController,
