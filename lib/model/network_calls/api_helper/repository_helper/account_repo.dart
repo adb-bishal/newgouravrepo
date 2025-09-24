@@ -75,6 +75,12 @@ class AccountRepo {
     return dioClient.postResponse(url: url, dioClient: dioClient, data: data);
   }
 
+  Future<ApiResponse> sendVideoTime(
+      {required Map<String, dynamic> data}) async {
+    String url = AppConstants.instance.liveClassProgress;
+    return dioClient.postResponse(url: url, dioClient: dioClient, data: data);
+  }
+
   Future<ApiResponse> getProfile() async {
     String url = AppConstants.instance.getProfile;
     return dioClient.getResponse(url: url, dioClient: dioClient);

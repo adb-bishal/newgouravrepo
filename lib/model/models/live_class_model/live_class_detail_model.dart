@@ -74,6 +74,7 @@ class Data {
     this.createdAt,
     this.shortDescription,
     this.isRegister,
+    this.lastWatchedSecond,
     this.matchCriteria,
     this.fileUrl,
     this.price,
@@ -121,6 +122,7 @@ class Data {
   int? isPurchased;
   Category? category;
   Language? language;
+  int? lastWatchedSecond;
   Level? level;
   MatchCriteria? matchCriteria;
   dynamic createdAt;
@@ -134,6 +136,7 @@ class Data {
     categoryId: json["category_id"],
     levelId: json["level_id"],
     languageId: json["language_id"],
+    lastWatchedSecond: json["last_watched_second"],
     userId: json["user_id"],
     batchId: json['batch_id'],
     batchStartDate: json['batch_start_date'],

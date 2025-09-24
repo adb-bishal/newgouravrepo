@@ -96,25 +96,60 @@ class _LiveClassDetailState extends State<LiveClassDetail> {
               ? FileVideoWidget(
                   showQualityPicker: false,
                   url: localVideoPath!,
+                  watchedTime:
+                      controller.liveClassDetail.value.data?.lastWatchedSecond,
                   thumbnail: controller.liveClassDetail.value.data?.preview,
-                  eventCallBack: (progress, totalDuration) {},
+                  eventCallBack: (progress, totalDuration) {
+                    print("progress $progress $totalDuration");
+                    if (progress != 0 &&
+                        progress < totalDuration &&
+                        progress % 10 == 0) {
+                      Future.sync(() {
+                        controller.sendVideoTime(progress, totalDuration);
+                      });
+                    }
+
+                    if (progress == totalDuration) {
+                      Future.sync(() {
+                        controller.sendVideoTime(progress, totalDuration);
+                      });
+                    }
+                  },
                 )
               : (controller.liveClassDetail.value.data?.fileUrl == null ||
                       controller.liveClassDetail.value.data?.fileUrl == "")
                   ? SizedBox(
                       width: double.infinity,
                       child: controller.liveClassDetail.value.data == null
-                          ? ShimmerEffect.instance
-                          .imageLoader(color: Colors.white, radius: BorderRadius.zero)
+                          ? ShimmerEffect.instance.imageLoader(
+                              color: Colors.white, radius: BorderRadius.zero)
                           : cachedNetworkImage(
-                        controller.liveClassDetail.value.data?.image ?? "",
-                      ),
+                              controller.liveClassDetail.value.data?.image ??
+                                  "",
+                            ),
                     )
                   : FileVideoWidget(
                       showQualityPicker: !controller.isPast.value,
                       url: controller.liveClassDetail.value.data?.fileUrl ?? "",
                       thumbnail: controller.liveClassDetail.value.data?.preview,
-                      eventCallBack: (progress, totalDuration) {},
+                      watchedTime: controller
+                          .liveClassDetail.value.data?.lastWatchedSecond,
+                      eventCallBack: (progress, totalDuration) {
+                        print("progress $progress $totalDuration");
+                        if (progress != 0 &&
+                            progress < totalDuration &&
+                            progress % 10 == 0) {
+                          Future.sync(() {
+                            controller.sendVideoTime(progress, totalDuration);
+                          });
+                        }
+
+                        if (progress == totalDuration) {
+                          Future.sync(() {
+                            controller.sendVideoTime(progress, totalDuration);
+                          });
+                        }
+                      },
                     );
         } else {
           return SizedBox(

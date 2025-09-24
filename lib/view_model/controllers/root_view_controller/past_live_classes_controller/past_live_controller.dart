@@ -80,6 +80,7 @@ class PastClassesController extends GetxController {
 
   @override
   void onInit() {
+    print('cdscdsjck');
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     dataPagingController = PagingScrollController<CommonDatum>(

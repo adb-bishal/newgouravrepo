@@ -51,7 +51,24 @@ class BatchClassDetail extends StatelessWidget {
             ? FileVideoWidget(
                 showQualityPicker: !controller.isPast.value,
                 url: controller.liveClassDetail.value.data?.fileUrl ?? "",
-                eventCallBack: (progress, totalDuration) {},
+                watchedTime:
+                    controller.liveClassDetail.value.data?.lastWatchedSecond,
+                eventCallBack: (progress, totalDuration) {
+                  print("progress $progress $totalDuration");
+                  if (progress != 0 &&
+                      progress < totalDuration &&
+                      progress % 10 == 0) {
+                    Future.sync(() {
+                      controller.sendVideoTime(progress, totalDuration);
+                    });
+                  }
+
+                  if (progress == totalDuration) {
+                    Future.sync(() {
+                      controller.sendVideoTime(progress, totalDuration);
+                    });
+                  }
+                },
               )
             : isProuser && controller.isPast.value
                 ? (!Get.find<AuthService>().isPro.value ||
@@ -68,7 +85,24 @@ class BatchClassDetail extends StatelessWidget {
                         showQualityPicker: !controller.isPast.value,
                         url: controller.liveClassDetail.value.data?.fileUrl ??
                             "",
-                        eventCallBack: (progress, totalDuration) {},
+                        watchedTime: controller
+                            .liveClassDetail.value.data?.lastWatchedSecond,
+                        eventCallBack: (progress, totalDuration) {
+                          print("progress $progress $totalDuration");
+                          if (progress != 0 &&
+                              progress < totalDuration &&
+                              progress % 10 == 0) {
+                            Future.sync(() {
+                              controller.sendVideoTime(progress, totalDuration);
+                            });
+                          }
+
+                          if (progress == totalDuration) {
+                            Future.sync(() {
+                              controller.sendVideoTime(progress, totalDuration);
+                            });
+                          }
+                        },
                       )
                 : SizedBox(
                     child: controller.liveClassDetail.value.data == null
@@ -460,7 +494,8 @@ class BatchClassDetail extends StatelessWidget {
                                         //       controller.liveClassDetail.value.data
                                         //           ?.batchStartDate,
                                         //     ]);
-                                        Get.find<RootViewController>().getPopUpData2();
+                                        Get.find<RootViewController>()
+                                            .getPopUpData2();
                                         // Get.toNamed(Routes.subscriptionView);
                                       },
                             elevation: 3,

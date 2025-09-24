@@ -182,7 +182,6 @@ class HomeNewController extends GetxController {
 
   @override
   void onInit() {
-    print("cdljcdlskmvfs");
 
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -227,7 +226,6 @@ class HomeNewController extends GetxController {
     isCarousalLoading.value = true;
     resetScrollState();
     resetScrollStateImmediate();
-    print("recallll");
     // loadInitialData();
   }
 
@@ -270,7 +268,6 @@ class HomeNewController extends GetxController {
               bannerData.value = homeDataModelDatum;
             } else if (homeDataModelDatum.key == 'banner_middle' &&
                 homeDataModelDatum.isActive == 1) {
-              print("lfkjlkwdjfkldwjfkljfg");
               if (homeDataModelDatum.data?.isNotEmpty ?? false) {
                 itemList.add(GestureDetector(
                   onTap: () {

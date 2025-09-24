@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import 'package:lottie/lottie.dart';
 import 'package:path/path.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:stockpathshala_beta/model/models/batch_models/batch_details_model.dart';
+import 'package:stockpathshala_beta/model/network_calls/api_helper/repository_helper/account_repo.dart';
 import 'package:stockpathshala_beta/model/services/auth_service.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
@@ -15,6 +17,7 @@ import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/
 import '../../../../../model/models/common_container_model/common_container_model.dart';
 import '../../../../../model/models/live_class_model/live_class_detail_model.dart';
 import '../../../../../model/models/popup_model/PopUpModel.dart';
+import '../../../../../model/network_calls/api_helper/provider_helper/account_provider.dart';
 import '../../../../../model/network_calls/api_helper/provider_helper/batch_provider.dart';
 import '../../../../../model/network_calls/api_helper/provider_helper/live_provider.dart';
 import '../../../../../model/network_calls/dio_client/get_it_instance.dart';
@@ -40,8 +43,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'AutoRotateService.dart';
 
-class LiveClassDetailController extends GetxController with WidgetsBindingObserver{
+class LiveClassDetailController extends GetxController
+    with WidgetsBindingObserver {
   LiveProvider liveProvider = getIt();
+  AccountProvider accountProvider = getIt();
   BatchProvider batchProvider = getIt();
 
   // Observables for various states
@@ -114,10 +119,33 @@ class LiveClassDetailController extends GetxController with WidgetsBindingObserv
 
   final AutoRotateService _autoRotateService = Get.find<AutoRotateService>();
 
+  AuthService? authService;
+
   bool? get isAutoRotateEnabled => _autoRotateService.isAutoRotateEnabled;
   String get errorMessage => _autoRotateService.errorMessage;
   bool get hasError => _autoRotateService.hasError;
 
+  Future<void> sendVideoTime(int progress, int totalDuration) async {
+    try {
+      await accountProvider.sendVideoTimer({
+        "live_class_id": liveClassDetail.value.data?.id,
+        // "user_id": authService?.user.value.id,
+        "last_watched_second": progress,
+        "device": Platform.isIOS ? "ios" : "android"
+      }, onError: ((onError, map) {
+        toastShow(message: onError);
+        if (kDebugMode) {
+          print("onSuccess $onError");
+        }
+      }), onSuccess: (onSuccess, map) {
+        if (kDebugMode) {
+          print("onSuccess $onSuccess");
+        }
+      });
+    } catch (e) {
+      print("error $e");
+    }
+  }
 
   Future<void> fetchVideos() async {
     isLoading(true); // Set loading to true while fetching.
@@ -154,6 +182,7 @@ class LiveClassDetailController extends GetxController with WidgetsBindingObserv
 
   @override
   void onInit() async {
+
     fetchVideos();
     loadVideos();
     WidgetsBinding.instance.addObserver(this);
@@ -165,6 +194,7 @@ class LiveClassDetailController extends GetxController with WidgetsBindingObserv
     //   // UI state will reflect the ongoing download
     //   isDownloading.value = true;
     // }
+    authService = Get.find<AuthService>();
 
     super.onInit();
   }
@@ -196,13 +226,13 @@ class LiveClassDetailController extends GetxController with WidgetsBindingObserv
     }
   }
 
-
   @override
   void onClose() async {
     WidgetsBinding.instance.removeObserver(this);
     update();
     super.onClose();
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
@@ -522,5 +552,4 @@ class LiveClassDetailController extends GetxController with WidgetsBindingObserv
       }
     });
   }
-
 }

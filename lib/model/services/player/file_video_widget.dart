@@ -32,6 +32,7 @@ class FileVideoWidget extends StatefulWidget {
   final bool isVideo;
   final bool autoPlay;
   final bool showQualityPicker;
+  final int? watchedTime;
 
   const FileVideoWidget({
     super.key,
@@ -44,7 +45,7 @@ class FileVideoWidget extends StatefulWidget {
     this.showQualityPicker = true,
     required this.eventCallBack,
     this.thumbnail,
-    this.onPlayButton,
+    this.onPlayButton, this.watchedTime,
   });
 
   @override
@@ -114,6 +115,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
           autoPlay: widget.autoPlay,
           looping: true,
           autoDispose: true,
+          startAt: Duration(seconds: widget.watchedTime ?? 0),
           allowedScreenSleep: false,
           deviceOrientationsOnFullScreen: [
             DeviceOrientation.landscapeLeft,
@@ -125,6 +127,7 @@ class FileVideoWidgetState extends State<FileVideoWidget> {
             showControls: true,
             showControlsOnInitialize: false,
             enableSkips: false,
+
             enablePlaybackSpeed: false,
             enableMute: true,
             enableFullscreen: !widget.isScalp,

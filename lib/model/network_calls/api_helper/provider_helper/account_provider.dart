@@ -140,7 +140,21 @@ class AccountProvider {
     CheckApiResponse.instance
         .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
   }
+
+  Future sendVideoTimer(Map<String, dynamic> map,
+      {required Function(String? message, Map<String, dynamic>? errorMap)
+      onError,
+        required Function(String? message, Map<String, dynamic> map)
+        onSuccess}) async {
+    ApiResponse apiResponse = await accountRepo.sendVideoTime(
+      data: map,
+    );
+    CheckApiResponse.instance
+        .initResponse(apiResponse, onSuccess: onSuccess, onError: onError);
+  }
 }
+
+
 
 class CheckApiResponse {
   static CheckApiResponse? _instace;

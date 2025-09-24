@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:stockpathshala_beta/api_service.dart';
 import 'package:stockpathshala_beta/model/models/live_class_model/live_class_detail_model.dart';
 import 'package:stockpathshala_beta/model/network_calls/api_helper/network_info.dart';
 import 'package:stockpathshala_beta/model/network_calls/connectivity_helper/connectivity_helper.dart';
@@ -1584,3 +1585,4 @@ Widget playIconLoaderButton(
     progressColor: ColorResource.primaryColor,
   );
 }
+

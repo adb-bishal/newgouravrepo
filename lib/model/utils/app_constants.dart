@@ -105,6 +105,7 @@ class AppConstants {
   String get deleteAccount => "delete_account";
   String get referby => "referral-update";
   String get getProfile => "get-profile";
+  String get liveClassProgress => "live-class/progress/save";
   String get profileUpdate => "profile-update";
   String get profileImageUpdate => "profile-image-update";
   static const String shareScalp = "scalp";
