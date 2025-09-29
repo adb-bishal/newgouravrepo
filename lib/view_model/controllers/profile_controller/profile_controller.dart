@@ -160,7 +160,7 @@ class ProfileController extends GetxController {
     });
   }
 
-  getCurrentUserData({isRoot = false}) async {
+  Future<void> getCurrentUserData({isRoot = false}) async {
     // if (Get.find<AuthService>().user.value.languageId != null) {
     Data userData = Get.find<AuthService>().user.value;
     logPrint("user name ${Get.find<AuthService>().user.value.toJson()}");

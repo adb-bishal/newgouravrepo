@@ -271,7 +271,7 @@ class StringResource {
   ///mentor screen
   static String chooseYourMentor = "Choose Your Mentor".tr;
   static String skipAndBookCounselling = "Skip & Book Counselling".tr;
-  static String reviewAndConfirmCounselling = "Review and confirm your counselling".tr;
+  static String reviewAndConfirmCounselling = "Review and confirm your Counselling session".tr;
   static String skipAndPay = "Skip and pay".tr;
   static String confirmAndPay = "Confirm & Pay".tr;
   static String whatsappConfirmationNote = "You'll receive a confirmation via Whatsapp after booking".tr;

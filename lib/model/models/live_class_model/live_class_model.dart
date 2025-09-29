@@ -201,6 +201,7 @@ class Datum {
     this.startTime,
     this.endDate,
     this.duration,
+    this.lastWatchedSecond,
     this.meetingLink,
     this.image,
     this.schedule,
@@ -224,6 +225,7 @@ class Datum {
   int? id;
   int? categoryId;
   int? levelId;
+  int? lastWatchedSecond;
   int? languageId;
   int? userId;
   int? index;
@@ -260,6 +262,7 @@ class Datum {
         languageId: json["language_id"],
         userId: json["user_id"],
         index: json["index"],
+        lastWatchedSecond: json["last_watched_second"],
         image: json["preview"],
         classPoints: json["class_points"],
         title: json["title"],
@@ -302,6 +305,7 @@ class Datum {
         "category_id": categoryId,
         "level_id": levelId,
         "language_id": languageId,
+        'last_watched_second': lastWatchedSecond,
         "user_id": userId,
         "index": index,
         "title": title,

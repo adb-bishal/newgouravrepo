@@ -83,7 +83,7 @@ class HomeScreen extends GetView<HomeNewController> {
                 body: RefreshIndicator(
                     onRefresh: controller.onRefresh,
                     child: CustomScrollView(
-                  controller: controller.scrollController,
+                        controller: controller.scrollController,
                         slivers: [
                           SliverAppBar(
                             expandedHeight: screenWidth < 600 ? 250 : 280,
@@ -218,579 +218,597 @@ class HomeScreen extends GetView<HomeNewController> {
                                   ),
 
                                   Positioned(
-                                          bottom: 0,
-                                          left: 0,
-                                          right: 0,
-                                          child: Column(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: screenWidth < 500
+                                                  ? DimensionResource
+                                                      .marginSizeDefault
+                                                  : DimensionResource
+                                                          .marginSizeLarge -
+                                                      3),
+                                          child: UserGreetingWidget(),
+                                        ),
+                                        SizedBox(
+                                          height: screenWidth < 500
+                                              ? DimensionResource
+                                                      .marginSizeSmall +
+                                                  3
+                                              : DimensionResource
+                                                      .marginSizeDefault -
+                                                  15,
+                                        ),
+                                        Container(
+                                          height: screenWidth < 500 ? 130 : 180,
+                                          width: screenWidth < 500
+                                              ? double.infinity
+                                              : 700,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          child: Stack(
+                                            fit: StackFit.expand,
                                             children: [
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: screenWidth <
-                                                            500
-                                                        ? DimensionResource
-                                                            .marginSizeDefault
-                                                        : DimensionResource
-                                                                .marginSizeLarge -
-                                                            3),
-                                                child: UserGreetingWidget(),
-                                              ),
-                                              SizedBox(
-                                                height: screenWidth < 500
-                                                    ? DimensionResource
-                                                            .marginSizeSmall +
-                                                        3
-                                                    : DimensionResource
-                                                            .marginSizeDefault -
-                                                        15,
-                                              ),
-                                              Container(
-                                                height: screenWidth < 500
-                                                    ? 130
-                                                    : 180,
-                                                width: screenWidth < 500
-                                                    ? double.infinity
-                                                    : 700,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15)),
-                                                child: Stack(
-                                                  fit: StackFit.expand,
-                                                  children: [
-                                                    Obx(() {
-                                                      return controller.isLoading.value == true?
-                                                      Padding(
+                                              Obx(() {
+                                                return controller
+                                                            .isLoading.value ==
+                                                        true
+                                                    ? Padding(
                                                         padding: EdgeInsets.symmetric(
                                                             horizontal: screenWidth <
-                                                                500
+                                                                    500
                                                                 ? DimensionResource
-                                                                .marginSizeDefault
+                                                                    .marginSizeDefault
                                                                 : DimensionResource
-                                                                .marginSizeLarge),
+                                                                    .marginSizeLarge),
                                                         child: ShimmerEffect
                                                             .instance
                                                             .imageLoader(
-                                                            color: ColorResource
-                                                                .white),
-                                                      ): CarouselSlider
-                                                              .builder(
-                                                              options:
-                                                                  CarouselOptions(
-                                                                aspectRatio: 1,
-                                                                viewportFraction:
-                                                                    1,
-                                                                autoPlay: false,
-                                                                enableInfiniteScroll:
-                                                                    false, // No looping
-                                                                scrollPhysics:
-                                                                    NeverScrollableScrollPhysics(),
-                                                                enlargeCenterPage:
-                                                                    false,
-                                                                disableCenter:
-                                                                    false,
-                                                                onPageChanged:
-                                                                    (index,
-                                                                        reason) {
-                                                                  controller
-                                                                      .setCurrentIndex(
-                                                                          index);
-                                                                },
-                                                              ),
-                                                              itemCount: controller
+                                                                color:
+                                                                    ColorResource
+                                                                        .white),
+                                                      )
+                                                    : CarouselSlider.builder(
+                                                        options:
+                                                            CarouselOptions(
+                                                          aspectRatio: 1,
+                                                          viewportFraction: 1,
+                                                          autoPlay: false,
+                                                          enableInfiniteScroll:
+                                                              false, // No looping
+                                                          scrollPhysics:
+                                                              NeverScrollableScrollPhysics(),
+                                                          enlargeCenterPage:
+                                                              false,
+                                                          disableCenter: false,
+                                                          onPageChanged:
+                                                              (index, reason) {
+                                                            controller
+                                                                .setCurrentIndex(
+                                                                    index);
+                                                          },
+                                                        ),
+                                                        itemCount: controller
+                                                                .bannerData
+                                                                .value
+                                                                .data
+                                                                ?.length ??
+                                                            0,
+                                                        itemBuilder: (context,
+                                                            index, _) {
+                                                          DatumDatum
+                                                              dataAtIndex =
+                                                              controller
                                                                       .bannerData
                                                                       .value
                                                                       .data
-                                                                      ?.length ??
-                                                                  0,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index,
-                                                                      _) {
-                                                                DatumDatum dataAtIndex = controller
-                                                                        .bannerData
-                                                                        .value
-                                                                        .data
-                                                                        ?.elementAt(
-                                                                            index) ??
-                                                                    DatumDatum();
-                                                                return InkWell(
-                                                                  splashColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  // onTap: () {
-                                                                  //   if (dataAtIndex
-                                                                  //           .bannerType ==
-                                                                  //       1) {
-                                                                  //     switch (dataAtIndex
-                                                                  //         .type) {
-                                                                  //       case AppConstants
-                                                                  //           .textCourse:
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.textCourseDetail(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               "",
-                                                                  //               dataAtIndex.bannerableId.toString()
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .audioCourse:
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.audioCourseDetail(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               CourseDetailViewType.audioCourse,
-                                                                  //               dataAtIndex.bannerableId.toString(),
-                                                                  //               "",
-                                                                  //               ""
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .counsellingCategories:
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.mentorScreen,
-                                                                  //             arguments: dataAtIndex.id);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .counsellingPage:
-                                                                  //         //     controller.scrollController.animateTo(
-                                                                  //         // controller.scrollController.position.maxScrollExtent,
-                                                                  //         // duration: Duration(milliseconds: 500),
-                                                                  //         // curve: Curves.easeInOut);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .audioRedirect:
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.audioCourseDetail(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               CourseDetailViewType.audio,
-                                                                  //               dataAtIndex.bannerableId.toString(),
-                                                                  //               "",
-                                                                  //               ""
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .videoRedirect:
-                                                                  //         AppConstants
-                                                                  //             .instance
-                                                                  //             .singleCourseId
-                                                                  //             .value = (dataAtIndex.bannerableId ??
-                                                                  //                 "")
-                                                                  //             .toString();
-                                                                  //
-                                                                  //         Get.toNamed(Routes.continueWatchScreen(id: dataAtIndex.bannerableId.toString()), arguments: [
-                                                                  //           dataAtIndex.bannerableId.toString(),
-                                                                  //           ""
-                                                                  //         ])!
-                                                                  //             .then((value) {
-                                                                  //           Get.find<HomeController>().getContinueLearning(isFirst: true);
-                                                                  //         });
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .liveClassBanner:
-                                                                  //         AppConstants
-                                                                  //             .instance
-                                                                  //             .liveId
-                                                                  //             .value = (dataAtIndex.bannerableId ??
-                                                                  //                 "")
-                                                                  //             .toString();
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               false,
-                                                                  //               dataAtIndex.bannerableId.toString()
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .batchClass:
-                                                                  //         AppConstants
-                                                                  //             .instance
-                                                                  //             .batchId
-                                                                  //             .value = (dataAtIndex.bannerableId ??
-                                                                  //                 "")
-                                                                  //             .toString();
-                                                                  //
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.batchClassDetails(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               false,
-                                                                  //               dataAtIndex.bannerableId.toString()
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .upcomingBatch:
-                                                                  //         final bannerableId =
-                                                                  //             dataAtIndex.bannerableId;
-                                                                  //         print(
-                                                                  //             'Bannerable ID: $bannerableId');
-                                                                  //
-                                                                  //         if (bannerableId ==
-                                                                  //             null) {
-                                                                  //           print('Error: bannerableId is null.');
-                                                                  //           return; // Exit early if `bannerableId` is null
-                                                                  //         }
-                                                                  //
-                                                                  //         // Access the batch data from LiveBatchesController
-                                                                  //         final displayList = Get.find<LiveBatchesController>()
-                                                                  //             .batchData
-                                                                  //             .value
-                                                                  //             .data;
-                                                                  //
-                                                                  //         if (displayList == null ||
-                                                                  //             displayList.isEmpty) {
-                                                                  //           print('Error: No batch data available.');
-                                                                  //           return; // Exit early if `displayList` is null or empty
-                                                                  //         }
-                                                                  //
-                                                                  //         // Find the matching batch data based on the ID
-                                                                  //         final matchingData =
-                                                                  //             displayList.where((batchData) {
-                                                                  //           return batchData.id.toString() ==
-                                                                  //               bannerableId; // Ensure proper type comparison
-                                                                  //         }).toList();
-                                                                  //
-                                                                  //         if (matchingData
-                                                                  //             .isEmpty) {
-                                                                  //           print('Error: No matching data found for bannerableId: $bannerableId');
-                                                                  //           return; // Exit early if no matching data is found
-                                                                  //         }
-                                                                  //
-                                                                  //         // Navigate to the batch details route with the matched data
-                                                                  //         Get.toNamed(
-                                                                  //           Routes.batchDetails,
-                                                                  //           arguments: [
-                                                                  //             matchingData.first, // Pass the first matched BatchData object
-                                                                  //             false, // isPast flag
-                                                                  //           ],
-                                                                  //         );
-                                                                  //
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .pastBatch:
-                                                                  //         final bannerableId =
-                                                                  //             dataAtIndex.bannerableId;
-                                                                  //         print(
-                                                                  //             'Bannerable ID: $bannerableId');
-                                                                  //
-                                                                  //         if (bannerableId ==
-                                                                  //             null) {
-                                                                  //           print('Error: bannerableId is null.');
-                                                                  //           return; // Exit early if `bannerableId` is null
-                                                                  //         }
-                                                                  //
-                                                                  //         // Access the batch data from PastClassesController
-                                                                  //         final displayList = Get.find<PastClassesController>()
-                                                                  //             .batchData
-                                                                  //             .value
-                                                                  //             .data;
-                                                                  //
-                                                                  //         if (displayList == null ||
-                                                                  //             displayList.isEmpty) {
-                                                                  //           print('Error: No batch data available.');
-                                                                  //           return; // Exit early if `displayList` is null or empty
-                                                                  //         }
-                                                                  //
-                                                                  //         // Find the matching batch data based on the ID
-                                                                  //         final matchingData =
-                                                                  //             displayList.where((batchData) {
-                                                                  //           return batchData.id.toString() ==
-                                                                  //               bannerableId; // Ensure proper type comparison
-                                                                  //         }).toList();
-                                                                  //
-                                                                  //         if (matchingData
-                                                                  //             .isEmpty) {
-                                                                  //           print('Error: No matching data found for bannerableId: $bannerableId');
-                                                                  //           return; // Exit early if no matching data is found
-                                                                  //         }
-                                                                  //
-                                                                  //         // Navigate to the batch details route with the matched data
-                                                                  //         Get.toNamed(
-                                                                  //           Routes.batchDetails,
-                                                                  //           arguments: [
-                                                                  //             matchingData.first, // Pass the first matched BatchData object
-                                                                  //             true, // isPast flag
-                                                                  //           ],
-                                                                  //         );
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .upcomingLiveClass:
-                                                                  //         if (dataAtIndex.bannerableId !=
-                                                                  //             null) {
-                                                                  //           AppConstants.instance.batchId.value =
-                                                                  //               (dataAtIndex.bannerableId.toString())!;
-                                                                  //           Get.toNamed(Routes.batchClassDetails(id: dataAtIndex.bannerableId.toString()), arguments: [
-                                                                  //             false,
-                                                                  //             dataAtIndex.bannerableId.toString()
-                                                                  //           ]);
-                                                                  //         } else {
-                                                                  //           AppConstants.instance.liveId.value =
-                                                                  //               (dataAtIndex.bannerableId.toString())!;
-                                                                  //           Get.toNamed(Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()), arguments: [
-                                                                  //             false,
-                                                                  //             dataAtIndex.bannerableId.toString()
-                                                                  //           ]);
-                                                                  //         }
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .pastLiveClass:
-                                                                  //         if (dataAtIndex.bannerableId !=
-                                                                  //             null) {
-                                                                  //           AppConstants.instance.liveId.value =
-                                                                  //               (dataAtIndex.bannerableId.toString());
-                                                                  //           Get.toNamed(Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()), arguments: [
-                                                                  //             true,
-                                                                  //             dataAtIndex.bannerableId.toString()
-                                                                  //           ]);
-                                                                  //         } else {
-                                                                  //           AppConstants.instance.liveId.value =
-                                                                  //               (dataAtIndex.bannerableId.toString())!;
-                                                                  //           Get.toNamed(Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()), arguments: [
-                                                                  //             false,
-                                                                  //             dataAtIndex.bannerableId.toString()
-                                                                  //           ]);
-                                                                  //         }
-                                                                  //         break;
-                                                                  //
-                                                                  //       case AppConstants
-                                                                  //           .blogRedirect:
-                                                                  //         AppConstants
-                                                                  //             .instance
-                                                                  //             .blogId
-                                                                  //             .value = (dataAtIndex.bannerableId ??
-                                                                  //                 "")
-                                                                  //             .toString();
-                                                                  //
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.blogsView(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               dataAtIndex.bannerableId.toString(),
-                                                                  //               ""
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .quizRedirect:
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.quizMainView,
-                                                                  //             arguments: {
-                                                                  //               "id": dataAtIndex.bannerableId.toString(),
-                                                                  //               "??": "",
-                                                                  //               "quiz_type": dataAtIndex.isScholarship == 1 ? QuizType.scholarship : QuizType.free,
-                                                                  //               "is_timeup": false,
-                                                                  //               "is_fromHome": true
-                                                                  //             });
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .subscription:
-                                                                  //         if (Platform
-                                                                  //             .isAndroid) {
-                                                                  //           Get.toNamed(Routes.subscriptionView);
-                                                                  //         }
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .upcomingBatchClass:
-                                                                  //         Get.find<RootViewController>()
-                                                                  //             .selectedTab
-                                                                  //             .value = 2;
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .pastBatchPage:
-                                                                  //         Get.find<LiveBatchesController>()
-                                                                  //             .isTabValueChange
-                                                                  //             .value = true;
-                                                                  //
-                                                                  //         Get.find<RootViewController>()
-                                                                  //             .selectedTab
-                                                                  //             .value = 2;
-                                                                  //         Get.find<LiveBatchesController>()
-                                                                  //             .tabChange();
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .mentorshipClass:
-                                                                  //         Get.toNamed(
-                                                                  //           Routes.mentorshipDetail(
-                                                                  //             id: dataAtIndex.bannerableId.toString(),
-                                                                  //           ),
-                                                                  //           arguments: {
-                                                                  //             'id': dataAtIndex.bannerableId.toString(),
-                                                                  //           },
-                                                                  //         );
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .upcomingWebinarPage:
-                                                                  //         Get.find<RootViewController>()
-                                                                  //             .selectedTab
-                                                                  //             .value = 3;
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .pastWebinarPage:
-                                                                  //         Get.find<LiveClassesController>()
-                                                                  //             .isTabValueChange
-                                                                  //             .value = true;
-                                                                  //
-                                                                  //         Get.find<RootViewController>()
-                                                                  //             .selectedTab
-                                                                  //             .value = 3;
-                                                                  //         Get.find<LiveClassesController>()
-                                                                  //             .tabChange();
-                                                                  //         Get.find<PastClassesController>()
-                                                                  //             .onRefresh();
-                                                                  //         break;
-                                                                  //       case AppConstants
-                                                                  //           .mentorshipPage:
-                                                                  //         Get.find<RootViewController>()
-                                                                  //             .selectedTab
-                                                                  //             .value = 1;
-                                                                  //         break;
-                                                                  //
-                                                                  //       default:
-                                                                  //         AppConstants
-                                                                  //             .instance
-                                                                  //             .videoCourseId
-                                                                  //             .value = (dataAtIndex.bannerableId ??
-                                                                  //                 "")
-                                                                  //             .toString();
-                                                                  //         Get.toNamed(
-                                                                  //             Routes.videoCourseDetail(id: dataAtIndex.bannerableId.toString()),
-                                                                  //             arguments: [
-                                                                  //               "",
-                                                                  //               dataAtIndex.bannerableId.toString()
-                                                                  //             ]);
-                                                                  //         break;
-                                                                  //     }
-                                                                  //   } else {
-                                                                  //     if (dataAtIndex
-                                                                  //             .url !=
-                                                                  //         null) {
-                                                                  //       Navigator.of(Get.context!).push(MaterialPageRoute(
-                                                                  //           builder: (context) =>
-                                                                  //               OpenWebView(url: dataAtIndex.url ?? "", title: dataAtIndex.title ?? "")));
-                                                                  //     }
-                                                                  //   }
-                                                                  // },
-                                                                  child: Container(
-                                                                      padding: const EdgeInsets.symmetric(horizontal: DimensionResource.marginSizeDefault),
-                                                                      width: double.infinity,
-                                                                      child: ClipRRect(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(15),
+                                                                      ?.elementAt(
+                                                                          index) ??
+                                                                  DatumDatum();
+                                                          return InkWell(
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            // onTap: () {
+                                                            //   if (dataAtIndex
+                                                            //           .bannerType ==
+                                                            //       1) {
+                                                            //     switch (dataAtIndex
+                                                            //         .type) {
+                                                            //       case AppConstants
+                                                            //           .textCourse:
+                                                            //         Get.toNamed(
+                                                            //             Routes.textCourseDetail(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               "",
+                                                            //               dataAtIndex.bannerableId.toString()
+                                                            //             ]);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .audioCourse:
+                                                            //         Get.toNamed(
+                                                            //             Routes.audioCourseDetail(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               CourseDetailViewType.audioCourse,
+                                                            //               dataAtIndex.bannerableId.toString(),
+                                                            //               "",
+                                                            //               ""
+                                                            //             ]);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .counsellingCategories:
+                                                            //         Get.toNamed(
+                                                            //             Routes.mentorScreen,
+                                                            //             arguments: dataAtIndex.id);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .counsellingPage:
+                                                            //         //     controller.scrollController.animateTo(
+                                                            //         // controller.scrollController.position.maxScrollExtent,
+                                                            //         // duration: Duration(milliseconds: 500),
+                                                            //         // curve: Curves.easeInOut);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .audioRedirect:
+                                                            //         Get.toNamed(
+                                                            //             Routes.audioCourseDetail(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               CourseDetailViewType.audio,
+                                                            //               dataAtIndex.bannerableId.toString(),
+                                                            //               "",
+                                                            //               ""
+                                                            //             ]);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .videoRedirect:
+                                                            //         AppConstants
+                                                            //             .instance
+                                                            //             .singleCourseId
+                                                            //             .value = (dataAtIndex.bannerableId ??
+                                                            //                 "")
+                                                            //             .toString();
+                                                            //
+                                                            //         Get.toNamed(Routes.continueWatchScreen(id: dataAtIndex.bannerableId.toString()), arguments: [
+                                                            //           dataAtIndex.bannerableId.toString(),
+                                                            //           ""
+                                                            //         ])!
+                                                            //             .then((value) {
+                                                            //           Get.find<HomeController>().getContinueLearning(isFirst: true);
+                                                            //         });
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .liveClassBanner:
+                                                            //         AppConstants
+                                                            //             .instance
+                                                            //             .liveId
+                                                            //             .value = (dataAtIndex.bannerableId ??
+                                                            //                 "")
+                                                            //             .toString();
+                                                            //         Get.toNamed(
+                                                            //             Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               false,
+                                                            //               dataAtIndex.bannerableId.toString()
+                                                            //             ]);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .batchClass:
+                                                            //         AppConstants
+                                                            //             .instance
+                                                            //             .batchId
+                                                            //             .value = (dataAtIndex.bannerableId ??
+                                                            //                 "")
+                                                            //             .toString();
+                                                            //
+                                                            //         Get.toNamed(
+                                                            //             Routes.batchClassDetails(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               false,
+                                                            //               dataAtIndex.bannerableId.toString()
+                                                            //             ]);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .upcomingBatch:
+                                                            //         final bannerableId =
+                                                            //             dataAtIndex.bannerableId;
+                                                            //         print(
+                                                            //             'Bannerable ID: $bannerableId');
+                                                            //
+                                                            //         if (bannerableId ==
+                                                            //             null) {
+                                                            //           print('Error: bannerableId is null.');
+                                                            //           return; // Exit early if `bannerableId` is null
+                                                            //         }
+                                                            //
+                                                            //         // Access the batch data from LiveBatchesController
+                                                            //         final displayList = Get.find<LiveBatchesController>()
+                                                            //             .batchData
+                                                            //             .value
+                                                            //             .data;
+                                                            //
+                                                            //         if (displayList == null ||
+                                                            //             displayList.isEmpty) {
+                                                            //           print('Error: No batch data available.');
+                                                            //           return; // Exit early if `displayList` is null or empty
+                                                            //         }
+                                                            //
+                                                            //         // Find the matching batch data based on the ID
+                                                            //         final matchingData =
+                                                            //             displayList.where((batchData) {
+                                                            //           return batchData.id.toString() ==
+                                                            //               bannerableId; // Ensure proper type comparison
+                                                            //         }).toList();
+                                                            //
+                                                            //         if (matchingData
+                                                            //             .isEmpty) {
+                                                            //           print('Error: No matching data found for bannerableId: $bannerableId');
+                                                            //           return; // Exit early if no matching data is found
+                                                            //         }
+                                                            //
+                                                            //         // Navigate to the batch details route with the matched data
+                                                            //         Get.toNamed(
+                                                            //           Routes.batchDetails,
+                                                            //           arguments: [
+                                                            //             matchingData.first, // Pass the first matched BatchData object
+                                                            //             false, // isPast flag
+                                                            //           ],
+                                                            //         );
+                                                            //
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .pastBatch:
+                                                            //         final bannerableId =
+                                                            //             dataAtIndex.bannerableId;
+                                                            //         print(
+                                                            //             'Bannerable ID: $bannerableId');
+                                                            //
+                                                            //         if (bannerableId ==
+                                                            //             null) {
+                                                            //           print('Error: bannerableId is null.');
+                                                            //           return; // Exit early if `bannerableId` is null
+                                                            //         }
+                                                            //
+                                                            //         // Access the batch data from PastClassesController
+                                                            //         final displayList = Get.find<PastClassesController>()
+                                                            //             .batchData
+                                                            //             .value
+                                                            //             .data;
+                                                            //
+                                                            //         if (displayList == null ||
+                                                            //             displayList.isEmpty) {
+                                                            //           print('Error: No batch data available.');
+                                                            //           return; // Exit early if `displayList` is null or empty
+                                                            //         }
+                                                            //
+                                                            //         // Find the matching batch data based on the ID
+                                                            //         final matchingData =
+                                                            //             displayList.where((batchData) {
+                                                            //           return batchData.id.toString() ==
+                                                            //               bannerableId; // Ensure proper type comparison
+                                                            //         }).toList();
+                                                            //
+                                                            //         if (matchingData
+                                                            //             .isEmpty) {
+                                                            //           print('Error: No matching data found for bannerableId: $bannerableId');
+                                                            //           return; // Exit early if no matching data is found
+                                                            //         }
+                                                            //
+                                                            //         // Navigate to the batch details route with the matched data
+                                                            //         Get.toNamed(
+                                                            //           Routes.batchDetails,
+                                                            //           arguments: [
+                                                            //             matchingData.first, // Pass the first matched BatchData object
+                                                            //             true, // isPast flag
+                                                            //           ],
+                                                            //         );
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .upcomingLiveClass:
+                                                            //         if (dataAtIndex.bannerableId !=
+                                                            //             null) {
+                                                            //           AppConstants.instance.batchId.value =
+                                                            //               (dataAtIndex.bannerableId.toString())!;
+                                                            //           Get.toNamed(Routes.batchClassDetails(id: dataAtIndex.bannerableId.toString()), arguments: [
+                                                            //             false,
+                                                            //             dataAtIndex.bannerableId.toString()
+                                                            //           ]);
+                                                            //         } else {
+                                                            //           AppConstants.instance.liveId.value =
+                                                            //               (dataAtIndex.bannerableId.toString())!;
+                                                            //           Get.toNamed(Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()), arguments: [
+                                                            //             false,
+                                                            //             dataAtIndex.bannerableId.toString()
+                                                            //           ]);
+                                                            //         }
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .pastLiveClass:
+                                                            //         if (dataAtIndex.bannerableId !=
+                                                            //             null) {
+                                                            //           AppConstants.instance.liveId.value =
+                                                            //               (dataAtIndex.bannerableId.toString());
+                                                            //           Get.toNamed(Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()), arguments: [
+                                                            //             true,
+                                                            //             dataAtIndex.bannerableId.toString()
+                                                            //           ]);
+                                                            //         } else {
+                                                            //           AppConstants.instance.liveId.value =
+                                                            //               (dataAtIndex.bannerableId.toString())!;
+                                                            //           Get.toNamed(Routes.liveClassDetail(id: dataAtIndex.bannerableId.toString()), arguments: [
+                                                            //             false,
+                                                            //             dataAtIndex.bannerableId.toString()
+                                                            //           ]);
+                                                            //         }
+                                                            //         break;
+                                                            //
+                                                            //       case AppConstants
+                                                            //           .blogRedirect:
+                                                            //         AppConstants
+                                                            //             .instance
+                                                            //             .blogId
+                                                            //             .value = (dataAtIndex.bannerableId ??
+                                                            //                 "")
+                                                            //             .toString();
+                                                            //
+                                                            //         Get.toNamed(
+                                                            //             Routes.blogsView(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               dataAtIndex.bannerableId.toString(),
+                                                            //               ""
+                                                            //             ]);
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .quizRedirect:
+                                                            //         Get.toNamed(
+                                                            //             Routes.quizMainView,
+                                                            //             arguments: {
+                                                            //               "id": dataAtIndex.bannerableId.toString(),
+                                                            //               "??": "",
+                                                            //               "quiz_type": dataAtIndex.isScholarship == 1 ? QuizType.scholarship : QuizType.free,
+                                                            //               "is_timeup": false,
+                                                            //               "is_fromHome": true
+                                                            //             });
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .subscription:
+                                                            //         if (Platform
+                                                            //             .isAndroid) {
+                                                            //           Get.toNamed(Routes.subscriptionView);
+                                                            //         }
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .upcomingBatchClass:
+                                                            //         Get.find<RootViewController>()
+                                                            //             .selectedTab
+                                                            //             .value = 2;
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .pastBatchPage:
+                                                            //         Get.find<LiveBatchesController>()
+                                                            //             .isTabValueChange
+                                                            //             .value = true;
+                                                            //
+                                                            //         Get.find<RootViewController>()
+                                                            //             .selectedTab
+                                                            //             .value = 2;
+                                                            //         Get.find<LiveBatchesController>()
+                                                            //             .tabChange();
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .mentorshipClass:
+                                                            //         Get.toNamed(
+                                                            //           Routes.mentorshipDetail(
+                                                            //             id: dataAtIndex.bannerableId.toString(),
+                                                            //           ),
+                                                            //           arguments: {
+                                                            //             'id': dataAtIndex.bannerableId.toString(),
+                                                            //           },
+                                                            //         );
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .upcomingWebinarPage:
+                                                            //         Get.find<RootViewController>()
+                                                            //             .selectedTab
+                                                            //             .value = 3;
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .pastWebinarPage:
+                                                            //         Get.find<LiveClassesController>()
+                                                            //             .isTabValueChange
+                                                            //             .value = true;
+                                                            //
+                                                            //         Get.find<RootViewController>()
+                                                            //             .selectedTab
+                                                            //             .value = 3;
+                                                            //         Get.find<LiveClassesController>()
+                                                            //             .tabChange();
+                                                            //         Get.find<PastClassesController>()
+                                                            //             .onRefresh();
+                                                            //         break;
+                                                            //       case AppConstants
+                                                            //           .mentorshipPage:
+                                                            //         Get.find<RootViewController>()
+                                                            //             .selectedTab
+                                                            //             .value = 1;
+                                                            //         break;
+                                                            //
+                                                            //       default:
+                                                            //         AppConstants
+                                                            //             .instance
+                                                            //             .videoCourseId
+                                                            //             .value = (dataAtIndex.bannerableId ??
+                                                            //                 "")
+                                                            //             .toString();
+                                                            //         Get.toNamed(
+                                                            //             Routes.videoCourseDetail(id: dataAtIndex.bannerableId.toString()),
+                                                            //             arguments: [
+                                                            //               "",
+                                                            //               dataAtIndex.bannerableId.toString()
+                                                            //             ]);
+                                                            //         break;
+                                                            //     }
+                                                            //   } else {
+                                                            //     if (dataAtIndex
+                                                            //             .url !=
+                                                            //         null) {
+                                                            //       Navigator.of(Get.context!).push(MaterialPageRoute(
+                                                            //           builder: (context) =>
+                                                            //               OpenWebView(url: dataAtIndex.url ?? "", title: dataAtIndex.title ?? "")));
+                                                            //     }
+                                                            //   }
+                                                            // },
+                                                            child: Container(
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        DimensionResource
+                                                                            .marginSizeSmall),
+                                                                width: double
+                                                                    .infinity,
+                                                                child:
+                                                                    ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              3),
+                                                                  child: Stack(
+                                                                    children: [
+                                                                      Positioned(
+                                                                        top: 0,
+                                                                        bottom:
+                                                                            0,
+                                                                        left: 0,
+                                                                        right:
+                                                                            0,
+                                                                        child: cachedNetworkImage(
+                                                                            dataAtIndex.image ??
+                                                                                "",
+                                                                            fit:
+                                                                                BoxFit.fill),
+                                                                      ),
+                                                                      // Align(
+                                                                      //   alignment: Alignment.bottomLeft,
+                                                                      //   child: Container(
+                                                                      //     margin: const EdgeInsets.only(
+                                                                      //       bottom: DimensionResource.marginSizeDefault + 10,
+                                                                      //       left: DimensionResource.marginSizeDefault,
+                                                                      //       right: DimensionResource.marginSizeDefault,
+                                                                      //     ),
+                                                                      //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: ColorResource.white),
+                                                                      //     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                      //     child: Text(
+                                                                      //       dataAtIndex.title ?? "",
+                                                                      //       style: StyleResource.instance.styleLight(fontSize: screenWidth < 500 ? DimensionResource.fontSizeExtraSmall : DimensionResource.fontSizeDefault),
+                                                                      //       maxLines: 1,
+                                                                      //       overflow: TextOverflow.ellipsis,
+                                                                      //     ),
+                                                                      //   ),
+                                                                      // ),
+                                                                      Visibility(
+                                                                        visible: dataAtIndex.isPromotional !=
+                                                                                null &&
+                                                                            dataAtIndex.isPromotional ==
+                                                                                1,
                                                                         child:
-                                                                            Stack(
-                                                                          children: [
-                                                                            Positioned(
-                                                                              top: 0,
-                                                                              bottom: 0,
-                                                                              left: 0,
-                                                                              right: 0,
-                                                                              child: cachedNetworkImage(dataAtIndex.image ?? "", fit: BoxFit.fill),
+                                                                            Align(
+                                                                          alignment:
+                                                                              Alignment.topLeft,
+                                                                          child:
+                                                                              Container(
+                                                                            margin:
+                                                                                const EdgeInsets.only(
+                                                                              top: DimensionResource.marginSizeDefault,
+                                                                              left: DimensionResource.marginSizeDefault,
+                                                                              right: DimensionResource.marginSizeDefault,
                                                                             ),
-                                                                            // Align(
-                                                                            //   alignment: Alignment.bottomLeft,
-                                                                            //   child: Container(
-                                                                            //     margin: const EdgeInsets.only(
-                                                                            //       bottom: DimensionResource.marginSizeDefault + 10,
-                                                                            //       left: DimensionResource.marginSizeDefault,
-                                                                            //       right: DimensionResource.marginSizeDefault,
-                                                                            //     ),
-                                                                            //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: ColorResource.white),
-                                                                            //     padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                                                                            //     child: Text(
-                                                                            //       dataAtIndex.title ?? "",
-                                                                            //       style: StyleResource.instance.styleLight(fontSize: screenWidth < 500 ? DimensionResource.fontSizeExtraSmall : DimensionResource.fontSizeDefault),
-                                                                            //       maxLines: 1,
-                                                                            //       overflow: TextOverflow.ellipsis,
-                                                                            //     ),
-                                                                            //   ),
-                                                                            // ),
-                                                                            Visibility(
-                                                                              visible: dataAtIndex.isPromotional != null && dataAtIndex.isPromotional == 1,
-                                                                              child: Align(
-                                                                                alignment: Alignment.topLeft,
-                                                                                child: Container(
-                                                                                  margin: const EdgeInsets.only(
-                                                                                    top: DimensionResource.marginSizeDefault,
-                                                                                    left: DimensionResource.marginSizeDefault,
-                                                                                    right: DimensionResource.marginSizeDefault,
-                                                                                  ),
-                                                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(3), color: ColorResource.white),
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                                                                                  child: Text(
-                                                                                    "Promotional",
-                                                                                    style: StyleResource.instance.styleLight(fontSize: DimensionResource.fontSizeExtraSmall - 2),
-                                                                                    maxLines: 1,
-                                                                                    overflow: TextOverflow.ellipsis,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
+                                                                            decoration:
+                                                                                BoxDecoration(borderRadius: BorderRadius.circular(3), color: ColorResource.white),
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                                                                            child:
+                                                                                Text(
+                                                                              "Promotional",
+                                                                              style: StyleResource.instance.styleLight(fontSize: DimensionResource.fontSizeExtraSmall - 2),
+                                                                              maxLines: 1,
+                                                                              overflow: TextOverflow.ellipsis,
                                                                             ),
-                                                                          ],
+                                                                          ),
                                                                         ),
-                                                                      )),
-                                                                );
-                                                              },
-                                                            );
-                                                    }),
-                                                    // Align(
-                                                    //   alignment: Alignment
-                                                    //       .bottomCenter,
-                                                    //   child: Obx(() => Padding(
-                                                    //         padding:
-                                                    //             const EdgeInsets
-                                                    //                 .only(
-                                                    //                 bottom: 10),
-                                                    //         child: Row(
-                                                    //             mainAxisSize:
-                                                    //                 MainAxisSize
-                                                    //                     .min,
-                                                    //             mainAxisAlignment:
-                                                    //                 MainAxisAlignment
-                                                    //                     .center,
-                                                    //             children: List.generate(
-                                                    //                 controller
-                                                    //                         .bannerData
-                                                    //                         .value
-                                                    //                         .data
-                                                    //                         ?.length ??
-                                                    //                     controller
-                                                    //                         .dummyImages
-                                                    //                         .length,
-                                                    //                 (index) {
-                                                    //               return AnimatedContainer(
-                                                    //                 margin: const EdgeInsets
-                                                    //                     .symmetric(
-                                                    //                     horizontal:
-                                                    //                         2),
-                                                    //                 duration: const Duration(
-                                                    //                     milliseconds:
-                                                    //                         300),
-                                                    //                 height: controller.currentIndex.value ==
-                                                    //                         index
-                                                    //                     ? 10
-                                                    //                     : 7,
-                                                    //                 width: controller.currentIndex.value ==
-                                                    //                         index
-                                                    //                     ? 10
-                                                    //                     : 7,
-                                                    //                 decoration:
-                                                    //                     BoxDecoration(
-                                                    //                   borderRadius:
-                                                    //                       BorderRadius.circular(
-                                                    //                           15),
-                                                    //                   color: controller.currentIndex.value ==
-                                                    //                           index
-                                                    //                       ? ColorResource
-                                                    //                           .yellowColor
-                                                    //                       : ColorResource
-                                                    //                           .white,
-                                                    //                 ),
-                                                    //               );
-                                                    //             })),
-                                                    //       )),
-                                                    // ),
-                                                  ],
-                                                ),
-                                              ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )),
+                                                          );
+                                                        },
+                                                      );
+                                              }),
+                                              // Align(
+                                              //   alignment: Alignment
+                                              //       .bottomCenter,
+                                              //   child: Obx(() => Padding(
+                                              //         padding:
+                                              //             const EdgeInsets
+                                              //                 .only(
+                                              //                 bottom: 10),
+                                              //         child: Row(
+                                              //             mainAxisSize:
+                                              //                 MainAxisSize
+                                              //                     .min,
+                                              //             mainAxisAlignment:
+                                              //                 MainAxisAlignment
+                                              //                     .center,
+                                              //             children: List.generate(
+                                              //                 controller
+                                              //                         .bannerData
+                                              //                         .value
+                                              //                         .data
+                                              //                         ?.length ??
+                                              //                     controller
+                                              //                         .dummyImages
+                                              //                         .length,
+                                              //                 (index) {
+                                              //               return AnimatedContainer(
+                                              //                 margin: const EdgeInsets
+                                              //                     .symmetric(
+                                              //                     horizontal:
+                                              //                         2),
+                                              //                 duration: const Duration(
+                                              //                     milliseconds:
+                                              //                         300),
+                                              //                 height: controller.currentIndex.value ==
+                                              //                         index
+                                              //                     ? 10
+                                              //                     : 7,
+                                              //                 width: controller.currentIndex.value ==
+                                              //                         index
+                                              //                     ? 10
+                                              //                     : 7,
+                                              //                 decoration:
+                                              //                     BoxDecoration(
+                                              //                   borderRadius:
+                                              //                       BorderRadius.circular(
+                                              //                           15),
+                                              //                   color: controller.currentIndex.value ==
+                                              //                           index
+                                              //                       ? ColorResource
+                                              //                           .yellowColor
+                                              //                       : ColorResource
+                                              //                           .white,
+                                              //                 ),
+                                              //               );
+                                              //             })),
+                                              //       )),
+                                              // ),
                                             ],
                                           ),
-                                        )
-                                      // : const SizedBox.shrink(),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  // : const SizedBox.shrink(),
                                 ],
                               ),
                             ),
@@ -1700,21 +1718,18 @@ Widget categoryList(
   ));
 }*/
 
-
 Widget categoryListWithShimmer(
     HomeNewController controller, CounsellingData counsellingData) {
   double screenWidth = MediaQuery.of(Get.context!).size.width;
-  int crossAxisCount = 2;
+  int crossAxisCount = screenWidth < 600 ? 2 : 3; // Dynamic cross count
 
   return Obx(
     () => controller.isDataLoading.value
-        ? screenWidth < 600
-            ? ShimmerEffect.instance.categoryListShimmerForTab()
-            : ShimmerEffect.instance.categoryListShimmerForTab()
+        ? ShimmerEffect.instance.categoryListShimmerForTab()
         : counsellingData.categories.isEmpty
             ? const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(24.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Text("No category found"),
                 ),
               )
@@ -1726,9 +1741,9 @@ Widget categoryListWithShimmer(
                   itemCount: counsellingData.categories.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: crossAxisCount == 2 ? 15 : 10,
-                    mainAxisSpacing: crossAxisCount == 2 ? 15 : 10,
-                    childAspectRatio: crossAxisCount == 2 ? 1.1 : 1,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    childAspectRatio: 1, // Lower = taller item
                   ),
                   itemBuilder: (context, index) {
                     var data = counsellingData.categories[index];
@@ -1742,10 +1757,10 @@ Widget categoryListWithShimmer(
                         onTap: () {
                           controller.itemSelected.value = index;
 
-                          //if want multiple selection use this but ,right now it is disable
                           controller.itemClick(data.id, true);
                           Future.delayed(const Duration(milliseconds: 3), () {
-                            Get.toNamed(Routes.mentorScreen, arguments: [data.id,data.title])
+                            Get.toNamed(Routes.mentorScreen,
+                                    arguments: [data.id, data.title])
                                 ?.then((value) {
                               if (value == 'payment') {
                                 controller.onRefresh();
@@ -1763,109 +1778,64 @@ Widget categoryListWithShimmer(
                                 border: Border.all(
                                   color: isSelected
                                       ? ColorResource.primaryColor
-                                      : Colors.grey.shade200,
-                                  width: isSelected ? 1 : 1,
+                                      : Colors.grey.shade300,
+                                  width: 1,
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(
-                                      crossAxisCount == 2 ? 12 : 10),
-                                ),
+                                borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
                                     color: isSelected
                                         ? ColorResource.primaryColor
-                                            .withOpacity(0.3)
-                                        : Colors.grey.withOpacity(0.1),
-                                    spreadRadius: 1,
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 1),
+                                            .withOpacity(0.2)
+                                        : Colors.grey.withOpacity(0.05),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: Padding(
-                                padding: EdgeInsets.all(
-                                    crossAxisCount == 2 ? 12.0 : 8.0),
+                                padding: const EdgeInsets.all(10.0),
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Expanded(
-                                      flex: crossAxisCount == 2 ? 3 : 2,
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            crossAxisCount == 2 ? 10.0 : 8.0,
-                                          ),
-                                          child: Image.network(
-                                            data.imageUrl,
-                                            fit: BoxFit.contain,
-                                            // errorBuilder:
-                                            //     (context, error, stackTrace) =>
-                                            //         Container(
-                                            //   decoration: BoxDecoration(
-                                            //     color: Colors.grey.shade200,
-                                            //     borderRadius:
-                                            //         BorderRadius.circular(
-                                            //       crossAxisCount == 2
-                                            //           ? 10.0
-                                            //           : 8.0,
-                                            //     ),
-                                            //   ),
-                                            //   child: Icon(
-                                            //     Icons.person,
-                                            //     color: Colors.grey,
-                                            //     size: crossAxisCount == 2
-                                            //         ? 48
-                                            //         : 40,
-                                            //   ),
-                                            // ),
-                                            loadingBuilder: (context, child,
-                                                loadingProgress) {
-                                              if (loadingProgress == null) {
-                                                return child;
-                                              }
-                                              return Container(
-                                                alignment: Alignment.center,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth:
-                                                      crossAxisCount == 2
-                                                          ? 2.5
-                                                          : 2,
-                                                ),
-                                              );
-                                            },
-                                          ),
+                                      flex: 6, // Increased image space
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          data.imageUrl,
+                                          width: double.infinity,
+                                          fit: BoxFit.contain,
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            if (loadingProgress == null)
+                                              return child;
+                                            return const Center(
+                                              child: CircularProgressIndicator(
+                                                  strokeWidth: 2),
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
-                                        height: crossAxisCount == 2 ? 12 : 8),
+                                    const SizedBox(height: 8),
                                     Expanded(
-                                      flex: crossAxisCount == 2 ? 2 : 1,
-                                      child: SizedBox(
-                                        width: double.infinity,
+                                      flex: 2,
+                                      child: Center(
                                         child: Text(
                                           data.title,
-                                          maxLines: crossAxisCount == 2 ? 3 : 2,
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontWeight: FontWeight.w500,
-                                            fontSize: crossAxisCount == 2
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.018
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.014,
-                                            height: 1.2,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.016,
                                             color: isSelected
                                                 ? ColorResource.primaryColor
-                                                : Colors.black87,
+                                                : Colors.black,
                                           ),
                                         ),
                                       ),
@@ -1875,11 +1845,10 @@ Widget categoryListWithShimmer(
                               ),
                             ),
                             Positioned(
-                              top: crossAxisCount == 2 ? 12 : 8,
-                              right: crossAxisCount == 2 ? 12 : 8,
+                              top: 10,
+                              right: 10,
                               child: Container(
-                                padding:
-                                    EdgeInsets.all(crossAxisCount == 2 ? 4 : 2),
+                                padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
                                   color: isSelected
                                       ? ColorResource.primaryColor
@@ -1889,7 +1858,7 @@ Widget categoryListWithShimmer(
                                 ),
                                 child: Icon(
                                   Icons.arrow_forward_ios_rounded,
-                                  size: crossAxisCount == 2 ? 18 : 16,
+                                  size: 18,
                                   color: isSelected
                                       ? ColorResource.secondaryBlue
                                       : Colors.grey.shade600,

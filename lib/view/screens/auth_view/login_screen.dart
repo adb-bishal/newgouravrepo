@@ -155,7 +155,7 @@ class LoginScreen extends StatelessWidget {
                         child: Form(
                           key: controller.signInFormKey,
                           child: Obx(
-                            () => CommonTextField(
+                            () => CommonTextFieldLogin(
                               showEdit: false,
                               onTap: () async {
                                 // await controller

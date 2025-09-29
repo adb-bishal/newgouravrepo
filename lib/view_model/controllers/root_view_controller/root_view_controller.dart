@@ -34,6 +34,7 @@ import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_help
 import 'package:stockpathshala_beta/model/utils/app_constants.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
+import 'package:stockpathshala_beta/view/screens/home/home_screen.dart';
 import 'package:stockpathshala_beta/view/screens/root_view/quiz_view/quiz_list.dart';
 import 'package:stockpathshala_beta/view/widgets/trial_dialog_sheet.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
@@ -243,8 +244,7 @@ class RootViewController extends GetxController {
         Get.find<SocketService>().connect(
           userData: data,
         );
-
-      }else{
+      } else {
         print("socketServicedata user not login");
       }
     } catch (e) {
@@ -277,12 +277,11 @@ class RootViewController extends GetxController {
 
     if (!Get.find<AuthService>().isGuestUser.value) {
       // getLiveClassesData();
-      getProfile(true);
+      await Get.find<RootViewController>().getProfile(true);
 
       postUserActivity();
       getServiceData();
     }
-
 
     try {
       FirebaseMessaging.instance.getInitialMessage().then((value) {
@@ -385,81 +384,6 @@ class RootViewController extends GetxController {
     if (RootViewController.promptData.isEmpty &&
         RootViewController.bgData.isEmpty) {
       _initializePromptData();
-    }
-  }
-  void trailOnTap1(hasName, isFirst, [bool? isTrialSheet]) async {
-    isLoading.value = true;
-    try {
-      await authProvider.updateUserDataForAppTap(
-          signInBody: hasName ? {"name": emailController.text} : null,
-          onError: (message, errorMap) {
-            logPrint("error");
-            if (errorMap?.isEmpty ?? false) {
-              emailError.value = message ?? "";
-            }
-            if (errorMap?.isNotEmpty ?? false) {
-              errorMap?.forEach((key, value) {
-                if (key == "otp") {
-                  if (value.isNotEmpty) {
-                    emailError.value = value.first;
-                  }
-                }
-              });
-            }
-            isLoading.value = false;
-          },
-          onSuccess: (message, data) async {
-            if (data != null) {
-              isLoading.value = true;
-              // Get.toNamed(Routes.otpScreen, arguments: emailController.text);
-              // Get.find<AuthService>().isPro.value = true;
-              // Get.find<AuthService>().user.value.name = emailController.text;
-
-              Get.find<AuthService>().getCurrentUserData();
-              Get.find<ProfileController>().getCurrentUserData();
-
-              // Get.find<RootViewController>().getProfile();
-
-              if (isTrialSheet == true) {
-                Get.find<RootViewController>().joinOnTap(
-                    Get.find<RootViewController>().emailController.text);
-              }
-
-              Get.find<RootViewController>().getProfile();
-
-              // Get.back();
-
-              // if (isFirst) {
-              //   logPrint("clicked123");
-
-              //   // Access promptData from RootViewController
-              //   // var trialPromptData = promptData;
-              //   // logPrint("Trial Prompt Data in LoginController: $trialPromptData");
-              //   print("lkjfsdkjkljkljlkj ${LoginController.promptData}");
-
-              //   if (LoginController.promptData != null) {
-              //     await showSucessDialog(
-              //       // Get.find<RootViewController>().popUpModel.value?.trialPromptData ?? {},
-              //       LoginController.promptData,
-
-              //       // days,
-              //       // days == 1
-              //       //     ? "Trial Activated for $days Day!"
-              //       //     : "Trial Activated for $days Days!",
-              //       Get.find<AuthService>().user.value.name == null,
-              //       LoginController.bgData,
-              //     );
-              //   }
-              // } else {
-              //   emailController.text = "Enter your name";
-              //   Get.back();
-              // }
-            }
-            // isLoading.value = false;
-          });
-    } catch (e) {
-      logPrint("Login error: $e");
-      isLoading.value = false;
     }
   }
 
@@ -851,8 +775,7 @@ class RootViewController extends GetxController {
         ConfettiController(duration: const Duration(seconds: 5));
     // confettiController.play();
 
-    logPrint(
-        "-------Confetti mytrialPromptData is : " + trialPromptData.toString());
+    logPrint("-------Confetti mytrialPromptData is : $trialPromptData");
 
     final promptTitle =
         (trialPromptData['title'] ?? '').replaceAll(r'\n', '\n');
@@ -1231,7 +1154,7 @@ class RootViewController extends GetxController {
       onError: (e, m) {
         logPrint(" Failed to fetch popup data: $e");
       },
-      onSuccess: (message, json) {
+      onSuccess: (message, json) async {
         final PopUpModel popUpModel = PopUpModel.fromJson(json!);
         logPrint(" Days: ${popUpModel.days}");
 
@@ -1260,14 +1183,13 @@ class RootViewController extends GetxController {
                 true;
             liveController.isOnTapAllowd.value = false;
 
-            // Handle registration
-            liveController.onRegister(
+            await liveController.onRegister(
               '${data.id ?? 0}',
               index,
               isUpdateScreen: false,
             );
 
-            liveController.isDataLoading.value = false;
+            // liveController.isDataLoading.value = false;
           } else {
             showSucessDialog(
               popUpModel.trialPromptData,
@@ -1952,45 +1874,41 @@ class RootViewController extends GetxController {
   //   }
   // }
 
-  void trailOnTap(hasName, [shoDialog = true]) async {
+  void trailOnTap(bool hasName, [bool showDialog = true]) async {
     isLoading.value = true;
+
     try {
       await authProvider.updateUserDataForAppTap(
-          signInBody: hasName ? {"name": emailController.text} : null,
-          onError: (message, errorMap) {
-            if (errorMap?.isEmpty ?? false) {
-              emailError.value = message ?? "";
-            }
-            if (errorMap?.isNotEmpty ?? false) {
-              errorMap?.forEach((key, value) {
-                if (key == "otp") {
-                  if (value.isNotEmpty) {
-                    emailError.value = value.first;
-                  }
-                }
-              });
-            }
-            isLoading.value = false;
-          },
-          onSuccess: (message, data) async {
-            if (data != null) {
-              isLoading.value = false;
-              // Get.toNamed(Routes.otpScreen, arguments: emailController.text);
-              Get.back();
-              if (shoDialog) {
-                showSucessDialog(
-                    // days.value == 1
-                    //     ?
-                    promptData.value,
-                    // "Trial Activated for ${popUpModel.days} Day!"
-                    //     :
-                    // "Trial Activated for amit2 Day!",
-                    // "Trial Activated for ${popUpModel.days} Days!",
-                    hasName,
-                    bgData);
+        signInBody: hasName ? {"name": emailController.text.trim()} : null,
+        onError: (message, errorMap) {
+          if (errorMap?.isEmpty ?? false) {
+            emailError.value = message ?? "";
+          }
+          if (errorMap?.isNotEmpty ?? false) {
+            errorMap?.forEach((key, value) {
+              if (key == "otp" && value.isNotEmpty) {
+                emailError.value = value.first;
               }
-            }
-          });
+            });
+          }
+          isLoading.value = false;
+        },
+        onSuccess: (message, data) async {
+          isLoading.value = false;
+
+          Get.back();
+
+          await Get.find<RootViewController>().getProfile();
+
+          if (showDialog) {
+            showSucessDialog(
+              promptData.value,
+              hasName,
+              bgData,
+            );
+          }
+        },
+      );
     } catch (e) {
       logPrint("Login error: $e");
       isLoading.value = false;

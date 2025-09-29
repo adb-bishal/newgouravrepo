@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ import '../../../../mentroship/view/mentorship_detail_screen.dart';
 import '../../../../model/models/common_container_model/common_container_model.dart';
 import '../../../../model/services/auth_service.dart';
 import '../../../../model/services/player/file_video_widget.dart';
+import '../../../../model/services/player/file_video_widget_past.dart';
 import '../../../../model/utils/app_constants.dart';
 import '../../../../model/utils/color_resource.dart';
 import '../../../../model/utils/dimensions_resource.dart';
@@ -407,7 +409,11 @@ Widget _pastLiveClassesView(BuildContext context, int index,
         logPrint("trailStatus is : ${trialStatus}");
         AppConstants.instance.liveId.value = (data.id.toString());
         Get.toNamed(Routes.liveClassDetail(id: data.id.toString()),
-            arguments: [isPast, data.id.toString(), trialStatus]);
+                arguments: [isPast, data.id.toString(), trialStatus])
+            ?.then(((onValue) {
+          print("Returned from liveClassDetail, API called.");
+          pastClassesController.getLiveData(pageNo: 1);
+        }));
         if (onItemTap != null) {
           onItemTap(data);
         }
@@ -618,14 +624,40 @@ Widget _pastLiveClassesView(BuildContext context, int index,
                                     )
                                   : InkWell(
                                       onTap: () {
-                                        print(
-                                            'sdffsdfc ${data.fileUrl.toString()}');
-                                        Get.to(FileVideoWidget(
+                                        if (kDebugMode) {
+                                          print(
+                                              'fileUrl ${data.fileUrl.toString()}');
+                                        }
+                                        Get.to(FileVideoWidgetPast(
                                           url: data.fileUrl.toString(),
                                           isOrientation: false,
                                           orientation: false,
+                                          watchedTime: data.lastWatchedSecond,
                                           eventCallBack:
-                                              (progress, totalDuration) {},
+                                              (progress, totalDuration) {
+                                            print(
+                                                "progress: $progress / totalDuration: $totalDuration");
+
+                                            final lastWatched =
+                                                data.lastWatchedSecond ?? 0;
+                                            final combinedProgress =
+                                                progress + lastWatched;
+
+                                            if ((progress != 0 &&
+                                                    progress < totalDuration &&
+                                                    progress % 10 == 0) ||
+                                                progress == totalDuration) {
+                                              Future.sync(() {
+                                                pastClassesController
+                                                    .sendVideoTime(progress,
+                                                        totalDuration, data.id);
+                                              });
+                                            }
+                                          },
+                                          isExit: (bool p1) {
+                                            Get.find<PastClassesController>()
+                                                .getLiveData(pageNo: 1);
+                                          },
                                         ));
                                       },
                                       child: Container(

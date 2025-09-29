@@ -621,7 +621,9 @@ Widget liveClassesView(
       Get.toNamed(
         Routes.liveClassDetail(id: data.id.toString()),
         arguments: [isPast, data.id.toString()],
-      );
+      )?.then((onValue) {
+        print("Returned from liveClassDetail, API called.");
+      });
       if (onItemTap != null) {
         onItemTap(data);
       }

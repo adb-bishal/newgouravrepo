@@ -28,6 +28,7 @@ class CommonDatum {
   CommonDatum({
     this.id,
     this.categoryId,
+    this.lastWatchedSecond,
     this.levelId,
     this.languageId,
     this.language,
@@ -82,6 +83,7 @@ class CommonDatum {
 
   int? id;
   int? categoryId;
+  int? lastWatchedSecond;
   int? levelId;
   int? languageId;
   Language? language;
@@ -139,6 +141,7 @@ class CommonDatum {
       categoryId: json["category_id"],
       levelId: json["level_id"],
       languageId: json["language_id"],
+      lastWatchedSecond: json["last_watched_second"],
       language: json["language"] == null
           ? Language()
           : Language.fromJson(json["language"]),
@@ -224,6 +227,7 @@ class CommonDatum {
     "level_id": levelId,
     "language_id": languageId,
     "language": language?.toJson(),
+    "last_watched_second": lastWatchedSecond,
     "teachers": teacher?.toJson(),
     "duration": duration,
     "provider_id": providerId,

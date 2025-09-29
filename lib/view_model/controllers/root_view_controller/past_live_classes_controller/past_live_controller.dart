@@ -1,6 +1,8 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:easy_debounce/easy_debounce.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -13,6 +15,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/live_classes_view/liv
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
 import '../../../../model/models/common_container_model/common_container_model.dart';
 import '../../../../model/models/live_class_model/live_class_model.dart';
+import '../../../../model/network_calls/api_helper/provider_helper/account_provider.dart';
 import '../../../../model/network_calls/api_helper/provider_helper/live_provider.dart';
 import '../../../../model/network_calls/dio_client/get_it_instance.dart';
 import '../../../../model/services/pagination.dart';
@@ -38,6 +41,7 @@ class PastClassesController extends GetxController {
   RxBool isDataLoading = false.obs;
   RxBool isClearLoading = false.obs;
   RxBool isBatchesLoading = false.obs;
+  AccountProvider accountProvider = getIt();
 
   // Filter state tracking
   RxString currentCategoryId = "".obs;
@@ -113,7 +117,27 @@ class PastClassesController extends GetxController {
     getLiveData(pageNo: 1);
     super.onInit();
   }
-
+  Future<void> sendVideoTime(int progress, int totalDuration, int? id) async {
+    try {
+      await accountProvider.sendVideoTimer({
+        "live_class_id": id,
+        // "user_id": authService?.user.value.id,
+        "last_watched_second": progress,
+        "device": Platform.isIOS ? "ios" : "android"
+      }, onError: ((onError, map) {
+        toastShow(message: onError);
+        if (kDebugMode) {
+          print("onSuccess $onError");
+        }
+      }), onSuccess: (onSuccess, map) {
+        if (kDebugMode) {
+          print("onSuccess $onSuccess");
+        }
+      });
+    } catch (e) {
+      print("error $e");
+    }
+  }
   Future<void> onRefresh() async {
     currentPage.value = 1;
     hasMore.value = true;

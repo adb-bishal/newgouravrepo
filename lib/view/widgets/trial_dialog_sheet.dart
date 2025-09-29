@@ -945,9 +945,6 @@ class CustomDialogState extends State<TrialDialogSheet>
                                     widget.emailController.text;
 
                                 controller.trailOnTap(true, false, true);
-                                // rootController.trailOnTap1(true, false, true);
-
-
                                 print(
                                     "Email text is: ${Get.find<RootViewController>().emailController.text}");
                               }

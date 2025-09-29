@@ -112,7 +112,7 @@ class MentorScreen extends GetView<MentorController> {
                                 ProgressDialog().showFlipDialogForMentor(
                                     isForPro: false,
                                     name: CommonEnum.mentorScreen.name,
-                                    categoryName:controller.mentorTitle,
+                                    categoryName: controller.mentorTitle,
                                     data: controller.categoryId);
                                 return;
                               }
@@ -281,6 +281,311 @@ class MentorScreen extends GetView<MentorController> {
   }
 }
 
+Widget tradingUpgradeDialog(
+  BuildContext context,
+  Data? mentorData,
+  MentorController? controller,
+  String? slotId,
+  String? time,
+  DateTime? date,
+) {
+  return Dialog(
+    backgroundColor: Colors.transparent,
+    insetPadding: const EdgeInsets.all(8),
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      padding: const EdgeInsets.all(0),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Hi ${Get.find<AuthService>().user.value.name.toString().capitalize!},",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    StringResource.reviewAndConfirmCounselling,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            _planTile(
+              context,
+              duration: '📂 Category',
+              price: "",
+              subText: controller?.mentorTitle ?? "NA",
+              isSelected: false,
+            ),
+            const SizedBox(height: 8),
+            _planTile(
+              context,
+              duration: '👨‍🏫 Mentor',
+              price: "",
+              subText: mentorData?.mentor.name ?? "To be assigned",
+              isSelected: false,
+            ),
+            const SizedBox(height: 8),
+            _planTile(
+              context,
+              duration: '🕒 Selected Slot',
+              price: "",
+              subText: time != null
+                  ? DateFormat('hh:mm a, dd MMM. yyyy')
+                      .format(DateTime.parse(time))
+                  : 'To be scheduled',
+              isSelected: false,
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: InkWell(
+                  onTap: () {
+                    print("slotId $slotId");
+                    Navigator.pop(context);
+                    initiateCounsellingPayment(
+                      onPaymentCallBack: (response, orderId) async {
+                        try {
+                          // controller.isBuyLoading.value = true;
+                          await controller.verifyPayment(
+                            response,
+                            orderId,
+                            (data) {
+                              print("Payment verification success: $data");
+                              showBookingConfirmedDialog(
+                                successMessage: data?.message,
+                                Get.context!,
+                                isSuccess: true,
+                                onConfirm: () => Navigator.pop(context),
+                              );
+                              controller.confettiController.play();
+                            },
+                            (error) {
+                              print("Payment verification failed: $error");
+                              showBookingConfirmedDialog(
+                                Get.context!,
+                                isSuccess: false,
+                                onConfirm: () => Navigator.pop(context),
+                              );
+                            },
+                          );
+                        } catch (e, stack) {
+                          print("🚨 Exception in payment verification: $e");
+                          print(stack);
+
+                          showDialog(
+                            context: Get.context!,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Payment Verification Error"),
+                              content: const Text(
+                                  "An unexpected error occurred while verifying payment. Please contact support."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text("OK"),
+                                ),
+                              ],
+                            ),
+                          );
+                        } finally {
+                          // controller.isBuyLoading.value = false;
+                        }
+                      },
+                      controller!,
+                      slotId: slotId.toString() ?? '',
+                      categoryId: controller.categoryId,
+                      amount: (int.parse(controller
+                                  .categoriesData.value.counsellingPrice) *
+                              100)
+                          .toString(),
+                      onSuccess: () {
+                        print(" Payment Successful");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Payment successful!")),
+                        );
+                      },
+                      onError: (message) {
+                        print(" Payment Failed: $message");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message)),
+                        );
+                      },
+                      onCancel: () {
+                        print(" Payment Cancelled");
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Payment cancelled")),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: ColorResource.lineGrey2Color.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  ColorResource.mateRedColor,
+                                  ColorResource.orangeColor,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0.0, vertical: 14),
+                            child: Text(
+                              // "Skip & Book Counselling / ₹${controller.categoriesData.value.counsellingPrice} only",
+                              mentorData?.counsellingPrice == null
+                                  ? StringResource.skipAndPay
+                                  : "🔒 ${StringResource.confirmAndPay} ₹${mentorData?.counsellingPrice}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: ColorResource.white,
+                                  fontSize: 14),
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Text(
+                StringResource.whatsappConfirmationNote,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 10, color: ColorResource.grey),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _featureTile(IconData icon, String title) {
+  return Container(
+    width: 100,
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: const Color(0xFFF4F4F7),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 24, color: ColorResource.primaryColor),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _planTile(
+  BuildContext context, {
+  required String duration,
+  required String price,
+  required String subText,
+  bool isSelected = false,
+  String? tag,
+  String? badge,
+}) {
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 3),
+    decoration: BoxDecoration(
+      color: isSelected ? const Color(0xFFEDEAFF) : const Color(0xFFF7F7F7),
+      borderRadius: BorderRadius.circular(12),
+      border: isSelected
+          ? Border.all(color: const Color(0xFF6B4EFF), width: 1.5)
+          : Border.all(color: Colors.grey.shade300),
+    ),
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(duration,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                const SizedBox(height: 4),
+                Text(subText,
+                    style:
+                        const TextStyle(fontSize: 12, color: Colors.black87)),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 4.0),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: Image.asset(
+                  ImageResource.instance.mentorCheckIcon,
+                  width: 24,
+                  height: 24,
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
+    ),
+  );
+}
+
 void showBeforeBookingConfirmationDialog(BuildContext context,
     {Data? mentorData,
     MentorController? controller,
@@ -288,11 +593,16 @@ void showBeforeBookingConfirmationDialog(BuildContext context,
     String? time,
     DateTime? date}) {
   showDialog(
-      context: context,
-      builder: (_) => WillPopScope(
-          child: customAlertDialog(
-              context, mentorData, controller, slotId, time, date),
-          onWillPop: () async => false));
+    context: context,
+    builder: (_) => tradingUpgradeDialog(
+        context, mentorData, controller, slotId, time, date),
+  );
+  // showDialog(
+  //     context: context,
+  //     builder: (_) => WillPopScope(
+  //         child: customAlertDialog(
+  //             context, mentorData, controller, slotId, time, date),
+  //         onWillPop: () async => false));
 }
 
 Widget customAlertDialog(
@@ -304,270 +614,189 @@ Widget customAlertDialog(
   DateTime? date,
 ) {
   return Dialog(
-    insetPadding: EdgeInsets.all(14),
-    backgroundColor: ColorResource.white,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    insetPadding: const EdgeInsets.all(8),
+    backgroundColor: Colors.transparent,
+    child: Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      color: ColorResource.white,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          // mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            /// Header Row
+            Row(
               children: [
-                SizedBox(
-                  width: 20,
-                ),
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                Expanded(
                   child: Text(
                     StringResource.reviewAndConfirmCounselling,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                )),
-                Icon(
-                  Icons.close,
-                  size: 20,
                 ),
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
+                )
               ],
             ),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: ColorResource.lineGrey2Color, width: 1),
+
+            const SizedBox(height: 12),
+
+            _infoCard(
+              title: "📂 Category",
+              value: controller?.mentorTitle ?? "Not available",
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            flex: 2,
-                            child: Text(
-                              "📂 Category:",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w600),
-                            )),
-                        Expanded(
-                            flex: 3,
-                            child: Text(
-                              controller?.mentorTitle ?? "NA",
-                              style: TextStyle(fontSize: 12),
-                            )),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            flex: 2,
-                            child: Text(
-                              "👨‍🏫 Mentor:",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w600),
-                            )),
-                        Expanded(
-                            flex: 3,
-                            child: Text(
-                              mentorData?.mentor.name ?? "To be assigned",
-                              style: TextStyle(fontSize: 12),
-                            )),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                            flex: 2,
-                            child: Text(
-                              "🕒 Selected Slot:",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w600),
-                            )),
-                        Expanded(
-                            flex: 3,
-                            child: Text(
-                              time != null
-                                  ? DateFormat('hh:mm a, dd MMM, yyyy')
-                                      .format(DateTime.parse(time))
-                                  : 'To be scheduled',
-                              style: TextStyle(fontSize: 12),
-                            )),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      print("slotId $slotId");
-                      Navigator.pop(context);
-                      initiateCounsellingPayment(
-                        onPaymentCallBack: (response, orderId) async {
-                          try {
-                            // controller.isBuyLoading.value = true;
-                            await controller.verifyPayment(
-                              response,
-                              orderId,
-                              (data) {
-                                print("Payment verification success: $data");
-                                showBookingConfirmedDialog(
-                                  successMessage: data?.message,
-                                  Get.context!,
-                                  isSuccess: true,
-                                  onConfirm: () => Navigator.pop(context),
-                                );
-                                controller.confettiController.play();
-                              },
-                              (error) {
-                                print("Payment verification failed: $error");
-                                showBookingConfirmedDialog(
-                                  Get.context!,
-                                  isSuccess: false,
-                                  onConfirm: () => Navigator.pop(context),
-                                );
-                              },
-                            );
-                          } catch (e, stack) {
-                            print("🚨 Exception in payment verification: $e");
-                            print(stack);
+            _infoCard(
+              title: "👨‍🏫 Mentor",
+              value: mentorData?.mentor.name ?? "To be assigned",
+            ),
+            _infoCard(
+              title: "🕒 Selected Slot",
+              value: time != null
+                  ? DateFormat('hh:mm a, dd MMM, yyyy')
+                      .format(DateTime.parse(time))
+                  : 'To be scheduled',
+            ),
 
-                            showDialog(
-                              context: Get.context!,
-                              builder: (context) => AlertDialog(
-                                title: const Text("Payment Verification Error"),
-                                content: const Text(
-                                    "An unexpected error occurred while verifying payment. Please contact support."),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text("OK"),
-                                  ),
-                                ],
-                              ),
-                            );
-                          } finally {
-                            // controller.isBuyLoading.value = false;
+            const SizedBox(height: 20),
 
-                          }
-                        },
-                        controller!,
-                        slotId: slotId.toString() ?? '',
-                        categoryId: controller.categoryId,
-                        amount: (int.parse(controller
-                                    .categoriesData.value.counsellingPrice) *
-                                100)
-                            .toString(),
-                        onSuccess: () {
-                          print(" Payment Successful");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Payment successful!")),
+            /// Confirm & Pay Button
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 48),
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: ColorResource.primaryDark,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+
+                initiateCounsellingPayment(
+                  onPaymentCallBack: (response, orderId) async {
+                    try {
+                      await controller!.verifyPayment(
+                        response,
+                        orderId,
+                        (data) {
+                          showBookingConfirmedDialog(
+                            successMessage: data?.message,
+                            Get.context!,
+                            isSuccess: true,
+                            onConfirm: () => Navigator.pop(context),
                           );
+                          controller.confettiController.play();
                         },
-                        onError: (message) {
-                          print(" Payment Failed: $message");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(message)),
-                          );
-                        },
-                        onCancel: () {
-                          print(" Payment Cancelled");
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Payment cancelled")),
+                        (error) {
+                          showBookingConfirmedDialog(
+                            Get.context!,
+                            isSuccess: false,
+                            onConfirm: () => Navigator.pop(context),
                           );
                         },
                       );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                ColorResource.lineGrey2Color.withOpacity(0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Container(
-                            constraints: BoxConstraints(
-                              minWidth: MediaQuery.of(context).size.width * 0.5,
+                    } catch (e, stack) {
+                      print("🚨 Exception: $e\n$stack");
+                      showDialog(
+                        context: Get.context!,
+                        builder: (_) => AlertDialog(
+                          title: Text("Payment Verification Error"),
+                          content: Text(
+                              "An unexpected error occurred. Please contact support."),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text("OK"),
                             ),
-                            decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    ColorResource.mateRedColor,
-                                    ColorResource.orangeColor,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(4)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 0.0, vertical: 8),
-                              child: Text(
-                                // "Skip & Book Counselling / ₹${controller.categoriesData.value.counsellingPrice} only",
-                                mentorData?.counsellingPrice == null
-                                    ? StringResource.skipAndPay
-                                    : "🔒 ${StringResource.confirmAndPay} ₹${mentorData?.counsellingPrice}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: ColorResource.white,
-                                    fontSize: 12),
-                                textAlign: TextAlign.center,
-                              ),
-                            )),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: Text(
-                      StringResource.whatsappConfirmationNote,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10, color: ColorResource.grey),
-                    ),
-                  ),
-                ],
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                  controller!,
+                  slotId: slotId ?? '',
+                  categoryId: controller!.categoryId,
+                  amount: (int.parse(controller
+                              .categoriesData.value.counsellingPrice) *
+                          100)
+                      .toString(),
+                  onSuccess: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Payment successful!")),
+                    );
+                  },
+                  onError: (message) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
+                    );
+                  },
+                  onCancel: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Payment cancelled")),
+                    );
+                  },
+                );
+              },
+              child: Text(
+                mentorData?.counsellingPrice == null
+                    ? StringResource.skipAndPay
+                    : "🔒 ${StringResource.confirmAndPay} ₹${mentorData?.counsellingPrice}",
+                style: TextStyle(
+                  color: ColorResource.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          )
-        ],
+
+            const SizedBox(height: 12),
+
+            Text(
+              StringResource.whatsappConfirmationNote,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 10, color: ColorResource.grey),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _infoCard({required String title, required String value}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 3.0),
+    child: SizedBox(
+      width: double.infinity,
+      child: Card(
+        elevation: 1.5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        color: ColorResource.white,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
+        ),
       ),
     ),
   );
@@ -1088,10 +1317,7 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
             GestureDetector(
               onTap: () {
                 if (_selectedSlot != null && _selectedDate != null) {
-                  if (Get
-                      .find<AuthService>()
-                      .isGuestUser
-                      .value) {
+                  if (Get.find<AuthService>().isGuestUser.value) {
                     ProgressDialog().showFlipDialog(
                       isForPro: false,
                       name: CommonEnum.mentorScreen.name,
@@ -1403,7 +1629,6 @@ Widget categoryList(MentorController controller, List<Mentors> mentors) {
                   GestureDetector(
                     onTap: () async {
                       if (Get.find<AuthService>().isGuestUser.value) {
-
                         ProgressDialog().showFlipDialogForMentor(
                             isForPro: false,
                             name: CommonEnum.mentorScreen.name,

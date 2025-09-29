@@ -13,6 +13,7 @@ import 'package:sms_autofill/sms_autofill.dart';
 import 'package:stockpathshala_beta/model/models/auth_models/login_page_data_model.dart';
 import 'package:stockpathshala_beta/model/utils/helper_util.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
+import 'package:stockpathshala_beta/view/screens/root_view/root_view.dart';
 import 'package:stockpathshala_beta/view_model/controllers/profile_controller/profile_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
 
@@ -173,76 +174,43 @@ class LoginController extends GetxController {
     }
   }
 
-  void trailOnTap(hasName, isFirst, [bool? isTrialSheet]) async {
+  void trailOnTap(bool hasName, bool isFirst, [bool? isTrialSheet]) async {
     isLoading.value = true;
     try {
       await authProvider.updateUserDataForAppTap(
-          signInBody: hasName ? {"name": emailController.text} : null,
-          onError: (message, errorMap) {
-            logPrint("error");
-            if (errorMap?.isEmpty ?? false) {
-              emailError.value = message ?? "";
+        signInBody: hasName ? {"name": emailController.text} : null,
+        onError: (message, errorMap) {
+          logPrint("error");
+          if (errorMap == null || errorMap.isEmpty) {
+            emailError.value = message ?? "";
+          } else if (errorMap.containsKey("otp") && errorMap["otp"].isNotEmpty) {
+            emailError.value = errorMap["otp"].first;
+          }
+          isLoading.value = false;
+        },
+        onSuccess: (message, data) async {
+          if (data == null) return;
+
+          try {
+            await Future.wait([
+              Get.find<AuthService>().getCurrentUserData(),
+              Get.find<ProfileController>().getCurrentUserData(),
+            ]);
+
+            if (isTrialSheet == true) {
+              Get.find<RootViewController>().joinOnTap(
+                Get.find<RootViewController>().emailController.text,
+              );
             }
-            if (errorMap?.isNotEmpty ?? false) {
-              errorMap?.forEach((key, value) {
-                if (key == "otp") {
-                  if (value.isNotEmpty) {
-                    emailError.value = value.first;
-                  }
-                }
-              });
-            }
+
+            await Future.delayed(const Duration(seconds: 1));
+            await Get.find<RootViewController>().getProfile();
+            Get.offAllNamed(Routes.rootView, arguments: true);
+          } finally {
             isLoading.value = false;
-          },
-          onSuccess: (message, data) async {
-            if (data != null) {
-              isLoading.value = true;
-              // Get.toNamed(Routes.otpScreen, arguments: emailController.text);
-              // Get.find<AuthService>().isPro.value = true;
-              // Get.find<AuthService>().user.value.name = emailController.text;
-
-              Get.find<AuthService>().getCurrentUserData();
-              Get.find<ProfileController>().getCurrentUserData();
-
-              // Get.find<RootViewController>().getProfile();
-
-              if (isTrialSheet == true) {
-                Get.find<RootViewController>().joinOnTap(
-                    Get.find<RootViewController>().emailController.text);
-              }
-
-             await  Get.find<RootViewController>().getProfile();
-
-              // Get.back();
-
-              // if (isFirst) {
-              //   logPrint("clicked123");
-
-              //   // Access promptData from RootViewController
-              //   // var trialPromptData = promptData;
-              //   // logPrint("Trial Prompt Data in LoginController: $trialPromptData");
-              //   print("lkjfsdkjkljkljlkj ${LoginController.promptData}");
-
-              //   if (LoginController.promptData != null) {
-              //     await showSucessDialog(
-              //       // Get.find<RootViewController>().popUpModel.value?.trialPromptData ?? {},
-              //       LoginController.promptData,
-
-              //       // days,
-              //       // days == 1
-              //       //     ? "Trial Activated for $days Day!"
-              //       //     : "Trial Activated for $days Days!",
-              //       Get.find<AuthService>().user.value.name == null,
-              //       LoginController.bgData,
-              //     );
-              //   }
-              // } else {
-              //   emailController.text = "Enter your name";
-              //   Get.back();
-              // }
-            }
-            // isLoading.value = false;
-          });
+          }
+        },
+      );
     } catch (e) {
       logPrint("Login error: $e");
       isLoading.value = false;

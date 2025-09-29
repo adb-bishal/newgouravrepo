@@ -271,7 +271,7 @@ class AuthService extends GetxService {
     }
   }
 
-  getCurrentUserData() async {
+  Future<void> getCurrentUserData() async {
     if (box.hasData(StringResource.instance.currentUser)) {
       try {
         isLoader.value = false;
