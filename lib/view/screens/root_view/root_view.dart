@@ -79,7 +79,7 @@ class MainRootView extends GetView<RootViewController> {
     // const HomeViewScreen(),
     const HomeScreen(),
     // const MentorScreen(),
-    const MentorshipScreen(),
+    MentorshipScreen(),
     const LiveClassesView(),
     const LiveBatches(),
     const SizedBox(),

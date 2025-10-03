@@ -1072,30 +1072,64 @@ class AppointmentBookingContentState extends State<AppointmentBookingContent> {
     return widget.data.slots.containsKey(formattedDate) &&
         widget.data.slots[formattedDate]!.isNotEmpty;
   }
-
   List<DateTime> getWeekDates() {
-    DateTime normalizedDate =
-        DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
-    print("normalizedDate $normalizedDate");
+    // Step 1: Normalize _selectedDate (remove time)
+    DateTime selected = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
 
-    DateTime lastDayOfMonth = DateTime(
-      normalizedDate.month == 12
-          ? normalizedDate.year + 1
-          : normalizedDate.year,
-      normalizedDate.month == 12 ? 1 : normalizedDate.month + 1,
-      0,
-    );
+    // Step 2: Normalize today
+    DateTime today = DateTime.now();
+    DateTime startDate = selected.isBefore(today)
+        ? DateTime(today.year, today.month, today.day)
+        : selected;
 
-    List<DateTime> dateList = [];
-    DateTime currentDate = normalizedDate;
+    // Step 3: Get the last date from the slots map
+    final slotDateKeys = widget.data.slots.keys;
+    if (slotDateKeys.isEmpty) return [];
 
-    while (!currentDate.isAfter(lastDayOfMonth)) {
-      dateList.add(currentDate);
-      currentDate = currentDate.add(const Duration(days: 1));
+    // Parse all slot keys to DateTime and find the max
+    final parsedDates = slotDateKeys
+        .map((dateStr) => DateTime.parse(dateStr))
+        .toList();
+
+    parsedDates.sort();
+    DateTime lastSlotDate = parsedDates.last;
+
+    // Step 4: Build list of all dates from startDate to lastSlotDate
+    List<DateTime> allDates = [];
+    DateTime current = startDate;
+
+    while (!current.isAfter(lastSlotDate)) {
+      allDates.add(current);
+      current = current.add(const Duration(days: 1));
     }
 
-    return dateList;
+    return allDates;
   }
+
+
+  // List<DateTime> getWeekDates() {
+  //   DateTime normalizedDate =
+  //       DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+  //   print("normalizedDate $normalizedDate");
+  //
+  //   DateTime lastDayOfMonth = DateTime(
+  //     normalizedDate.month == 12
+  //         ? normalizedDate.year + 1
+  //         : normalizedDate.year,
+  //     normalizedDate.month == 12 ? 1 : normalizedDate.month + 1,
+  //     0,
+  //   );
+  //
+  //   List<DateTime> dateList = [];
+  //   DateTime currentDate = normalizedDate;
+  //
+  //   while (!currentDate.isAfter(lastDayOfMonth)) {
+  //     dateList.add(currentDate);
+  //     currentDate = currentDate.add(const Duration(days: 1));
+  //   }
+  //
+  //   return dateList;
+  // }
 
   List<DateTime> getSlots() {
     return dates.map((dateStr) => DateTime.parse(dateStr)).toList();

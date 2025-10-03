@@ -118,7 +118,7 @@ class SubscriptionController extends GetxController {
 
     await getSubscriptionPlan();
 
-    if (isMentor == true) {
+    if (isMentor.value == true) {
       print("ghjf");
       //onAvailNow(mapData: Get.arguments);
     } else {

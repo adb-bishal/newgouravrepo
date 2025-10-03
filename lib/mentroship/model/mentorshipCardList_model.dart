@@ -57,6 +57,7 @@ class MentorCardData {
   String? image;
   int? index;
   int? isActive;
+  int? isPurchased;
   int? isTop;
   int? languageId;
   String? learnForDescription;
@@ -79,8 +80,11 @@ class MentorCardData {
   String? seatsLeftLable;
   int? info1;
   int? info2;
+  dynamic? price;
+  String? discountedPrice;
   int? info3;
   String? monthName;
+  dynamic? discountedPercentage;
   String? mentorshipStartDateFormatted;
   String? mentorshipEndDateFormatted;
   MentorCardData(
@@ -93,6 +97,7 @@ class MentorCardData {
       this.mentorshipStartDate,
       this.mentorshipVideo,
       this.categoryId,
+        this.isPurchased,
       this.isPlus,
       this.classForDescription,
       this.classForTitle,
@@ -107,6 +112,7 @@ class MentorCardData {
       this.discountText,
       this.discountTextTwo,
       this.faqTitle,
+      this.discountedPrice,
       this.image,
       this.index,
       this.isActive,
@@ -134,20 +140,25 @@ class MentorCardData {
       this.info2,
       this.info3,
       this.monthName,
+      this.discountedPercentage,
       this.mentorshipStartDateFormatted,
-      this.mentorshipEndDateFormatted
+      this.mentorshipEndDateFormatted, this.price
       });
   factory MentorCardData.fromJson(Map<String, dynamic> json) {
     return MentorCardData(
       id: json['id'],
       aboutTitle: json['about_title'],
       actualPrice: json['actual_price'],
+      price: json['price'],
+      discountedPrice: json['discounted_price'],
+      discountedPercentage: json['discount_percentage'],
       addCourseOffer: json['add_course_offer'],
       mentorshipDetailFirst: json['mentorship_detail_first'],
       mentorshipEndDate: json['mentorship_end_date'],
       mentorshipStartDate: json['mentorship_start_date'],
       mentorshipVideo: json['mentorship_video'],
       categoryId: json['category_id'],
+      isPurchased: json['is_purchased'],
       isPlus: json['is_plus'],
       classForDescription: json['class_for_description'],
       classForTitle: json['class_for_title'],

@@ -45,44 +45,43 @@ class CommonTextFieldLogin extends StatelessWidget {
 
   CommonTextFieldLogin(
       {Key? key,
-      this.validator,
-      this.isLabel = true,
-      this.keyboardType,
-      this.textInputAction,
-      this.textCapitalization,
-      this.onFieldSubmitted,
-      this.label,
-      this.isHint,
-      this.isTrailPopUp = false,
-      this.initialVal,
-      this.hintText,
-      this.isLogin = false,
-      this.isSpace = false,
-      this.errorText,
-      this.iconData,
-      this.padding,
-      this.obscureText,
-      this.prefixIcon,
-      this.inputFormatters,
-      this.controller,
-      this.focus,
-      this.containerColor,
-      this.cursorColor,
-      this.outLineColor,
-      this.hintColor,
-      this.errorColor,
-      this.maxLength,
-      this.passwordView,
-      this.onValueChanged,
-      this.style,
-      this.onTap,
-      this.hintStyle,
-      this.suffix,
-      this.showEdit = true,
-      this.readOnly = false})
+        this.validator,
+        this.isLabel = true,
+        this.keyboardType,
+        this.textInputAction,
+        this.textCapitalization,
+        this.onFieldSubmitted,
+        this.label,
+        this.isHint,
+        this.isTrailPopUp = false,
+        this.initialVal,
+        this.hintText,
+        this.isLogin = false,
+        this.isSpace = false,
+        this.errorText,
+        this.iconData,
+        this.padding,
+        this.obscureText,
+        this.prefixIcon,
+        this.inputFormatters,
+        this.controller,
+        this.focus,
+        this.containerColor,
+        this.cursorColor,
+        this.outLineColor,
+        this.hintColor,
+        this.errorColor,
+        this.maxLength,
+        this.passwordView,
+        this.onValueChanged,
+        this.style,
+        this.onTap,
+        this.hintStyle,
+        this.suffix,
+        this.showEdit = true,
+        this.readOnly = false})
       : super(key: key);
   RxBool passwordVisible = true.obs;
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -94,44 +93,51 @@ class CommonTextFieldLogin extends StatelessWidget {
               boxShadow: const [
                 BoxShadow(
                   color: ColorResource.grey_4,
+                  // blurRadius: 5.0,
+                  // offset: Offset(0, 0)
                 ),
                 BoxShadow(
                   color: ColorResource.white,
+                  // blurRadius: 5.0,
+                  // offset: Offset(-5, 0)
                 ),
                 BoxShadow(
                   color: ColorResource.white,
+                  // blurRadius: 5.0,
+                  // offset: Offset(0, -5)
                 )
               ],
               color: containerColor ?? ColorResource.white,
               borderRadius:
-                  BorderRadius.circular(DimensionResource.appDefaultRadius),
+              BorderRadius.circular(DimensionResource.appDefaultRadius),
               border: Border.all(
                   color: const Color.fromARGB(255, 0, 0, 0), width: 0.6)),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // +91 prefix section with proper alignment
-                if (isLogin)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Center(
-                      child: Text(
-                        "+91",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: DimensionResource.fontSizeSmall,
-                            color: Color.fromARGB(255, 35, 35, 35)),
-                      ),
-                    ),
-                  ),
-
-                // Text field section with proper alignment
-                Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              isLogin
+                  ? const Padding(
+                padding: EdgeInsets.only(left: 5, top: 10),
+                child: Text(
+                  "+91",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: DimensionResource.fontSizeSmall),
+                ),
+              )
+                  : const SizedBox(),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: SizedBox(
+                  width: isLogin
+                      ? 280
+                      : isTrailPopUp
+                      ? Get.width - 150
+                      : Get.width - 95,
                   child: TextFormField(
                     focusNode: focus,
                     obscureText:
-                        passwordView == true ? passwordVisible.value : false,
+                    passwordView == true ? passwordVisible.value : false,
                     controller: controller,
                     readOnly: readOnly,
                     inputFormatters: inputFormatters,
@@ -141,99 +147,104 @@ class CommonTextFieldLogin extends StatelessWidget {
                     onChanged: onValueChanged,
                     obscuringCharacter: '●',
                     onTap: onTap,
-                    cursorColor: const Color.fromARGB(255, 14, 17, 21),
+                    cursorColor: Color.fromARGB(255, 14, 17, 21),
                     cursorHeight: 20,
-                    textAlignVertical: TextAlignVertical.center,
                     style: isHint ?? true
                         ? StyleResource.instance.styleSemiBold(
-                            fontSize: DimensionResource.fontSizeSmall,
-                            color: const Color.fromARGB(255, 156, 156, 156))
+                        fontSize: DimensionResource.fontSizeSmall,
+                        color: Color.fromARGB(255, 156, 156, 156))
                         : const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: DimensionResource.fontSizeSmall,
-                            color: Color.fromARGB(255, 35, 35, 35)),
+                        fontWeight: FontWeight.w500,
+                        fontSize: DimensionResource.fontSizeSmall,
+                        color: Color.fromARGB(255, 35, 35, 35)),
                     onFieldSubmitted: onFieldSubmitted,
                     decoration: InputDecoration(
-                      prefixIcon: prefixIcon,
-                      labelText: isLabel ? hintText : null,
-                      counterText: "",
-                      hintText: isLabel ? null : hintText,
-                      hintStyle: StyleResource.instance.styleLight(
-                          fontSize: DimensionResource.fontSizeSmall,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
-                      labelStyle: isLabel
-                          ? StyleResource.instance.styleLight(
-                              fontSize: DimensionResource.fontSizeSmall,
-                              color: ColorResource.textColor_6)
-                          : null,
-                      border: InputBorder.none,
-                      suffixIcon: passwordView ?? false
-                          ? InkWell(
-                              onTap: () => passwordVisible.value =
-                                  !passwordVisible.value,
-                              child: Container(
-                                height: double.infinity,
-                                width: 55,
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  passwordVisible.value
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: ColorResource.primaryColor,
-                                  size: 25,
-                                ),
+                        prefixIcon: prefixIcon,
+                        labelText: isLabel ? hintText : null,
+                        counterText: "",
+                        hintText: isLabel ? null : hintText,
+                        hintStyle: StyleResource.instance.styleLight(
+                            fontSize: DimensionResource.fontSizeSmall,
+                            color: Color.fromARGB(255, 0, 0, 0)),
+                        labelStyle: isLabel
+                            ? StyleResource.instance.styleLight(
+                            fontSize: DimensionResource.fontSizeSmall,
+                            color: ColorResource.textColor_6)
+                            : null,
+                        border: InputBorder.none,
+                        suffixIcon: passwordView ?? false
+                            ? InkWell(
+                          onTap: () => passwordVisible.value =
+                          !passwordVisible.value,
+                          child: SizedBox(
+                            height: 55,
+                            width: 55,
+                            child: Center(
+                              child: Icon(
+                                passwordVisible.value
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: ColorResource.primaryColor,
+                                size: 25,
                               ),
-                            )
-                          : suffix ??
-                              ((!readOnly && showEdit)
-                                  ? Container(
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: Image.asset(
-                                        ImageResource.instance.editIcon,
-                                        color: ColorResource.primaryColor,
-                                        height: 16,
-                                        width: 16,
-                                      ),
-                                    )
-                                  : null),
-                      contentPadding: padding ??
-                          EdgeInsets.only(
-                            left: isLogin ? 0 : 16,
-                            right: 8,
-                            top: 16,
-                            bottom: (controller!.text.isEmpty)
-                                ? 16
-                                : controller!.text.length == 10
-                                    ? 16
-                                    : 1.3,
+                            ),
                           ),
-                      isDense: false,
-                      // alignLabelWithHint: true,
-                      counterStyle: const TextStyle(height: 0),
-                      errorStyle: const TextStyle(height: 0),
-                    ),
+                        )
+                            : suffix ??
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  top: 13, left: 0, bottom: 13),
+                              height: 16,
+                              width: 16,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 10),
+                              child: (!readOnly && showEdit)
+                                  ? Image.asset(
+                                ImageResource.instance.editIcon,
+                                color: ColorResource.primaryColor,
+                                height: 11,
+                              )
+                                  : const SizedBox(
+                                height: 0,
+                                width: 0,
+                              ),
+                            ),
+                        contentPadding: padding ??
+                            EdgeInsets.only(
+                              // bottom: 12,
+                              left: 6,
+                              top: prefixIcon != null ? 7 : 5.5,
+                              // right: 15,
+                            ),
+                        counterStyle: const TextStyle(
+                          height: 0,
+                        ),
+                        // errorText: "",
+                        errorStyle: const TextStyle(
+                          height: -10,
+                        )),
                     validator: validator,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         errorText == null || errorText == ""
             ? SizedBox(
-                height: isSpace ? 0 : DimensionResource.marginSizeLarge,
-              )
+          height: isSpace ? 0 : DimensionResource.marginSizeLarge,
+        )
             : Padding(
-                padding: const EdgeInsets.only(top: 4, bottom: 4),
-                child: Text(
-                  errorText?.capitalize ?? "",
-                  style: StyleResource.instance.styleRegular(
-                      color: ColorResource.errorColor,
-                      fontSize: DimensionResource.fontSizeExtraSmall),
-                  textAlign: TextAlign.start,
-                ),
-              ),
+          padding:
+          const EdgeInsets.only(left: 0, right: 0, top: 2, bottom: 3),
+          child: Text(
+            errorText?.capitalize ?? "",
+            style: StyleResource.instance.styleRegular(
+                color: ColorResource.errorColor,
+                fontSize: DimensionResource.fontSizeExtraSmall),
+            textAlign: TextAlign.start,
+          ),
+        ),
       ],
     );
   }
@@ -246,7 +257,6 @@ class NormalTextField extends StatelessWidget {
   final String? errorText;
   final List<TextInputFormatter>? inputFormatters;
   final TextEditingController? controller;
-
   const NormalTextField({
     Key? key,
     this.validator,
@@ -256,48 +266,43 @@ class NormalTextField extends StatelessWidget {
     this.inputFormatters,
     this.controller,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
+        SizedBox(
           height: 38,
-          alignment: Alignment.centerLeft,
           child: TextFormField(
             controller: controller,
             inputFormatters: inputFormatters,
             keyboardType: keyboardType,
             cursorColor: ColorResource.primaryColor,
-            textAlignVertical: TextAlignVertical.center,
             style: StyleResource.instance.styleRegular(),
             decoration: InputDecoration(
-              hintText: hintText,
-              counterText: "",
-              hintStyle: StyleResource.instance.styleRegular(),
-              border: InputBorder.none,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-              isDense: true,
-              errorText: "",
-              errorStyle: const TextStyle(height: 0),
-            ),
+                hintText: hintText,
+                counterText: "",
+                hintStyle: StyleResource.instance.styleRegular(),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.only(right: 15, bottom: 10),
+                errorText: "",
+                errorStyle: const TextStyle(
+                  height: 0,
+                )),
             validator: validator,
           ),
         ),
-        if (errorText != null && errorText!.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text(
-              errorText!,
-              style: StyleResource.instance.styleRegular(
-                color: ColorResource.errorColor,
-                fontSize: DimensionResource.fontSizeExtraSmall,
-              ),
-              textAlign: TextAlign.start,
-            ),
+        errorText == null || errorText == ""
+            ? const SizedBox()
+            : Padding(
+          padding:
+          const EdgeInsets.only(left: 0, right: 0, top: 5, bottom: 0),
+          child: Text(
+            errorText!,
+            style: StyleResource.instance.styleRegular(),
+            textAlign: TextAlign.start,
           ),
+        ),
       ],
     );
   }

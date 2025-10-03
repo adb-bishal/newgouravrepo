@@ -451,7 +451,7 @@ class MentorshipController extends GetxController
   final Dio _dio = Dio();
 
   TabController? tabController;
-  var listHeight = 1000.0.obs;
+  var listHeight = 2000.0.obs;
 
   // Tab-specific lists and pagination
   final RxList<MentorCardData> upcomingList = <MentorCardData>[].obs;
@@ -480,7 +480,7 @@ class MentorshipController extends GetxController
     tabController = TabController(length: 3, vsync: this);
     tabController?.addListener(() {
       onTabChanged();
-      updateListHeight();
+        updateListHeight();
     });
 
     getMentorshipData();
@@ -517,10 +517,15 @@ class MentorshipController extends GetxController
         : tabController?.index == 1
         ? upcomingList
         : pastList;
-    listHeight.value = (currentList.length * 510).toDouble();
+
+    double cardHeight = 600;
+    double bottomPadding = Get.height * 0.1;
+
+    listHeight.value = (currentList.length * cardHeight) + bottomPadding;
   }
 
   Future<void> onRefresh() async {
+
     print("🔄 Refreshing data for tab: ${tabController?.index}");
     if (tabController?.index == 0) {
       fetchData(type: 'running');
@@ -532,6 +537,7 @@ class MentorshipController extends GetxController
     getCardDetails();
     getMentorshipData();
     fetchMentorList();
+    updateListHeight();
   }
 
   Future<void> onClearFilter() async {
@@ -560,6 +566,7 @@ class MentorshipController extends GetxController
     if (tabController?.index == 0 && runningList.isEmpty) {
       print("Loading running mentorships...");
       fetchData(type: 'running');
+
     } else if (tabController?.index == 1 && upcomingList.isEmpty) {
       print("Loading upcoming mentorships...");
       fetchData(type: 'upcoming');

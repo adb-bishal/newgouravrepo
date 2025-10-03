@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -14,18 +15,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockpathshala_beta/main.dart';
 import 'package:stockpathshala_beta/mentroship/model/mentorship_details_model.dart';
 import 'package:stockpathshala_beta/mentroship/view/mentorship_detail_screen.dart';
+import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_helper/account_provider.dart';
 import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import '../../model/network_calls/dio_client/get_it_instance.dart';
 import '../../model/services/auth_service.dart';
 import '../../model/utils/app_constants.dart';
 import '../../model/utils/string_resource.dart';
 import 'package:get/get.dart';
 
 import '../../service/floor/clientService.dart';
+import '../../view/widgets/toast_view/showtoast.dart';
 import '../../view_model/controllers/root_view_controller/root_view_controller.dart';
 
 class MentorshipDetailController extends GetxController {
   var mentorshipDataUi = Rxn<MentorshipDetailUI>();
   var mentorshipDetailData = Rxn<MentorshipDetailData>();
+  AccountProvider accountProvider = getIt();
   var isLoading = true.obs;
   var errorMessage = ''.obs;
   var isShow = false.obs;
@@ -64,7 +69,7 @@ class MentorshipDetailController extends GetxController {
   String token = Get.find<AuthService>().getUserToken();
 
   Dio _dio = Dio();
-  var mentorshipId = Get.arguments?['id'] ?? '';
+  var mentorshipId = '';
 
   String baseUrl = '${AppConstants.instance.baseUrl}mentorship/';
 
@@ -75,11 +80,13 @@ class MentorshipDetailController extends GetxController {
     // Retrieve the passed 'id' argument
     // mentorshipId = Get.arguments['id'];
 
-    var mentorshipId = Get.arguments?['id'] ?? '';
+     mentorshipId = Get.arguments?['id'] ?? '';
     print("mentorShip $mentorshipId");
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
 
     fetchMentorshipData(mentorshipId);
+    DateTime dateTime = DateTime.now();
+    print("cdksjncdjs $dateTime");
     // fetchMentorshipDataUI();
   }
 
@@ -385,10 +392,35 @@ class MentorshipDetailController extends GetxController {
         print('Error: ${response.data['message']}');
       }
     } catch (e) {
-      print('Error: $e');
+      if (kDebugMode) {
+        print('Error: $e');
+      }
     }
   }
 
+  Future<void> sendVideoTime(int progress, int totalDuration, int? id) async {
+    try {
+      await accountProvider.sendVideoTimer({
+        "live_class_id": id,
+        // "user_id": authService?.user.value.id,
+        "last_watched_second": progress,
+        "device": Platform.isIOS ? "ios" : "android"
+      }, onError: ((onError, map) {
+        toastShow(message: onError);
+        if (kDebugMode) {
+          print("onError $onError");
+        }
+      }), onSuccess: (onSuccess, map) {
+        if (kDebugMode) {
+          print("onSuccess $onSuccess");
+        }
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print("error $e");
+      }
+    }
+  }
   // @override
   // void dispose() {
   //   // TODO: implement dispose

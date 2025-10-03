@@ -69,7 +69,7 @@ class AppConstants {
   String get skipApi => "live-class/not-reviewed-users";
   String get liveClassRating => "live-class-ratings";
   String get questionList => "question-lists";
-  String get mentorSlots => "counselling/mentor-slots";
+  String get mentorSlots => "counselling/mentor-app-slots";
   String get verifyPayment => "counselling-purchase-verify";
   String get socialLoginNumber => "firebase-login";
   String get socialLoginVerify => "firebase-login-verify";

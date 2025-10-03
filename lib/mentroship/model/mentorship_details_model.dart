@@ -19,6 +19,7 @@ class MentorshipDetailData {
   final String shortDescription;
   final int daysLeft;
   final String mentorshipStatus;
+  final bool isBooked;
   final List<Faq> faqs;
   final List<MentorshipClasses> mentorshipClasses;
   final Teacher teacher; // Add Teacher object
@@ -48,6 +49,7 @@ class MentorshipDetailData {
     required this.shortDescription,
     required this.daysLeft,
     required this.mentorshipStatus,
+    required this.isBooked,
     required this.faqs,
     required this.mentorshipClasses,
     required this.teacher,
@@ -108,6 +110,7 @@ class MentorshipDetailData {
         shortDescription: json["short_description"] ?? "",
         daysLeft: json["days_left"] ?? 0,
         mentorshipStatus: json["mentorship_status"] ?? 0,
+        isBooked: json["is_booked"] ?? false,
         faqs: faqs,
         mentorshipClasses: mentorshipClasses,
         teacher: teacher, // Add the teacher object here
@@ -385,6 +388,7 @@ class MentorshipClasses {
   final int id;
   final String title;
   final int temporaryClass;
+  final int? lastWatchedSecond;
   final String classStatus;
   // final String description;
   // final String slug;
@@ -435,6 +439,7 @@ class MentorshipClasses {
     // required this.preview,
     required this.recordingUrl,
     required this.isJoined,
+    this.lastWatchedSecond,
 
     // required this.pdfUrl,
     // required this.totalClasses,
@@ -452,6 +457,7 @@ class MentorshipClasses {
       id: json["id"] ?? 0,
       title: json["title"] ?? "",
       temporaryClass: json["is_temporary"] ?? 0,
+      lastWatchedSecond: json["last_watched_second"] ?? 0,
       classStatus: json["class_status"] ?? "",
       // description: json["description"] ?? "",
       // slug: json["slug"] ?? "",

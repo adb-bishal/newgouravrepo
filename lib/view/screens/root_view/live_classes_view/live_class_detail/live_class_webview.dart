@@ -1,6 +1,7 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -28,7 +29,7 @@ class _LiveClassLaunchState extends State<LiveClassLaunch> {
   @override
   void initState() {
     super.initState();
-
+    WakelockPlus.enable();
     checkPermissions();
 
     SystemChrome.setPreferredOrientations([
@@ -132,6 +133,7 @@ class _LiveClassLaunchState extends State<LiveClassLaunch> {
 
   @override
   void dispose() {
+    WakelockPlus.disable();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }
@@ -140,7 +142,7 @@ class _LiveClassLaunchState extends State<LiveClassLaunch> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: url.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : WebViewWidget(controller: webViewController),
     );
   }

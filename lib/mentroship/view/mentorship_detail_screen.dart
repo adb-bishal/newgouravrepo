@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_avif/flutter_avif.dart';
@@ -16,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stockpathshala_beta/mentroship/controller/mentorship_detail_controller.dart';
 import 'package:stockpathshala_beta/mentroship/widget/showUserNamePopUp.dart';
+import 'package:stockpathshala_beta/model/services/player/file_video_widget_past.dart';
 import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:stockpathshala_beta/model/utils/hex_color.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
@@ -202,7 +204,7 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
                                               itemCount:
-                                                  mentorship?.property.length ??
+                                                  mentorship.property.length ??
                                                       0,
                                               itemBuilder: (context, index) {
                                                 return Padding(
@@ -286,7 +288,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                                                     : mentorshipData
                                                                 ?.mentorshipStatus ==
                                                             "past"
-                                                        ? "${mentorshipData?.totalRatings?.toString() ?? ""}"
+                                                        ? mentorshipData
+                                                                ?.totalRatings
+                                                                ?.toString() ??
+                                                            ""
                                                         : "${mentorshipData?.seatsLeft?.toString() ?? ""} Seats Left",
                                                 style: TextStyle(
                                                   fontSize:
@@ -400,7 +405,8 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        child: _buildFooterSection(context, service.mentorshipDetailData.value?.id),
+                        child: _buildFooterSection(
+                            context, service.mentorshipDetailData.value?.id),
                       )
                     : Container(),
               ],
@@ -952,11 +958,35 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                         });
                       }
                     } else if (item.recordingUrl.isNotEmpty) {
-                      Get.to(FileVideoWidget(
+                      Get.to(FileVideoWidgetPast(
                         url: item.recordingUrl,
                         isOrientation: false,
                         orientation: false,
-                        eventCallBack: (progress, totalDuration) {},
+                        watchedTime: item.lastWatchedSecond,
+                        eventCallBack: (progress, totalDuration) {
+                          if (kDebugMode) {
+                            print("progress $progress $totalDuration");
+                          }
+                          if (progress != 0 &&
+                              progress < totalDuration &&
+                              progress % 10 == 0) {
+                            Future.sync(() {
+                              controller.sendVideoTime(
+                                  progress, totalDuration, item.id);
+                            });
+                          }
+
+                          if (progress == totalDuration) {
+                            Future.sync(() {
+                              controller.sendVideoTime(
+                                  progress, totalDuration, item.id);
+                            });
+                          }
+                        },
+                        isExit: (bool p1) {
+                          controller
+                              .fetchMentorshipData(controller.mentorshipId);
+                        },
                       ));
                     } else {
                       toastShow(
@@ -1063,46 +1093,48 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: isLargeScreen ? 70 : 50,
-                height: isLargeScreen ? 70 : 50,
-                decoration: isDurationInMinutes
-                    ? null
-                    : BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                child: Center(
-                  child: isDurationInMinutes
-                      ? Container(
-                          width: 20,
-                          height: 20,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Colors.green[500], // bg-green-500
-                            shape: BoxShape.circle, // rounded-full
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.check,
-                              size: 12,
-                              color: Colors.grey.shade50, // text-slate-50
+              mentorshipData!.isBooked == true
+                  ? Container(
+                      width: isLargeScreen ? 70 : 50,
+                      height: isLargeScreen ? 70 : 50,
+                      decoration: isDurationInMinutes
+                          ? null
+                          : BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                          ),
-                        )
-                      : Text(
-                          mentorshipData?.mentorshipStatus == "past"
-                              ? (index + 1).toString()
-                              : '${dateWord[0]}\n${dateWord[1]}',
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: isLargeScreen ? 19 : 15,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                ),
-              ),
+                      child: Center(
+                        child: isDurationInMinutes
+                            ? Container(
+                                width: 20,
+                                height: 20,
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.green[500], // bg-green-500
+                                  shape: BoxShape.circle, // rounded-full
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.check,
+                                    size: 12,
+                                    color: Colors.grey.shade50, // text-slate-50
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                mentorshipData?.mentorshipStatus == "past"
+                                    ? (index + 1).toString()
+                                    : '${dateWord[0]}\n${dateWord[1]}',
+                                maxLines: 2,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: isLargeScreen ? 19 : 15,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
 
               // if (classStatus == "running")
               // Check if classStatus is running
@@ -1193,25 +1225,26 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
                       ],
                     ),
                     const SizedBox(height: 3),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: isLargeScreen ? 19 : 12,
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          duration,
-                          style: TextStyle(fontSize: isLargeScreen ? 18 : 11),
-                        ),
-                      ],
-                    ),
+                    mentorshipData!.isBooked == true
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.access_time,
+                                size: isLargeScreen ? 19 : 12,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                duration,
+                                style: TextStyle(
+                                    fontSize: isLargeScreen ? 18 : 11),
+                              ),
+                            ],
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
-
-              // Empty container when the live class is not running
 
               mentorshipData?.isPurchased == 0 ||
                       join == true ||
@@ -2241,7 +2274,10 @@ class _MentorshipDetailScreenState extends State<MentorshipDetailScreen> {
           ElevatedButton(
             onPressed: () {
               if (Get.find<AuthService>().isGuestUser.value) {
-                ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorshipDetailScreen.name,data:id);
+                ProgressDialog().showFlipDialog(
+                    isForPro: false,
+                    name: CommonEnum.mentorshipDetailScreen.name,
+                    data: id);
                 return;
               }
 
@@ -2407,7 +2443,10 @@ void showBuyMentorshipPopup({
               GestureDetector(
                 onTap: () {
                   if (Get.find<AuthService>().isGuestUser.value) {
-                    ProgressDialog().showFlipDialog(isForPro: false,name:CommonEnum.mentorshipDetailScreen.name,data:id);
+                    ProgressDialog().showFlipDialog(
+                        isForPro: false,
+                        name: CommonEnum.mentorshipDetailScreen.name,
+                        data: id);
                     return;
                   }
                   Get.toNamed(Routes.subscriptionView, arguments: {
