@@ -1810,10 +1810,10 @@ class _CustomRadioDropdown extends State<CustomRadioDropdown> {
                                 selectedData = val;
                               }
                               widget.selectedList(val);
-                              setState(() {});
+                              setState(() {}); 
                             },
 
-
+//ss//
 
                             //aa//
                             itemSelected: selectedData?.id == null
