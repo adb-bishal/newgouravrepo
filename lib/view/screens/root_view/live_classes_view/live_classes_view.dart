@@ -142,7 +142,7 @@ class _LiveClassesViewState extends State<LiveClassesView>
                           ? const CircularProgressIndicator()
                           : LiveFilterScreen(
                               type: 'live webinar',
-                            
+                          
                               onClear: (val) {
                                 controller.selectedRating.value = val['rating'];
                                 controller.listOFSelectedDuration.clear();
@@ -1812,6 +1812,10 @@ class _CustomRadioDropdown extends State<CustomRadioDropdown> {
                               widget.selectedList(val);
                               setState(() {});
                             },
+
+
+
+                            //aa//
                             itemSelected: selectedData?.id == null
                                 ? false
                                 : selectedData!.id ==
