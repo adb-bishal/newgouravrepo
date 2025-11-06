@@ -121,6 +121,7 @@ class HomeScreen extends GetView<HomeNewController> {
                                           'Choose Your Category',
                                           style: TextStyle(
                                             fontSize: 14,
+                                            
                                             fontWeight: FontWeight.w600,
                                             // Optional: make text take no space when hidden
                                             color:

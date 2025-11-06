@@ -142,6 +142,7 @@ class _LiveClassesViewState extends State<LiveClassesView>
                           ? const CircularProgressIndicator()
                           : LiveFilterScreen(
                               type: 'live webinar',
+                            
                               onClear: (val) {
                                 controller.selectedRating.value = val['rating'];
                                 controller.listOFSelectedDuration.clear();
@@ -247,10 +248,26 @@ class _LiveClassesViewState extends State<LiveClassesView>
           const SizedBox(
             height: DimensionResource.marginSizeSmall,
           ),
+//         Text(
+//   "View upcoming live webinars.",
+//   style: TextStyle(
+//     color: Colors.amber,
+//     fontFamily: 'DMSans',
+//     fontSize: 22,
+//     fontWeight: FontWeight.w800,
+//   ),
+// )
+// ,
+
+
           Text(
-            "View upcoming live webinars.".capitalize ?? "",
-            style: StyleResource.instance.styleSemiBold(),
+            "Hello StockPathshala!",
+            style: TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 14,
+                fontWeight: FontWeight.w500),
           ),
+
           const SizedBox(
             height: DimensionResource.marginSizeSmall,
           ),
@@ -838,7 +855,8 @@ Widget liveClassesView(
                                               .isOnTapAllowd.value
                                           ? () async {
                                               print("getPopUpData");
-                                              await Get.find<RootViewController>()
+                                              await Get.find<
+                                                      RootViewController>()
                                                   .getPopUpData(data, index);
                                             }
                                           : () {},
@@ -1100,105 +1118,111 @@ Widget liveClassesView(
                                         ]),
                                   ),
                                 ),
-                                teacher != 'null' ?
-                                  Container(
-                                    height: 115.0,
-                                    width: 115.0,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.white),
-                                      // image: DecorationImage(
-                                      //   image: NetworkImage(
-                                      //     '',
-                                      //   ),
-                                      //   fit: BoxFit.contain,
-                                      // ),
-                                      // image: DecorationImage(
-                                      //   image: NetworkImage(
-                                      //     '',
-                                      //   ),
-                                      //   fit: BoxFit.contain,
-                                      // ),
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.transparent,
-                                            hexToColor(ui.certificationBgColor),
-                                            hexToColor(ui.certificationBgColor),
-                                          ],
-                                          stops: [
-                                            0.0,
-                                            0.7,
-                                            0.3,
-                                            1.0
-                                          ]),
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 5),
-                                      alignment: Alignment.bottomCenter,
-                                      child: Text(teacher,
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.bold,
-                                            color: hexToColor(
-                                                ui.certificationTextColor),
-                                          )),
-                                    ),
-                                  ):
-                                Container(
-                                  height: 115.0,
-                                  width: 115.0,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white),
-                                    // image: DecorationImage(
-                                    //   image: NetworkImage(
-                                    //     '',
-                                    //   ),
-                                    //   fit: BoxFit.contain,
-                                    // ),
-                                    // image: DecorationImage(
-                                    //   image: NetworkImage(
-                                    //     '',
-                                    //   ),
-                                    //   fit: BoxFit.contain,
-                                    // ),
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.transparent,
-                                          hexToColor(ui.certificationBgColor),
-                                          hexToColor(ui.certificationBgColor),
-                                        ],
-                                        stops: [
-                                          0.0,
-                                          0.7,
-                                          0.3,
-                                          1.0
-                                        ]),
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 5),
-                                    alignment: Alignment.bottomCenter,
-                                    child: Text('PnL \nVerified',
-                                        textAlign: TextAlign.center,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          fontSize: 9,
-                                          fontWeight: FontWeight.bold,
-                                          color: hexToColor(
-                                              ui.certificationTextColor),
-                                        )),
-                                  ),
-                                ),
+                                teacher != 'null'
+                                    ? Container(
+                                        height: 115.0,
+                                        width: 115.0,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.white),
+                                          // image: DecorationImage(
+                                          //   image: NetworkImage(
+                                          //     '',
+                                          //   ),
+                                          //   fit: BoxFit.contain,
+                                          // ),
+                                          // image: DecorationImage(
+                                          //   image: NetworkImage(
+                                          //     '',
+                                          //   ),
+                                          //   fit: BoxFit.contain,
+                                          // ),
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.transparent,
+                                                hexToColor(
+                                                    ui.certificationBgColor),
+                                                hexToColor(
+                                                    ui.certificationBgColor),
+                                              ],
+                                              stops: [
+                                                0.0,
+                                                0.7,
+                                                0.3,
+                                                1.0
+                                              ]),
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 5),
+                                          alignment: Alignment.bottomCenter,
+                                          child: Text(teacher,
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                                color: hexToColor(
+                                                    ui.certificationTextColor),
+                                              )),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: 115.0,
+                                        width: 115.0,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.white),
+                                          // image: DecorationImage(
+                                          //   image: NetworkImage(
+                                          //     '',
+                                          //   ),
+                                          //   fit: BoxFit.contain,
+                                          // ),
+                                          // image: DecorationImage(
+                                          //   image: NetworkImage(
+                                          //     '',
+                                          //   ),
+                                          //   fit: BoxFit.contain,
+                                          // ),
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.transparent,
+                                                Colors.transparent,
+                                                hexToColor(
+                                                    ui.certificationBgColor),
+                                                hexToColor(
+                                                    ui.certificationBgColor),
+                                              ],
+                                              stops: [
+                                                0.0,
+                                                0.7,
+                                                0.3,
+                                                1.0
+                                              ]),
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 5),
+                                          alignment: Alignment.bottomCenter,
+                                          child: Text('PnL \nVerified',
+                                              textAlign: TextAlign.center,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.bold,
+                                                color: hexToColor(
+                                                    ui.certificationTextColor),
+                                              )),
+                                        ),
+                                      ),
                               ],
                             ),
                           ))
@@ -1955,7 +1979,9 @@ class _CustomLabeledDropDownState extends State<CustomLabeledDropDown> {
                       );
                     },
                   ),
-                  const SizedBox(height: 8,)
+                  const SizedBox(
+                    height: 8,
+                  )
                 ],
               ),
             ),
