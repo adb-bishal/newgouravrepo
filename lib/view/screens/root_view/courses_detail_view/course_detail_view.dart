@@ -13,7 +13,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/live_classes_view/fil
 import 'package:stockpathshala_beta/view/screens/root_view/text_course_detail_view/text_course_detail_view.dart';
 import 'package:stockpathshala_beta/view/widgets/no_data_found/no_data_found.dart';
 import 'package:stockpathshala_beta/view/widgets/view_helpers/small_button.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../model/models/wishlist_data_model/wishlist_response_model.dart';
 import '../../../../model/utils/dimensions_resource.dart';

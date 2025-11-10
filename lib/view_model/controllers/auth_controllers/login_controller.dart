@@ -34,7 +34,7 @@ import '../../../view/widgets/log_print/log_print_condition.dart';
 import '../../../view/widgets/popup_view/my_dialog.dart';
 import '../../../view/widgets/text_field_view/common_textfield.dart';
 import '../../../view/widgets/toast_view/showtoast.dart';
-import '../../routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 
 class LoginController extends GetxController {
   final GlobalKey<FormState> signInFormKey = GlobalKey<FormState>();

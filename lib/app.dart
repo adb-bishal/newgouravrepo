@@ -10,7 +10,7 @@ import 'model/utils/color_resource.dart';
 import 'model/utils/font_resource.dart';
 import 'model/utils/string_resource.dart';
 import 'view/widgets/error_show/error_show.dart';
-import 'view_model/routes/app_pages.dart';
+import 'enum/routing/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -80,6 +80,7 @@ class MyAppSP extends StatelessWidget {
     );
   }
 }
+
 
 Widget responsiveScreen(context, widget) {
   return ResponsiveWrapper.builder(

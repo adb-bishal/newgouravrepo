@@ -13,7 +13,7 @@ import '../../../model/services/auth_service.dart';
 import '../../../model/utils/string_resource.dart';
 import '../../../view/widgets/log_print/log_print_condition.dart';
 import '../../../view/widgets/toast_view/showtoast.dart';
-import '../../routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 
 enum ScreenViewType { login, signUp }
 

@@ -9,7 +9,7 @@ import 'package:stockpathshala_beta/view_model/controllers/batch_controller/live
 import '../../../../model/models/batch_models/all_batch_model.dart';
 import '../../../../model/utils/color_resource.dart';
 import '../../../../model/utils/dimensions_resource.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/no_data_found/no_data_found.dart';
 import '../../../widgets/search_widget/search_container.dart';
 import 'widgets/batch_widgets.dart';

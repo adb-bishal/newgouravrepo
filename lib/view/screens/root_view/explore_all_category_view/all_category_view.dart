@@ -13,7 +13,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import '../../../widgets/image_provider/image_provider.dart';
 import 'package:stockpathshala_beta/view/widgets/no_data_found/no_data_found.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/all_category_controller/all_category_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../model/utils/color_resource.dart';
 import '../../../../model/utils/style_resource.dart';

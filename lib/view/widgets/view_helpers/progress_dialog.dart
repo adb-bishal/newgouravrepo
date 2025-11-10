@@ -14,7 +14,7 @@ import '../../../model/utils/dimensions_resource.dart';
 import '../../../model/utils/image_resource.dart';
 import '../../../model/utils/string_resource.dart';
 import '../../../model/utils/style_resource.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../button_view/common_button.dart';
 import '../popup_view/my_dialog.dart';
 

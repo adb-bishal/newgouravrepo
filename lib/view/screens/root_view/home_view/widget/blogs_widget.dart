@@ -12,7 +12,7 @@ import '../../../../../model/utils/dimensions_resource.dart';
 import '../../../../../model/utils/style_resource.dart';
 import '../../../../../view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
 import '../../../../../view_model/controllers/root_view_controller/root_view_controller.dart';
-import '../../../../../view_model/routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 import '../../../../widgets/image_provider/image_provider.dart';
 import '../home_view_screen.dart';
 

@@ -16,7 +16,7 @@ import '../../../../model/services/player/video_player_widget.dart';
 import '../../../../model/utils/image_resource.dart';
 import '../../../../service/page_manager.dart';
 import '../../../../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/circular_indicator/circular_indicator_widget.dart';
 import '../../base_view/video_base_view.dart';
 import '../../subscription_view/example_blog.dart';

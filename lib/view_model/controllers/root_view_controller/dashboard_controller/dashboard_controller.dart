@@ -11,7 +11,7 @@ import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 import 'package:stockpathshala_beta/view/widgets/view_helpers/progress_dialog.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../model/models/dashboard/user_history_model.dart';
 import '../../../../view/widgets/alert_dialog_popup.dart';

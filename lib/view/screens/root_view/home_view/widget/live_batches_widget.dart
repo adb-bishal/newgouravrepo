@@ -9,7 +9,7 @@ import '../../../../../model/utils/dimensions_resource.dart';
 import '../../../../../model/utils/string_resource.dart';
 import '../../../../../view_model/controllers/batch_controller/live_batch_controller.dart';
 import '../../../../../view_model/controllers/root_view_controller/root_view_controller.dart';
-import '../../../../../view_model/routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 
 class LiveBatchesWidget extends StatelessWidget {
   final HomeDataModelDatum homeDataModelDatum;

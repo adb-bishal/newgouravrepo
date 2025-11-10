@@ -24,7 +24,7 @@ import '../../../../view_model/controllers/root_view_controller/live_classes_con
 import '../../../../view_model/controllers/root_view_controller/past_live_classes_controller/past_live_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/root_view_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/video_course_detail_controller/video_course_detail_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/circular_indicator/circular_indicator_widget.dart';
 import '../../../widgets/image_provider/image_provider.dart';
 import '../../../widgets/no_data_found/no_data_found.dart';
@@ -251,7 +251,7 @@ class _PastClassesViewState extends State<PastClassesView>
           height: 500,
           child: NoDataFound(
             showText: true,
-            text: "Be a Pro to Watch Class Recordings",
+            text: "Be a Pro to Watch Class Recordinngs",
           ),
         );
       }

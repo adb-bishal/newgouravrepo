@@ -21,7 +21,7 @@ import '../../../../model/utils/color_resource.dart';
 import '../../../../model/utils/dimensions_resource.dart';
 import '../../../../model/utils/image_resource.dart';
 import '../../../../model/utils/string_resource.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/image_provider/image_provider.dart';
 import '../../../widgets/view_helpers/progress_dialog.dart';
 import '../home_view/widget/scalps_widget.dart';

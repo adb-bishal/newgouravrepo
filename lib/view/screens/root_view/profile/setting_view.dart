@@ -9,7 +9,7 @@ import '../../../../model/utils/image_resource.dart';
 import '../../../../model/utils/string_resource.dart';
 import '../../../../model/utils/style_resource.dart';
 import '../../../../view_model/controllers/profile_controller/profile_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/view_helpers/progress_dialog.dart';
 import '../../base_view/base_view_screen.dart';
 
@@ -20,7 +20,9 @@ class SettingView extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+    
         leading: InkWell(
           onTap: Get.back,
           child:  Icon(

@@ -16,7 +16,7 @@ import 'package:stockpathshala_beta/service/utils/object_extension.dart';
 import 'package:stockpathshala_beta/view/widgets/button_view/common_button.dart';
 import 'package:stockpathshala_beta/view/widgets/circular_indicator/circular_indicator_widget.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../../model/network_calls/api_helper/provider_helper/live_provider.dart';
 import '../../../../model/services/auth_service.dart';
 import '../../../../model/services/pagination.dart';
@@ -63,7 +63,7 @@ class LiveClassesController extends GetxController {
   RxInt countValue = 0.obs;
   late TabController tabController;
   RxList<Tab> tabs = <Tab>[
-    const Tab(text: 'LIVE Webinars'),
+    const Tab(text: 'LIVE Webinars',),
     const Tab(text: 'Recordings'),
   ].obs;
   Rx<TextEditingController> searchController = TextEditingController().obs;
@@ -247,6 +247,7 @@ class LiveClassesController extends GetxController {
         onSuccess: (message, json) {
           try {
             hasMore.value = true;
+            
             liveData.value = LiveClassModel.fromJson(json!);
             serverTime.value = liveData.value.serverTime!;
 

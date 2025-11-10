@@ -260,6 +260,7 @@ class StringResource {
   static const String gtUser = 'Guest User';
   static const String freshUser = 'Fresh User';
   static const String trialUser = 'Offers';
+  
   static const String trialExpiredUser = 'Offers';
   static const String batchSub2 = 'Pro User';
   static const String proExpiredUser = 'Offers';

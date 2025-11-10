@@ -18,7 +18,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/live_classes_view/liv
 import 'package:stockpathshala_beta/view/screens/root_view/video_course_detail_view/video_course_detail_view.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:stockpathshala_beta/view_model/controllers/profile_controller/profile_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../model/utils/color_resource.dart';
 import '../../../model/utils/dimensions_resource.dart';
 import '../../../model/utils/image_resource.dart';
@@ -366,6 +366,8 @@ class MainRootView extends GetView<RootViewController> {
                                                     if (index != 2)
                                                       Container(
                                                         decoration: BoxDecoration(
+
+                                                        
                                                           shape: BoxShape.circle,
                                                           boxShadow: controller.bottomIcon[index]
                                                               .title ==
@@ -421,7 +423,8 @@ class MainRootView extends GetView<RootViewController> {
                                                             .fontSizeExtraSmall -
                                                             1,
                                                       ),
-                                                    )
+                                                    ),
+
                                                   ],
                                                 ),
                                               ),
@@ -439,7 +442,7 @@ class MainRootView extends GetView<RootViewController> {
                   if (!isShowFloatingButton)
                     InkWell(
                       onTap: () {
-                        controller.selectedTab.value = 2;
+                        controller.selectedTab.value = 2;                                                        
                       },
                       child: Stack(
                         alignment: Alignment.center,

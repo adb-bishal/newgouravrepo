@@ -11,6 +11,8 @@ class CommonCircularIndicator extends StatelessWidget {
       child: CircularProgressIndicator(
         color: color ?? ColorResource.primaryColor,
         strokeWidth: 2,
+        
+        backgroundColor: Colors.white,
       ),
     );
   }

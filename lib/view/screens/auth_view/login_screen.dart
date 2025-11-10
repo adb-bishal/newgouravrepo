@@ -16,7 +16,7 @@ import '../../../model/utils/dimensions_resource.dart';
 import '../../../model/utils/string_resource.dart';
 import '../../../model/utils/style_resource.dart';
 import '../../../view_model/controllers/auth_controllers/login_controller.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../../widgets/button_view/common_button.dart';
 import '../../widgets/text_field_view/common_textfield.dart';
 import '../../widgets/text_field_view/common_textfield_login.dart';
@@ -355,9 +355,9 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Text(
                     "By sign in/sign up, you accept the",
-                    style: StyleResource.instance.styleLight(
-                        color: ColorResource.textColor_6,
-                        fontSize: DimensionResource.fontSizeDefault - 1),
+                    style: TextStyle(color: Colors.black,fontFamily: 'DMSans',fontSize: 13,fontWeight: FontWeight.w600,),
+                      
+                    
                   ),
                   GestureDetector(
                       onTap: () {
@@ -370,6 +370,7 @@ class LoginScreen extends StatelessWidget {
                         " Privacy Policy ",
                         style: StyleResource.instance.styleSemiBold(
                             color: ColorResource.primaryColor,
+                            
                             fontSize: DimensionResource.fontSizeDefault - 1),
                       )),
                   Text(

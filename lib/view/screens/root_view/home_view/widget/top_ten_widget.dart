@@ -18,7 +18,7 @@ import '../../../../../model/utils/app_constants.dart';
 import '../../../../../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
 import '../../../../../view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
 import '../../../../../view_model/controllers/root_view_controller/root_view_controller.dart';
-import '../../../../../view_model/routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 import '../../../../widgets/view_helpers/small_button.dart';
 import '../home_view_screen.dart';
 

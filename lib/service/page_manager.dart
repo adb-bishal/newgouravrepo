@@ -9,7 +9,7 @@ import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 
 import '../model/network_calls/dio_client/get_it_instance.dart';
 import '../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
-import '../view_model/routes/app_pages.dart';
+import '../enum/routing/routes/app_pages.dart';
 import 'audio_handler.dart';
 
 enum ButtonState {

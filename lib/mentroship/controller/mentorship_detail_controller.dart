@@ -16,7 +16,7 @@ import 'package:stockpathshala_beta/main.dart';
 import 'package:stockpathshala_beta/mentroship/model/mentorship_details_model.dart';
 import 'package:stockpathshala_beta/mentroship/view/mentorship_detail_screen.dart';
 import 'package:stockpathshala_beta/model/network_calls/api_helper/provider_helper/account_provider.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../model/network_calls/dio_client/get_it_instance.dart';
 import '../../model/services/auth_service.dart';
 import '../../model/utils/app_constants.dart';

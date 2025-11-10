@@ -12,7 +12,7 @@ import '../../../../view/screens/root_view/home_view/widget/blogs_widget.dart';
 import '../../../../view/screens/root_view/home_view/widget/text_course_widget.dart';
 import '../../../../view/screens/root_view/home_view/widget/video_course_widget.dart';
 import '../../../../view/screens/root_view/home_view/widget/videos_widget.dart';
-import '../../../routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../course_detail_controller/course_detail_controller.dart';
 
 class CategoryDetailController extends GetxController {

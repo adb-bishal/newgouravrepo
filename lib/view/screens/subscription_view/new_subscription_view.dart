@@ -25,7 +25,7 @@ import '../../../model/utils/string_resource.dart';
 import '../../../model/models/subscription_models/subscription_plan_model.dart'
     as plan;
 import '../../../view_model/controllers/subscription_controller/subscription_controller.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../../widgets/button_view/common_button.dart';
 import '../../widgets/text_field_view/simple_text_field.dart';
 import '../base_view/base_view_screen.dart';

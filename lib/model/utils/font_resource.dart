@@ -6,6 +6,6 @@ class FontResource {
 
   FontResource._init();
 
-  String get  mainFont =>   "Poppins";
+  String get  mainFont =>   "DMSans";
 
 }

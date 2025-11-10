@@ -11,7 +11,7 @@ import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/model/utils/style_resource.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../../model/utils/string_resource.dart';
 import '../../../widgets/button_view/common_button.dart';
 import '../../../widgets/button_view/icon_button.dart';

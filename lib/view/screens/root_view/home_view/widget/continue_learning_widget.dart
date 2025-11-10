@@ -5,7 +5,7 @@ import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
 import 'package:stockpathshala_beta/view/widgets/view_helpers/small_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../../model/utils/app_constants.dart';
 import '../../../../../model/utils/color_resource.dart';

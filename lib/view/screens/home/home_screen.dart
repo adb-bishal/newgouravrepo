@@ -20,7 +20,7 @@ import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/model/utils/style_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/view_helpers/progress_dialog.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../../model/services/auth_service.dart';
 import '../../../../view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,7 +49,7 @@ import 'package:stockpathshala_beta/view_model/controllers/batch_controller/live
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/live_classes_controller/live_classes_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/past_live_classes_controller/past_live_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../../model/services/auth_service.dart';
 import '../../../../model/utils/color_resource.dart';
 import '../../../../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
@@ -930,8 +930,8 @@ class HomeScreen extends GetView<HomeNewController> {
                                     const Text(
                                       'Learn, trade, and grow with expert-guided sessions',
                                       style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black45,
+                                          fontSize: 14,
+                                          color: Colors.grey,
                                           fontWeight: FontWeight.w400),
                                     ),
                                     // SizedBox(height: 4),

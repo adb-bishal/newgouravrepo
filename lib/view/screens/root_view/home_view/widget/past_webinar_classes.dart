@@ -14,7 +14,7 @@ import '../../../../../model/utils/dimensions_resource.dart';
 import '../../../../../model/utils/string_resource.dart';
 import '../../../../../model/utils/style_resource.dart';
 import '../../../../../view_model/controllers/root_view_controller/root_view_controller.dart';
-import '../../../../../view_model/routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 import '../../../../widgets/button_view/common_button.dart';
 import '../../../../widgets/view_helpers/small_button.dart';
 import '../home_view_screen.dart';

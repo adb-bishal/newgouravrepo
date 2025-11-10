@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../model/services/auth_service.dart';
 import '../../../model/utils/string_resource.dart';
 import '../../../view/widgets/log_print/log_print_condition.dart';
-import '../../routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 
 class PermissionController extends GetxController {
   VoidCallback get onPermissionAllow => () async {

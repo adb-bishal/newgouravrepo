@@ -3131,7 +3131,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:stockpathshala_beta/mentroship/controller/mentorship_controller.dart';
 import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/view/screens/root_view/live_classes_view/batches_filter_view/batches_filter_view.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../view_model/controllers/root_view_controller/live_classes_controller/filter_controller/filter_controller.dart';
 import '../../model/utils/color_resource.dart';

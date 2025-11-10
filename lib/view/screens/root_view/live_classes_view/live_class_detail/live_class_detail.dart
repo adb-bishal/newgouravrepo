@@ -22,7 +22,7 @@ import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/logi
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/live_classes_controller/live_classes_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/past_live_classes_controller/past_live_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../../../model/utils/color_resource.dart';
 import '../../../../../model/utils/dimensions_resource.dart';
 import '../../../../../model/utils/image_resource.dart';

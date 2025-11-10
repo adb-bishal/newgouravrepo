@@ -32,7 +32,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:audio_service/audio_service.dart';
@@ -53,7 +53,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -90,7 +90,7 @@ import '../../../../view/screens/root_view/web_view/open_web_view.dart';
 import '../../../../view/widgets/image_provider/image_provider.dart';
 import '../../../../view/widgets/toast_view/showtoast.dart';
 import '../../../../view/widgets/view_helpers/progress_dialog.dart';
-import '../../../routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../course_detail_controller/course_detail_controller.dart';
 import '../root_view_controller.dart';
 import '../scalp_controller/scalp_controller.dart';

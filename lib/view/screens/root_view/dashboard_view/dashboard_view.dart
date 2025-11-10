@@ -19,7 +19,7 @@ import '../../../../model/models/dashboard/dashboard_model.dart' as dash;
 import '../../../../model/utils/color_resource.dart';
 import '../../../../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/dashboard_controller/dashboard_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/image_provider/image_provider.dart';
 import '../../../widgets/view_helpers/progress_dialog.dart';
 import '../../base_view/base_view_screen.dart';

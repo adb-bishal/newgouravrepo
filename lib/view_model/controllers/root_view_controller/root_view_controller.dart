@@ -81,7 +81,7 @@ import '../../../view/widgets/text_field_view/common_textfield.dart';
 import '../../../view/widgets/toast_view/showtoast.dart';
 import '../../../view/widgets/view_helpers/permission_handler_helper.dart';
 import '../../../view/widgets/view_helpers/progress_dialog.dart';
-import '../../routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import 'course_detail_controller/course_detail_controller.dart';
 import 'package:in_app_review/in_app_review.dart';
 

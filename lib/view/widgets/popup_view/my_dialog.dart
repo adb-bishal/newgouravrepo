@@ -14,9 +14,10 @@ class MyDialog extends StatelessWidget {
   final String? noText;
   final String? description;
   final String? image;
+  final String? color;
   final Widget? child;
   final Widget? icon;
-  const MyDialog(
+    const MyDialog(
       {super.key,
       this.isFailed = false,
       this.rotateAngle = 0,
@@ -26,6 +27,7 @@ class MyDialog extends StatelessWidget {
       required this.onPress,
       this.yesText,
       this.noText,
+      this.color,
       this.icon,
       this.image});
 
@@ -35,6 +37,7 @@ class MyDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
+        color: Colors.white,
         padding: const EdgeInsets.all(20),
         width: device.orientation == Orientation.portrait
             ? device.size.width * .8
@@ -93,7 +96,9 @@ class MyDialog extends StatelessWidget {
                                 },
                                 child: Text(noText ?? "No",
                                     style: StyleResource.instance.styleSemiBold(
+                                    
                                         fontSize:
+
                                             DimensionResource.fontSizeSmall)),
                               )),
                         ),

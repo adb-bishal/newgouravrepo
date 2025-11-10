@@ -16,7 +16,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../feedback/web_socket_service.dart';
 import '../../../model/models/explore_all_category/all_category_model.dart'
@@ -85,6 +85,7 @@ class ProfileController extends GetxController {
     return showAnimatedDialog(
       context,
       MyDialog(
+         
         title: "Logout",
         image: ImageResource.instance.logoutIcon,
         //icon: Icons.logout,

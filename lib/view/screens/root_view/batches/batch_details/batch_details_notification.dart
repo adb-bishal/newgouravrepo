@@ -17,7 +17,7 @@ import 'package:stockpathshala_beta/view/widgets/no_data_found/no_data_found.dar
 import 'package:stockpathshala_beta/view/widgets/shimmer_widget/shimmer_widget.dart';
 import 'package:stockpathshala_beta/view/widgets/view_helpers/small_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/batch_controller/batch_details/detail_tabs/batch_class_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../../mentroship/model/mentorshipCardList_model.dart' hide Pagination;
 

@@ -16,7 +16,7 @@ import '../../../../model/utils/dimensions_resource.dart';
 import '../../../../model/utils/style_resource.dart';
 import '../../../../view/screens/root_view/live_classes_view/live_classes_view.dart';
 import '../../../../view/widgets/log_print/log_print_condition.dart';
-import '../../../routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 
 class QuizController extends GetxController {
   QuizProvider quizProvider = getIt();

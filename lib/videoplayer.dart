@@ -85,6 +85,7 @@ class DatabaseHelper {
         thumbnailPath TEXT NOT NULL -- Path for the thumbnail
       )
     ''');
+    
   }
 
   // Handle database migration (if needed)

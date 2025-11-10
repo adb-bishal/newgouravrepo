@@ -9,7 +9,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/batches/widgets/live_
 import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import '../../../../../model/utils/app_constants.dart';
-import '../../../../../view_model/routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 
 String searchAndRemovePro(String str) {
   if (str.contains("Pro")) {

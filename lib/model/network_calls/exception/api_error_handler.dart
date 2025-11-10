@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 
 import '../../../view/widgets/log_print/log_print_condition.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../../models/network_call_model/error_response.dart';
 import '../../services/auth_service.dart';
 

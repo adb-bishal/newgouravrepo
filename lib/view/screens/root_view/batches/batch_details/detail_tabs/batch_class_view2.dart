@@ -13,7 +13,7 @@ import '../../../../../../model/utils/color_resource.dart';
 import '../../../../../../model/utils/dimensions_resource.dart';
 import '../../../../../../model/utils/style_resource.dart';
 
-import '../../../../../../view_model/routes/app_pages.dart';
+import '../../../../../../enum/routing/routes/app_pages.dart';
 import '../../../../../widgets/circular_indicator/circular_indicator_widget.dart';
 import '../../../../../widgets/no_data_found/no_data_found.dart';
 import '../../../../../widgets/search_widget/search_container.dart';

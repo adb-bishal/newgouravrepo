@@ -4,7 +4,7 @@ import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/image_provider/image_provider.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../../model/models/home_data_model/home_data_model.dart';
 import '../../../../../model/models/scalp_model/scalp_data_model.dart';

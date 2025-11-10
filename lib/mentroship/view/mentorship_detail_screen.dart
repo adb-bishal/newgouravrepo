@@ -24,7 +24,7 @@ import 'package:stockpathshala_beta/model/utils/image_resource.dart';
 import 'package:stockpathshala_beta/view/screens/subscription_view/new_subscription_view.dart';
 import 'package:stockpathshala_beta/view/screens/subscription_view/subscription_view.dart';
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../enum/enum.dart';
 import '../../model/services/auth_service.dart';

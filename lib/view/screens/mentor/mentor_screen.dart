@@ -47,9 +47,11 @@ class MentorScreen extends GetView<MentorController> {
               StringResource.chooseYourMentor,
               style: TextStyle(
                   fontSize: 14,
+
                   color: ColorResource.white,
                   fontWeight: FontWeight.w600),
             ),
+
             backgroundColor: ColorResource.primaryColor,
           ),
           backgroundColor: Colors.white,

@@ -623,7 +623,7 @@ import 'package:stockpathshala_beta/view/widgets/custom_dialog_box.dart';
 import 'package:stockpathshala_beta/view/widgets/text_field_view/common_textfield.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import 'package:flutter/services.dart';
 
 class TrialDialogSheet extends StatefulWidget {

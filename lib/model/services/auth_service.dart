@@ -14,7 +14,7 @@ import 'package:stockpathshala_beta/model/utils/app_constants.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import '../../view/screens/root_view/live_classes_view/live_classes_view.dart';
-import '../../view_model/routes/app_pages.dart';
+import '../../enum/routing/routes/app_pages.dart';
 import '../models/service_model/service_model.dart';
 import '../network_calls/dio_client/dio_client.dart';
 

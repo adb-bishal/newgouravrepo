@@ -10,7 +10,7 @@ import '../../../../model/utils/image_resource.dart';
 import '../../../../model/utils/style_resource.dart';
 import '../../../../view_model/controllers/root_view_controller/live_classes_controller/filter_controller/filter_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/past_live_classes_controller/past_live_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/button_view/animated_box.dart';
 import '../../../widgets/no_data_found/no_data_found.dart';
 import '../../../widgets/search_widget/search_container.dart';
@@ -162,6 +162,7 @@ class _PastBatchClassesState extends State<PastBatchClasses> {
             height: DimensionResource.marginSizeDefault,
           ),
           Text(
+            
             "View Live Batch Class Recordings",
             style: StyleResource.instance.styleSemiBold(),
           ),
@@ -208,7 +209,7 @@ class _PastBatchClassesState extends State<PastBatchClasses> {
                                   bottomBgColor: ColorResource.secondaryColor,
                                   sideText: firstData.courseOfferTitle,
                                   onExplore: () {
-                                    print('tyhytngn');
+                                  //  print('tyhytngn');
                                     Get.toNamed(
                                       Routes.batchDetails,
                                       arguments: [

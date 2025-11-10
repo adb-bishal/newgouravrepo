@@ -5,7 +5,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/home_view/widget/vide
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 
 import '../../../../../model/utils/dimensions_resource.dart';
-import '../../../../../view_model/routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 import '../../courses_detail_view/course_detail_view.dart';
 import '../../home_view/home_view_screen.dart';
 import '../../home_view/widget/blogs_widget.dart';

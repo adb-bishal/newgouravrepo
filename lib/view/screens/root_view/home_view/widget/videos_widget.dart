@@ -7,7 +7,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/home_view/widget/top_
 import 'package:stockpathshala_beta/view/widgets/view_helpers/small_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../../model/models/common_container_model/common_container_model.dart';
 import '../../../../../model/models/home_data_model/home_data_model.dart';

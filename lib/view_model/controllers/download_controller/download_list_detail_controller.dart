@@ -28,6 +28,8 @@ class DownloadDetailController extends GetxController{
           logPrint("dfd $val");
               onSearch(val);
           countValue.value++;
+          
+
         });
   }
 

@@ -15,7 +15,7 @@ import 'package:stockpathshala_beta/view/widgets/shimmer_widget/shimmer_widget.d
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/live_classes_controller/live_classes_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import '../../../../../../model/services/player/file_video_widget.dart';
 import '../../../../../../model/utils/color_resource.dart';
 import '../../../../../../model/utils/dimensions_resource.dart';

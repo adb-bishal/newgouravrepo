@@ -9,7 +9,7 @@ import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/button_view/common_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/promo_code_controller/promo_code_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../model/services/pagination.dart';
 import '../../../../model/utils/dimensions_resource.dart';

@@ -16,7 +16,7 @@ import '../../../model/utils/string_resource.dart';
 import '../../../model/utils/style_resource.dart';
 import '../../../view_model/controllers/auth_controllers/login_controller.dart';
 import '../../../view_model/controllers/auth_controllers/sign_up_controller.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../../widgets/button_view/common_button.dart';
 import '../../widgets/custome_checkBox/custome_chack_box.dart';
 import '../../widgets/text_field_view/common_textfield.dart';

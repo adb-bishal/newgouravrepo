@@ -20,6 +20,8 @@ class SimpleTextField extends StatefulWidget {
   const SimpleTextField({
     Key? key,
     this.onClear,
+
+    
     this.contentPadding,
     this.validator,
     this.keyboardType,

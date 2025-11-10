@@ -5,7 +5,7 @@ import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:stockpathshala_beta/model/utils/string_resource.dart';
 import 'package:stockpathshala_beta/model/utils/style_resource.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../model/models/course_models/course_by_id_model.dart';
 import '../../../../model/models/wishlist_data_model/wishlist_response_model.dart';

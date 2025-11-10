@@ -35,7 +35,7 @@ import '../../../../view_model/controllers/root_view_controller/courses_view_con
 import '../../../../view_model/controllers/root_view_controller/live_classes_controller/live_class_detail/live_class_detail_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/live_classes_controller/live_classes_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/video_course_detail_controller/video_course_detail_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/circular_indicator/circular_indicator_widget.dart';
 import '../../../widgets/image_provider/image_provider.dart';
 import '../../../widgets/view_helpers/progress_dialog.dart';

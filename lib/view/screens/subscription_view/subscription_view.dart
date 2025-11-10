@@ -20,7 +20,7 @@ import '../../../model/models/subscription_models/subscription_plan_model.dart'
     as plan;
 import '../../../model/utils/app_constants.dart';
 import '../../../view_model/controllers/subscription_controller/subscription_controller.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../../widgets/image_provider/image_provider.dart';
 import '../../widgets/text_field_view/simple_text_field.dart';
 import '../../widgets/view_helpers/progress_dialog.dart';

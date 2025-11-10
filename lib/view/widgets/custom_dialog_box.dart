@@ -5,7 +5,7 @@ import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:stockpathshala_beta/model/utils/hex_color.dart';
 import 'package:stockpathshala_beta/view/widgets/button_view/common_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +14,7 @@ import 'package:stockpathshala_beta/model/utils/color_resource.dart';
 import 'package:stockpathshala_beta/model/utils/hex_color.dart';
 import 'package:stockpathshala_beta/view/widgets/button_view/common_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 class CustomDialog extends StatefulWidget {
   final String heading;

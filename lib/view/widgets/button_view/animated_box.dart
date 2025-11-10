@@ -70,6 +70,8 @@ class Rotation3DTransition extends AnimatedWidget {
 showCommonDialog(Widget child) {
   return Center(
     child: SafeArea(
+      
+
       child: Scaffold(
         backgroundColor: Colors.black.withOpacity(0.1),
         body: Center(

@@ -280,6 +280,8 @@ class ContinueWatchView extends StatelessWidget {
                         //   fileUrl: dataa.fileUrl ?? "",
                         //   fileType: dataa.fileType ?? "",
                         // );
+
+                        logPrint("selected url");
                         logPrint(
                             "selected url ${controller.selectedVideo.value.fileUrl}");
                         controller.isHistoryUpload.value = true;

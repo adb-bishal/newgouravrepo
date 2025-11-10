@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stockpathshala_beta/mentroship/controller/mentorship_detail_controller.dart';
 import 'package:stockpathshala_beta/model/utils/app_constants.dart';
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 class LiveClassLaunch extends StatefulWidget {
   final String title;

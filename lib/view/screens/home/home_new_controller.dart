@@ -35,7 +35,7 @@ import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.d
 import 'package:stockpathshala_beta/view/widgets/toast_view/showtoast.dart';
 import 'package:stockpathshala_beta/view_model/controllers/auth_controllers/login_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/home_controller/home_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 import 'package:dio/dio.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:stockpathshala_beta/model/models/account_models/level_model.dart'

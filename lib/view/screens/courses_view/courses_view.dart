@@ -13,7 +13,7 @@ import '../../../model/utils/style_resource.dart';
 import '../../../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
 import '../../../view_model/controllers/root_view_controller/courses_view_controller/courses_view_controller.dart';
 import '../../../view_model/controllers/root_view_controller/live_classes_controller/filter_controller/filter_controller.dart';
-import '../../../view_model/routes/app_pages.dart';
+import '../../../enum/routing/routes/app_pages.dart';
 import '../../widgets/button_view/animated_box.dart';
 import '../../widgets/search_widget/search_container.dart';
 import '../../widgets/shimmer_widget/shimmer_widget.dart';

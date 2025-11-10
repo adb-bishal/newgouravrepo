@@ -19,7 +19,8 @@ import 'package:stockpathshala_beta/view/widgets/no_data_found/no_data_found.dar
 import 'package:stockpathshala_beta/view/widgets/view_helpers/small_button.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/live_classes_controller/filter_controller/filter_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
+import 'package:win32/win32.dart';
 import '../../../../mentroship/view/mentorship_detail_screen.dart';
 import '../../../../model/models/common_container_model/common_container_model.dart';
 import '../../../../model/services/auth_service.dart';
@@ -91,6 +92,7 @@ class _LiveClassesViewState extends State<LiveClassesView>
       },
       viewControl: LiveClassesController(),
       onPageBuilder: (context, controller) {
+        
         return TabBarView(controller: controller.tabController, children: [
           _mainPageBuilder(context, controller),
           const PastClassesView()
@@ -142,7 +144,6 @@ class _LiveClassesViewState extends State<LiveClassesView>
                           ? const CircularProgressIndicator()
                           : LiveFilterScreen(
                               type: 'live webinar',
-                          
                               onClear: (val) {
                                 controller.selectedRating.value = val['rating'];
                                 controller.listOFSelectedDuration.clear();
@@ -155,6 +156,7 @@ class _LiveClassesViewState extends State<LiveClassesView>
                                 controller.selectedSub.value = val['is_free'];
                                 controller.listofSelectedTeacher.value =
                                     val['teacher'];
+                                    
                                 controller.getLiveData(
                                   pageNo: 1,
                                   searchKeyWord: "",
@@ -258,7 +260,6 @@ class _LiveClassesViewState extends State<LiveClassesView>
 //   ),
 // )
 // ,
-
 
           Text(
             "Hello StockPathshala!",
@@ -399,6 +400,8 @@ class _LiveClassesViewState extends State<LiveClassesView>
           height: 500,
           child: NoDataFound(
             showText: true,
+            
+          
             text: "Be a Pro to Watch Class Recordings",
           ),
         );
@@ -433,6 +436,7 @@ class _LiveClassesViewState extends State<LiveClassesView>
                   thickness: 5,
                   margin: 20,
                   text: "Unregistered Webinar",
+
                   textColor: Colors.black,
                   // isDotted: true,
                   useGradient: true,
@@ -1810,7 +1814,7 @@ class _CustomRadioDropdown extends State<CustomRadioDropdown> {
                                 selectedData = val;
                               }
                               widget.selectedList(val);
-                              setState(() {}); 
+                              setState(() {});
                             },
 
 //ss//

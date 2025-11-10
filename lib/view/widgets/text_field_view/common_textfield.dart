@@ -84,15 +84,20 @@ class CommonTextField extends StatelessWidget {
   RxBool passwordVisible = true.obs;
   @override
   Widget build(BuildContext context) {
+
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
+  
           height: 45,
           decoration: BoxDecoration(
+            
               boxShadow: const [
                 BoxShadow(
-                  color: ColorResource.grey_4,
+                  color: Colors.white
+                 // color: ColorResource.grey_4,
                   // blurRadius: 5.0,
                   // offset: Offset(0, 0)
                 ),

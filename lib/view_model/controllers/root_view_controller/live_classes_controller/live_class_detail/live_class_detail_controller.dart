@@ -31,7 +31,7 @@ import '../../../../../view/screens/root_view/live_classes_view/live_class_detai
 import '../../../../../view/widgets/button_view/common_button.dart';
 import '../../../../../view/widgets/toast_view/showtoast.dart';
 import '../../../../../view/widgets/view_helpers/progress_dialog.dart';
-import '../../../../routes/app_pages.dart';
+import '../../../../../enum/routing/routes/app_pages.dart';
 import '../live_classes_controller.dart';
 
 import 'dart:async';

@@ -18,7 +18,7 @@ import '../../../../model/utils/style_resource.dart';
 import '../../../../videoplayer.dart';
 import '../../../../view_model/controllers/root_view_controller/course_detail_controller/course_detail_controller.dart';
 import '../../../../view_model/controllers/root_view_controller/live_classes_controller/live_class_detail/live_class_detail_controller.dart';
-import '../../../../view_model/routes/app_pages.dart';
+import '../../../../enum/routing/routes/app_pages.dart';
 import '../../../widgets/image_provider/image_provider.dart';
 import '../../base_view/base_view_screen.dart';
 import '../home_view/home_view_screen.dart';

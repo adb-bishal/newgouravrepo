@@ -10,7 +10,7 @@ import 'package:stockpathshala_beta/view/screens/root_view/quiz_view/quiz_list.d
 import 'package:stockpathshala_beta/view/widgets/log_print/log_print_condition.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/quiz_controller/quiz_result_controller.dart';
 import 'package:stockpathshala_beta/view_model/controllers/root_view_controller/root_view_controller.dart';
-import 'package:stockpathshala_beta/view_model/routes/app_pages.dart';
+import 'package:stockpathshala_beta/enum/routing/routes/app_pages.dart';
 
 import '../../../../model/utils/color_resource.dart';
 import '../../../../model/utils/dimensions_resource.dart';
