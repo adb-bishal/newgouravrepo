@@ -20,6 +20,8 @@ class GlobalSocketPopup extends StatefulWidget {
       {super.key, this.questionList, this.userData, this.classDetails});
 
   @override
+
+  //nn//
   State<GlobalSocketPopup> createState() => _GlobalSocketPopupState();
 }
 
