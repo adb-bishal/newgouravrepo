@@ -741,6 +741,7 @@ Widget liveClassesView(
                               color: hexToColor(ui.dateTimeChipTextColor),
                             ),
                           ),
+                          
                         ],
                       ),
                     ),
