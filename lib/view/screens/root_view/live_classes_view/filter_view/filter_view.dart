@@ -378,6 +378,7 @@ class _LiveFilterScreenState extends State<LiveFilterScreen> {
                         horizontal: DimensionResource.marginSizeSmall,
                         vertical: DimensionResource.marginSizeExtraSmall),
                     radius: 7,
+
                     color: controller.selectedRating.any((element) =>
                             element.ratingValue == data.ratingValue)
                         ? ColorResource.primaryColor
