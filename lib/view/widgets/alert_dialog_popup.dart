@@ -64,6 +64,7 @@ extension PermissionDialogExtention on PermissionAlertDialog {
       context: context,
       builder: (context) {
         return Dialog(
+          
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

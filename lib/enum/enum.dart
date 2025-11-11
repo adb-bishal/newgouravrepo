@@ -1,8 +1,31 @@
 enum CommonEnum {
+  
   mentorScreen, subscription, mentorshipDetailScreen, liveClassDetail
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//cpuy//
+
+
+
+//aa//
 
 
 

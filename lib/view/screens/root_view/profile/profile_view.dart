@@ -831,12 +831,12 @@ class ProfileView extends StatelessWidget {
                                 elevation: 4,
                                 margin: EdgeInsets.zero,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(3),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                                 color: ColorResource.white,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 child: Padding(
-                                  padding: EdgeInsets.all(screenWidth < 500 ? 5.0 : 10),
+                                  padding: EdgeInsets.all(screenWidth < 500 ? 5.0 : 20),
                                   child: Image.asset(
                                     ImageResource.instance.editIcon,
                                     color: ColorResource.primaryColor,
@@ -887,6 +887,8 @@ class ProfileView extends StatelessWidget {
                                   },
                                   errorText: controller.nameError.value,
                                 ),
+
+                                
                                 CommonTextField(
                                   label: StringResource.email,
                                   readOnly:
@@ -921,7 +923,7 @@ class ProfileView extends StatelessWidget {
                                     margin: const EdgeInsets.only(left: 16.0), // Add margin as needed
                                     child: Padding(
                                       padding:  EdgeInsets.only(
-                                        left: 14.0,
+                                        left: 22.0,
                                         top: screenWidth<500? 16.0:13,
                                         bottom: 16.0,
                                         right: 0.0,

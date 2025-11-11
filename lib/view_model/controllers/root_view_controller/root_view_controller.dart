@@ -1680,124 +1680,270 @@ class RootViewController extends GetxController {
     }
   }
 
-  showOpenAccountDialog() {
-    return showAnimatedDialog(
-        Get.context!,
-        MyDialog(
-          title: "Permission Request",
-          image: ImageResource.instance.permissionSettingsIcon,
-          description:
-              "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
-          isFailed: false,
-          yesText: "Continue",
-          noText: "Cancel",
-          onPress: () async {},
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  StringResource.openAccountText,
-                  style: StyleResource.instance.styleSemiBold(),
-                ),
-                Image.asset(
-                  ImageResource.instance.referNEarnPOPBG,
-                  height: 180,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: DimensionResource.marginSizeDefault),
-                  child: Form(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    key: openAccountFormKey,
-                    child: Obx(
+
+
+
+
+
+
+
+showOpenAccountDialog() {
+  return showAnimatedDialog(
+    Get.context!,
+    MyDialog(
+      title: "Permission Request",
+      image: ImageResource.instance.permissionSettingsIcon,
+      description:
+          "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
+      isFailed: false,
+      yesText: "Continue",
+      noText: "Cancel",
+      onPress: () async {},
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              StringResource.openAccountText,
+              style: StyleResource.instance.styleSemiBold(),
+            ),
+            Image.asset(
+              ImageResource.instance.referNEarnPOPBG,
+              height: 180,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: DimensionResource.marginSizeDefault,
+              ),
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                key: openAccountFormKey,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // This gives us the actual width INSIDE the dialog
+                    final double maxFieldWidth = constraints.maxWidth;
+
+                    return Obx(
                       () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CommonTextField(
-                            showEdit: false,
-                            label: "",
-                            controller: userNameController.value,
-                            hintText: StringResource.enterName,
-                            keyboardType: TextInputType.text,
-                            maxLength: 24,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[A-Za-z ]"))
-                            ],
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                nameError.value = StringResource.emptyNameError;
-                                return "";
-                              } else {
-                                nameError.value = "";
-                                return null;
-                              }
-                            },
-                            errorText: nameError.value,
+                          // NAME FIELD – NO OVERFLOW
+                          SizedBox(
+                            width: maxFieldWidth,
+                            child: CommonTextField(
+                              showEdit: false,
+                              label: "",
+                              controller: userNameController.value,
+                              hintText: StringResource.enterName,
+                              keyboardType: TextInputType.text,
+                              maxLength: 24,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp("[A-Za-z ]"))
+                              ],
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  nameError.value = StringResource.emptyNameError;
+                                  return "";
+                                } else {
+                                  nameError.value = "";
+                                  return null;
+                                }
+                              },
+                              errorText: nameError.value,
+                            ),
                           ),
-                          CommonTextField(
-                            showEdit: false,
-                            label: "",
-                            maxLength: 10,
-                            controller: numberController.value,
-                            hintText: StringResource.enterMobile,
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[0-9]")),
-                            ],
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                numError.value = StringResource.emptyPhoneError;
-                                return "";
-                              } else {
-                                numError.value = "";
-                                return null;
-                              }
-                            },
-                            errorText: numError.value,
+                          const SizedBox(height: 12),
+
+                          // MOBILE FIELD – NO OVERFLOW
+                          SizedBox(
+                            width: maxFieldWidth,
+                            child: CommonTextField(
+                              showEdit: false,
+                              label: "",
+                              maxLength: 10,
+                              controller: numberController.value,
+                              hintText: StringResource.enterMobile,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                              ],
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  numError.value = StringResource.emptyPhoneError;
+                                  return "";
+                                } else {
+                                  numError.value = "";
+                                  return null;
+                                }
+                              },
+                              errorText: numError.value,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
-                Obx(() {
-                  return CommonButton(
-                    text: StringResource.submit,
-                    onPressed: () {
-                      if (openAccountFormKey.currentState?.validate() ??
-                          false) {
-                        nameError.value = "";
-                        numError.value = "";
-                        onOpenTradingAccount(Get.context!);
-                        Get.back();
-                      }
-                    },
-                    loading: isOpenLoading.value,
-                  );
-                }),
-                TextButton(
-                    onPressed: () {
-                      Get.back();
-                      nameError.value = "";
-                      numError.value = "";
-                      userNameController.value.clear();
-                      numberController.value.clear();
-                    },
-                    child: Text(
-                      StringResource.cancel,
-                      style: StyleResource.instance
-                          .styleSemiBold(color: ColorResource.primaryColor),
-                    ))
-              ],
+              ),
             ),
-          ),
+            Obx(() {
+              return CommonButton(
+                text: StringResource.submit,
+                onPressed: () {
+                  if (openAccountFormKey.currentState?.validate() ?? false) {
+                    nameError.value = "";
+                    numError.value = "";
+                    onOpenTradingAccount(Get.context!);
+                    Get.back();
+                  }
+                },
+                loading: isOpenLoading.value,
+              );
+            }),
+            TextButton(
+              onPressed: () {
+                Get.back();
+                nameError.value = "";
+                numError.value = "";
+                userNameController.value.clear();
+                numberController.value.clear();
+              },
+              child: Text(
+                StringResource.cancel,
+                style: StyleResource.instance.styleSemiBold(
+                  color: ColorResource.primaryColor,
+                ),
+              ),
+            ),
+          ],
         ),
-        dismissible: false,
-        isFlip: true);
-  }
+      ),
+    ),
+    dismissible: false,
+    isFlip: true,
+  );
+}
+  // showOpenAccountDialog() {
+  //   return showAnimatedDialog(
+  //       Get.context!,
+  //       MyDialog(
+          
+  //         title: "Permission Request",
+  //         image: ImageResource.instance.permissionSettingsIcon,
+  //         description:
+  //             "To allow you to capture photos from your camera, In order to create receipts and expense reports, this is necessary.",
+  //         isFailed: false,
+  //         yesText: "Continue",
+  //         noText: "Cancel",
+  //         onPress: () async {},
+  //         child: SingleChildScrollView(
+  //           child: Column(
+              
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               Text(
+  //                 StringResource.openAccountText,
+  //                 style: StyleResource.instance.styleSemiBold(),
+  //               ),
+  //              // SizedBox(height: 22,),
+  //               Image.asset(
+  //                 ImageResource.instance.referNEarnPOPBG,
+  //                 height: 180,
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.only(
+  //                     top: DimensionResource.marginSizeDefault),
+  //                 child: Form(
+  //                   autovalidateMode: AutovalidateMode.onUserInteraction,
+  //                   key: openAccountFormKey,
+  //                   child: Obx(
+  //                     () => Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         CommonTextField(
+  //                           showEdit: false,
+  //                           label: "",
+  //                           controller: userNameController.value,
+  //                           hintText: StringResource.enterName,
+  //                           keyboardType: TextInputType.text,
+  //                           maxLength: 24,
+  //                           inputFormatters: [
+  //                             FilteringTextInputFormatter.allow(
+  //                                 RegExp("[A-Za-z ]"))
+  //                           ],
+  //                           validator: (value) {
+  //                             if (value!.isEmpty) {
+  //                               nameError.value = StringResource.emptyNameError;
+  //                               return "";
+  //                             } else {
+  //                               nameError.value = "";
+  //                               return null;
+  //                             }
+  //                           },
+  //                           errorText: nameError.value,
+  //                         ),
+  //                         CommonTextField(
+  //                           showEdit: false,
+  //                           label: "",
+  //                           maxLength: 10,
+  //                           controller: numberController.value,
+  //                           hintText: StringResource.enterMobile,
+  //                           keyboardType: TextInputType.phone,
+  //                           inputFormatters: [
+  //                             FilteringTextInputFormatter.allow(
+  //                                 RegExp("[0-9]")),
+  //                           ],
+  //                           validator: (value) {
+  //                             if (value!.isEmpty) {
+  //                               numError.value = StringResource.emptyPhoneError;
+  //                               return "";
+  //                             } else {
+  //                               numError.value = "";
+  //                               return null;
+  //                             }
+  //                           },
+  //                           errorText: numError.value,
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Obx(() {
+  //                 return CommonButton(
+  //                   text: StringResource.submit,
+  //                   onPressed: () {
+  //                     if (openAccountFormKey.currentState?.validate() ??
+  //                         false) {
+  //                       nameError.value = "";
+  //                       numError.value = "";
+  //                       onOpenTradingAccount(Get.context!);
+  //                       Get.back();
+  //                     }
+  //                   },
+  //                   loading: isOpenLoading.value,
+  //                 );
+  //               }),
+  //               TextButton(
+  //                   onPressed: () {
+  //                     Get.back();
+  //                     nameError.value = "";
+  //                     numError.value = "";
+  //                     userNameController.value.clear();
+  //                     numberController.value.clear();
+  //                   },
+  //                   child: Text(
+  //                     StringResource.cancel,
+  //                     style: StyleResource.instance
+  //                         .styleSemiBold(color: ColorResource.primaryColor),
+  //                   ))
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //       dismissible: false,
+  //       isFlip: true);
+  // }
   // void trailOnTap1(hasName, isFirst, [bool? isTrialSheet]) async {
   //   isLoading.value = true;
   //   try {

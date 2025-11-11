@@ -192,30 +192,35 @@ class HomeScreen extends GetView<HomeNewController> {
                                     width: double.infinity,
                                     height: 305,
                                     color: ColorResource.white,
-                                    child: Column(
-                                      children: [
-                                        controller.homeData.value.homepageUi
-                                                    ?.bgImageUrl?.isEmpty ??
-                                                true
-                                            ? Image.asset(
-                                                ImageResource.instance.homeBg,
-                                                fit: BoxFit.cover,
-                                                height: screenWidth < 500
-                                                    ? 200
-                                                    : 220,
-                                                width: double.infinity,
-                                              )
-                                            : Image.network(
-                                                controller.homeData.value
-                                                    .homepageUi!.bgImageUrl!,
-                                                fit: BoxFit.cover,
-                                                height: screenWidth < 500
-                                                    ? 200
-                                                    : 220,
-                                                width: double.infinity,
-                                              )
-                                      ],
-                                    ),
+
+
+
+                                    //comment by gouravv  //
+                                    // child: Column(
+                                    //   children: [
+                                    //     controller.homeData.value.homepageUi
+                                    //                 ?.bgImageUrl?.isEmpty ??
+                                    //             true
+                                    //         ? Image.asset(
+                                    //             ImageResource.instance.homeBg,
+                                    //             fit: BoxFit.cover,
+                                    //             height: screenWidth < 500
+                                    //                 ? 200
+                                    //                 : 220,
+                                    //             width: double.infinity,
+                                    //           )
+                                    //         : Image.network(
+                                    //             controller.homeData.value
+                                    //                 .homepageUi!.bgImageUrl!,
+                                    //             fit: BoxFit.cover,
+                                    //             height: screenWidth < 500
+                                    //                 ? 200
+                                    //                 : 220,
+                                    //             width: double.infinity,
+                                    //           )
+                                    //   ],
+                                    // ),
+                                    
                                   ),
 
                                   Positioned(
